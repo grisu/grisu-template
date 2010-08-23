@@ -96,7 +96,8 @@
 		<dependency>
 			<groupId>au.org.arcs.auth</groupId>
 			<artifactId>arcs-gsi</artifactId>
-			<version>1.2-SNAPSHOT</version>
+			<version>1.2</version>
+			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 
@@ -155,7 +156,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 		</plugins>
 	</build>
 

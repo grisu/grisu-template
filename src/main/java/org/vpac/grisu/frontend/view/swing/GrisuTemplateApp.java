@@ -17,6 +17,7 @@ import org.vpac.grisu.control.exceptions.NoSuchTemplateException;
 import org.vpac.grisu.frontend.view.swing.jobcreation.JobCreationPanel;
 import org.vpac.grisu.frontend.view.swing.jobcreation.TemplateJobCreationPanel;
 import org.vpac.grisu.model.GrisuRegistryManager;
+import org.vpac.security.light.Init;
 
 public class GrisuTemplateApp extends GrisuApplicationWindow implements
 		PropertyChangeListener {
@@ -25,6 +26,8 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 			.getName());
 
 	public static void main(String[] args) {
+
+		Init.initBouncyCastle();
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

@@ -27,6 +27,8 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 
 	public static void main(String[] args) {
 
+		System.out.println("Template app updated.");
+
 		Init.initBouncyCastle();
 
 		EventQueue.invokeLater(new Runnable() {

@@ -1,0 +1,38 @@
+# For more in-detail info about templates please visit:
+# https://projects.arcs.org.au/trac/grisu/wiki/GrisuGridAdminDoc/GrisuTemplates0.3
+# (in progress)
+# Every template needs a commandline property in the first line
+# that has the command to run as its value
+# it also supports variables which substitute the name of the widget (enclosed like ${name})
+# with the value of the widget (see below)
+commandline = echo ${firstWidget}
+
+# after that, you can (optionally) specify static values for the job, like for example:
+# applicaton = UnixCommands
+
+# Every template can have one or more tabs. Every tab is specified like this:
+= 1st tab =
+
+# Every tab contains one panel. Each panel can contain one or more rows.
+# And each row can contain one or more columns.
+# We need to start with a new row by having one (or more, doesn't matter) dashes:
+---------------------------------------
+
+# Now we specify the first widget. Each widget has a name (which can be used as
+# variable to substitute the widgets' value for the commandline property)
+[firstWidget]
+
+# Every widget has (mostly optional) properties.
+# The most important property is the 'type' property. It determines which kind of
+# widget gets rendered
+type = TextField
+
+# the title property is optional and its value will be used to give the widget a
+# titled border
+title = First widget title
+
+# most widgets have the size property to determine the size of a widget within the panel
+size = 1000x70
+
+# also most widgets support a default value
+defaultValue = Whatever

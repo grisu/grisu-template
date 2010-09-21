@@ -267,7 +267,7 @@ public class TemplateHelpers {
 		Constructor<Validator> constructor;
 		try {
 
-			if (config == null || config.size() == 0) {
+			if ((config == null) || (config.size() == 0)) {
 				final Validator<String> val = (Validator<String>) validatorClass
 						.newInstance();
 				return val;
@@ -607,6 +607,9 @@ public class TemplateHelpers {
 			mainPanel.add(tabbedPanel, BorderLayout.CENTER);
 
 		} else {
+			if (tabs.values().size() == 0) {
+				return template;
+			}
 			mainPanel = createTab(tabs.values().iterator().next(),
 					useScrollbars);
 		}

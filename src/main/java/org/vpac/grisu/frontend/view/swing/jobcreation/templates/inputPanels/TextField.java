@@ -106,6 +106,7 @@ public class TextField extends AbstractInputPanel {
 
 		final String defaultValue = getPanelProperty(DEFAULT_VALUE);
 		if (StringUtils.isNotBlank(defaultValue)) {
+			getTextField().setText(defaultValue);
 			setValue(bean, defaultValue);
 		}
 	}

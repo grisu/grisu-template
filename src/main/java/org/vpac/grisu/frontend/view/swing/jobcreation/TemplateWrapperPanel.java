@@ -63,8 +63,10 @@ public class TemplateWrapperPanel extends JPanel {
 				RowSpec.decode("bottom:default"),
 				FormFactory.RELATED_GAP_ROWSPEC, }));
 
-		creationPanel
-				.add(template.getTemplatePanel(), "2, 2, 3, 1, fill, fill");
+		if (template.getTemplatePanel() != null) {
+			creationPanel.add(template.getTemplatePanel(),
+					"2, 2, 3, 1, fill, fill");
+		}
 		if (template.getValidationPanel() != null) {
 			creationPanel.add(template.getValidationPanel(),
 					"2, 4, 2, 1, fill, fill");

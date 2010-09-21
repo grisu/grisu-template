@@ -230,8 +230,14 @@ public class TemplateEditPanel extends JPanel implements
 
 			final JPanel tempPanel = new JPanel();
 			tempPanel.setLayout(new BorderLayout());
-			tempPanel.add(template.getTemplatePanel(), BorderLayout.CENTER);
-			tempPanel.add(template.getValidationPanel(), BorderLayout.SOUTH);
+			if (template.getTemplatePanel() != null) {
+				tempPanel.add(template.getTemplatePanel(), BorderLayout.CENTER);
+
+			}
+			if (template.getValidationPanel() != null) {
+				tempPanel
+						.add(template.getValidationPanel(), BorderLayout.SOUTH);
+			}
 
 			currentTemplatePanel = tempPanel;
 
@@ -362,7 +368,7 @@ public class TemplateEditPanel extends JPanel implements
 			panel_1 = new JPanel();
 			panel_1.setLayout(new FormLayout(new ColumnSpec[] {
 					FormFactory.RELATED_GAP_COLSPEC,
-					ColumnSpec.decode("default:grow"),
+					ColumnSpec.decode("max(18dlu;default):grow"),
 					FormFactory.RELATED_GAP_COLSPEC,
 					ColumnSpec.decode("default:grow"),
 					FormFactory.RELATED_GAP_COLSPEC,
@@ -371,9 +377,8 @@ public class TemplateEditPanel extends JPanel implements
 					FormFactory.DEFAULT_COLSPEC,
 					FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
 					FormFactory.RELATED_GAP_ROWSPEC,
-					RowSpec.decode("default:grow"),
-					FormFactory.RELATED_GAP_ROWSPEC,
-					RowSpec.decode("max(79dlu;default):grow"),
+					RowSpec.decode("max(97dlu;default):grow"),
+					FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("96dlu"),
 					FormFactory.RELATED_GAP_ROWSPEC,
 					FormFactory.DEFAULT_ROWSPEC,
 					FormFactory.RELATED_GAP_ROWSPEC, }));

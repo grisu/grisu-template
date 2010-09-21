@@ -4,8 +4,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -65,6 +69,35 @@ public class ApplicationSubscribePanel extends JPanel {
 		});
 	}
 
+	public static List<String> readTextFromJar(String s) {
+		InputStream is = null;
+		BufferedReader br = null;
+		String line;
+		ArrayList<String> list = new ArrayList<String>();
+
+		try {
+			is = FileUtils.class.getResourceAsStream(s);
+			br = new BufferedReader(new InputStreamReader(is));
+			while (null != (line = br.readLine())) {
+				list.add(line);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (br != null) {
+					br.close();
+				}
+				if (is != null) {
+					is.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
+
 	private JLabel lblRemoteApplications;
 	private JScrollPane scrollPane;
 	private JLabel lblMyApplications;
@@ -77,14 +110,14 @@ public class ApplicationSubscribePanel extends JPanel {
 	private JList myRemoveApplicationList;
 	private JList localApplicationList;
 	private final DefaultListModel remoteModel = new DefaultListModel();
+
 	private final DefaultListModel myRemoteModel = new DefaultListModel();
 
 	private final DefaultListModel localModel = new DefaultListModel();
-
 	private ServiceInterface si;
 	private TemplateManager tm;
-	private JButton remoteToLocalButton;
 
+	private JButton remoteToLocalButton;
 	private JPopupMenu popupMenu;
 	private JMenuItem editItem;
 	private JMenuItem renaneMenuItem;
@@ -92,6 +125,7 @@ public class ApplicationSubscribePanel extends JPanel {
 	private JMenuItem deleteMenuItem;
 	private JButton createFromTemplate;
 	private JLabel lblCreate;
+
 	private JButton button_2;
 
 	/**
@@ -429,6 +463,9 @@ public class ApplicationSubscribePanel extends JPanel {
 
 					try {
 						file.createNewFile();
+						List<String> lines = readTextFromJar("/tutorial_template.template");
+
+						FileUtils.writeLines(file, lines);
 					} catch (final IOException e) {
 						throw new RuntimeException(e);
 					}
@@ -575,4 +612,5 @@ public class ApplicationSubscribePanel extends JPanel {
 		}
 
 	}
+
 }

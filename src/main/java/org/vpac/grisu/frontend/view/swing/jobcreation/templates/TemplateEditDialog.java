@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 import org.vpac.grisu.control.ServiceInterface;
@@ -20,10 +21,10 @@ public class TemplateEditDialog extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			TemplateEditDialog dialog = new TemplateEditDialog(null, null);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			final TemplateEditDialog dialog = new TemplateEditDialog(null, null);
+			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -52,8 +53,8 @@ public class TemplateEditDialog extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		{
-			TemplateEditPanel templateEditPanel = new TemplateEditPanel(si,
-					templateFile);
+			final TemplateEditPanel templateEditPanel = new TemplateEditPanel(
+					si, templateFile);
 			templateEditPanel.setDialog(this);
 			contentPanel.add(templateEditPanel, BorderLayout.CENTER);
 		}

@@ -30,6 +30,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 import org.apache.commons.io.FilenameUtils;
 import org.vpac.grisu.backend.info.InformationManagerManager;
@@ -80,15 +81,16 @@ public class TemplateTestFrame extends JFrame implements
 
 		// ========================================= actionPerformed
 		public void actionPerformed(ActionEvent e) {
-			int retval = _fileChooser.showOpenDialog(TemplateTestFrame.this);
+			final int retval = _fileChooser
+					.showOpenDialog(TemplateTestFrame.this);
 			if (retval == JFileChooser.APPROVE_OPTION) {
-				File f = _fileChooser.getSelectedFile();
+				final File f = _fileChooser.getSelectedFile();
 				currentFile = f;
 				try {
-					FileReader reader = new FileReader(f);
+					final FileReader reader = new FileReader(f);
 					textArea.read(reader, ""); // Use TextComponent read
 					TemplateTestFrame.this.actionPerformed(null);
-				} catch (IOException ioex) {
+				} catch (final IOException ioex) {
 					System.out.println(e);
 					System.exit(1);
 				}
@@ -106,13 +108,14 @@ public class TemplateTestFrame extends JFrame implements
 
 		// ========================================= actionPerformed
 		public void actionPerformed(ActionEvent e) {
-			int retval = _fileChooser.showSaveDialog(TemplateTestFrame.this);
+			final int retval = _fileChooser
+					.showSaveDialog(TemplateTestFrame.this);
 			if (retval == JFileChooser.APPROVE_OPTION) {
-				File f = _fileChooser.getSelectedFile();
+				final File f = _fileChooser.getSelectedFile();
 				try {
-					FileWriter writer = new FileWriter(f);
+					final FileWriter writer = new FileWriter(f);
 					textArea.write(writer); // Use TextComponent write
-				} catch (IOException ioex) {
+				} catch (final IOException ioex) {
 					JOptionPane.showMessageDialog(TemplateTestFrame.this, ioex);
 					System.exit(1);
 				}
@@ -125,8 +128,8 @@ public class TemplateTestFrame extends JFrame implements
 					.getInformationManagerConf());
 
 	public static String getStackTrace(Throwable t) {
-		StringWriter stringWritter = new StringWriter();
-		PrintWriter printWritter = new PrintWriter(stringWritter, true);
+		final StringWriter stringWritter = new StringWriter();
+		final PrintWriter printWritter = new PrintWriter(stringWritter, true);
 		t.printStackTrace(printWritter);
 		printWritter.flush();
 		stringWritter.flush();
@@ -142,12 +145,12 @@ public class TemplateTestFrame extends JFrame implements
 			public void run() {
 				try {
 
-					ServiceInterface si = LoginManager.loginCommandline();
+					final ServiceInterface si = LoginManager.loginCommandline();
 
-					TemplateTestFrame frame = new TemplateTestFrame();
+					final TemplateTestFrame frame = new TemplateTestFrame();
 					frame.setServiceInterface(si);
 					frame.setVisible(true);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -203,8 +206,8 @@ public class TemplateTestFrame extends JFrame implements
 		try {
 			contentPane = new JPanel();//
 			setContentPane(contentPane);
-			JMenuBar menuBar = new JMenuBar();
-			JMenu fileMenu = menuBar.add(new JMenu("File"));
+			final JMenuBar menuBar = new JMenuBar();
+			final JMenu fileMenu = menuBar.add(new JMenu("File"));
 			fileMenu.setMnemonic('F');
 			fileMenu.add(_openAction); // Note use of actions, not text.
 			fileMenu.add(_saveAction);
@@ -214,7 +217,7 @@ public class TemplateTestFrame extends JFrame implements
 			contentPane.setLayout(new BorderLayout(0, 0));
 			contentPane.add(getSplitPane(), BorderLayout.CENTER);
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
 
@@ -228,10 +231,10 @@ public class TemplateTestFrame extends JFrame implements
 
 		getErrorTextArea().setText("");
 		getJsdlTextArea().setText("");
-		CardLayout cl = (CardLayout) (getCardPanel().getLayout());
+		final CardLayout cl = (CardLayout) (getCardPanel().getLayout());
 		cl.show(getCardPanel(), "error");
 
-		List<String> lines = new LinkedList(Arrays.asList(getTextArea()
+		final List<String> lines = new LinkedList(Arrays.asList(getTextArea()
 				.getText().split("\n")));
 
 		try {
@@ -250,7 +253,7 @@ public class TemplateTestFrame extends JFrame implements
 			template.getJobSubmissionObject().addPropertyChangeListener(
 					TemplateTestFrame.this);
 
-			JPanel tempPanel = new JPanel();
+			final JPanel tempPanel = new JPanel();
 			tempPanel.setLayout(new BorderLayout());
 			tempPanel.add(template.getTemplatePanel(), BorderLayout.CENTER);
 			tempPanel.add(template.getValidationPanel(), BorderLayout.SOUTH);
@@ -262,9 +265,9 @@ public class TemplateTestFrame extends JFrame implements
 			getCardPanel().add(currentTemplatePanel, "currentTemplate");
 			cl.show(getCardPanel(), "currentTemplate");
 
-		} catch (TemplateException e) {
+		} catch (final TemplateException e) {
 
-			StringBuffer temp = new StringBuffer(
+			final StringBuffer temp = new StringBuffer(
 					"Error when building template: " + e.getLocalizedMessage()
 							+ "\n\n");
 			temp.append(getStackTrace(e));
@@ -296,7 +299,7 @@ public class TemplateTestFrame extends JFrame implements
 				public void actionPerformed(ActionEvent arg0) {
 					File f = currentFile;
 					if (f == null) {
-						int retval = _fileChooser
+						final int retval = _fileChooser
 								.showSaveDialog(TemplateTestFrame.this);
 						if (retval == JFileChooser.APPROVE_OPTION) {
 							f = _fileChooser.getSelectedFile();
@@ -305,9 +308,9 @@ public class TemplateTestFrame extends JFrame implements
 						}
 					}
 					try {
-						FileWriter writer = new FileWriter(f);
+						final FileWriter writer = new FileWriter(f);
 						textArea.write(writer); // Use TextComponent write
-					} catch (IOException ioex) {
+					} catch (final IOException ioex) {
 						JOptionPane.showMessageDialog(TemplateTestFrame.this,
 								ioex);
 						System.exit(1);
@@ -461,7 +464,7 @@ public class TemplateTestFrame extends JFrame implements
 
 	private JTabbedPane getTabbedPane() {
 		if (tabbedPane == null) {
-			tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+			tabbedPane = new JTabbedPane(SwingConstants.TOP);
 			tabbedPane.addTab("Jsdl", null, getScrollPane_3(), null);
 			tabbedPane.addTab("GT4 RSL", null, getScrollPane_2(), null);
 			tabbedPane.addTab("GT5 RSL", null, getScrollPane_4(), null);
@@ -491,8 +494,8 @@ public class TemplateTestFrame extends JFrame implements
 						.getJobDescriptionDocumentAsString();
 				getJsdlTextArea().setText(jsdl);
 				getJsdlTextArea().setCaretPosition(0);
-			} catch (JobPropertiesException e) {
-				StringBuffer temp = new StringBuffer(
+			} catch (final JobPropertiesException e) {
+				final StringBuffer temp = new StringBuffer(
 						"Can't calculate jsdl right now: "
 								+ e.getLocalizedMessage() + "\n\n");
 				temp.append(getStackTrace(e));
@@ -505,11 +508,11 @@ public class TemplateTestFrame extends JFrame implements
 				return;
 			}
 
-			String gt4rsl = GT4Submitter.createJobSubmissionDescription(
+			final String gt4rsl = GT4Submitter.createJobSubmissionDescription(
 					informationManager, SeveralXMLHelpers.fromString(jsdl));
 			getGt4TextArea().setText(gt4rsl);
 
-			String gt5rsl = GT5Submitter.createJobSubmissionDescription(
+			final String gt5rsl = GT5Submitter.createJobSubmissionDescription(
 					informationManager, SeveralXMLHelpers.fromString(jsdl));
 			getGt5TextArea().setText(gt5rsl);
 

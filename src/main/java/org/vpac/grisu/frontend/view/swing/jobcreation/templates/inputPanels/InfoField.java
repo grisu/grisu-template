@@ -28,7 +28,7 @@ public class InfoField extends AbstractInputPanel {
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 
-		Map<String, String> defaultProperties = new HashMap<String, String>();
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
 
 		return defaultProperties;
 	}
@@ -65,7 +65,7 @@ public class InfoField extends AbstractInputPanel {
 	protected void preparePanel(Map<String, String> panelProperties)
 			throws TemplateException {
 
-		String text = getDefaultValue();
+		final String text = getDefaultValue();
 		getTextArea().setText(text);
 
 	}

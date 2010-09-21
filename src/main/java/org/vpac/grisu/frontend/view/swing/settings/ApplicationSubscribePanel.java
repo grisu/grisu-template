@@ -92,6 +92,7 @@ public class ApplicationSubscribePanel extends JPanel {
 	private JMenuItem deleteMenuItem;
 	private JButton createFromTemplate;
 	private JLabel lblCreate;
+	private JButton button_2;
 
 	/**
 	 * Create the panel.
@@ -116,6 +117,7 @@ public class ApplicationSubscribePanel extends JPanel {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("max(19dlu;default)"),
 				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),
 				FormFactory.RELATED_GAP_ROWSPEC, }));
@@ -127,10 +129,28 @@ public class ApplicationSubscribePanel extends JPanel {
 		add(getButton_1(), "6, 5, 1, 3, default, top");
 		add(getLblAddLocalApplication(), "8, 8, right, bottom");
 		add(getLblCreate(), "2, 10, default, top");
-		add(getScrollPane_2(), "4, 10, 5, 5, fill, fill");
+		add(getScrollPane_2(), "4, 10, 5, 7, fill, fill");
 		add(getNewTemplateButton(), "2, 12, fill, top");
 		add(getCreateFromTemplate(), "2, 14, fill, top");
+		add(getButton_2(), "2, 16, fill, top");
 
+	}
+
+	private void deleteLocalTemplate() {
+		final int n = JOptionPane.showConfirmDialog(
+				SwingUtilities.getRoot(ApplicationSubscribePanel.this),
+				"Do you really want to delete those templates?",
+				"Confirm delete files", JOptionPane.YES_NO_OPTION);
+
+		if (n == JOptionPane.NO_OPTION) {
+			return;
+		}
+
+		for (final Object name : getLocalList().getSelectedValues()) {
+
+			tm.removeLocalApplication((String) name);
+			localModel.removeElement(name);
+		}
 	}
 
 	private JButton getButton() {
@@ -139,12 +159,12 @@ public class ApplicationSubscribePanel extends JPanel {
 			button.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 
-					for (Object o : getRemoteApplicationList()
+					for (final Object o : getRemoteApplicationList()
 							.getSelectedValues()) {
-						String name = (String) o;
+						final String name = (String) o;
 						try {
 							tm.addRemoteTemplate(name);
-						} catch (NoSuchTemplateException e) {
+						} catch (final NoSuchTemplateException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 							return;
@@ -165,9 +185,9 @@ public class ApplicationSubscribePanel extends JPanel {
 			button_1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 
-					for (Object o : getMyRemoveApplicationList()
+					for (final Object o : getMyRemoveApplicationList()
 							.getSelectedValues()) {
-						String name = (String) o;
+						final String name = (String) o;
 						tm.removeRemoteApplication(name);
 						myRemoteModel.removeElement(name);
 						remoteModel.addElement(name);
@@ -179,6 +199,18 @@ public class ApplicationSubscribePanel extends JPanel {
 		return button_1;
 	}
 
+	private JButton getButton_2() {
+		if (button_2 == null) {
+			button_2 = new JButton("Delete");
+			button_2.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					deleteLocalTemplate();
+				}
+			});
+		}
+		return button_2;
+	}
+
 	private JMenuItem getCopyMenuItem() {
 		if (copyMenuItem == null) {
 			copyMenuItem = new JMenuItem("Copy");
@@ -186,31 +218,31 @@ public class ApplicationSubscribePanel extends JPanel {
 
 				public void actionPerformed(ActionEvent arg0) {
 
-					Object[] temp = getLocalList().getSelectedValues();
+					final Object[] temp = getLocalList().getSelectedValues();
 					if (temp.length != 1) {
 						return;
 					}
 
-					String s = (String) JOptionPane
-							.showInputDialog(
-									SwingUtilities
-											.getRoot(ApplicationSubscribePanel.this),
-									"Please provide the name of the new template.\nA template with the same name will be overwritten.",
-									"Copy template", JOptionPane.PLAIN_MESSAGE,
-									null, null, "my_" + (String) temp[0]);
+					final String s = (String) JOptionPane.showInputDialog(
+							SwingUtilities
+									.getRoot(ApplicationSubscribePanel.this),
+							"Please provide the name of the new template.\nA template with the same name will be overwritten.",
+							"Copy template", JOptionPane.PLAIN_MESSAGE, null,
+							null, "my_" + (String) temp[0]);
 
 					if (StringUtils.isBlank(s)) {
 						return;
 					}
 
-					File oldfile = new File(Environment.getTemplateDirectory(),
-							(String) temp[0] + ".template");
-					File newFile = new File(Environment.getTemplateDirectory(),
-							s + ".template");
+					final File oldfile = new File(Environment
+							.getTemplateDirectory(), (String) temp[0]
+							+ ".template");
+					final File newFile = new File(Environment
+							.getTemplateDirectory(), s + ".template");
 
 					try {
 						FileUtils.copyFile(oldfile, newFile);
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						throw new RuntimeException(e);
 					}
 					tm.addLocalTemplate(newFile);
@@ -225,13 +257,13 @@ public class ApplicationSubscribePanel extends JPanel {
 
 	private JButton getCreateFromTemplate() {
 		if (createFromTemplate == null) {
-			createFromTemplate = new JButton("from existing");
+			createFromTemplate = new JButton("From existing");
 			createFromTemplate.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent arg0) {
 
-					String[] possibilities = tm.getRemoteTemplateNames();
-					String s = (String) JOptionPane.showInputDialog(
+					final String[] possibilities = tm.getRemoteTemplateNames();
+					final String s = (String) JOptionPane.showInputDialog(
 							SwingUtilities
 									.getRoot(ApplicationSubscribePanel.this),
 							"Please select the remote template to use:",
@@ -241,25 +273,23 @@ public class ApplicationSubscribePanel extends JPanel {
 					List<String> temp = null;
 					try {
 						temp = tm.getRemoteTemplate(s);
-					} catch (NoSuchTemplateException e) {
+					} catch (final NoSuchTemplateException e) {
 						throw new RuntimeException(e);
 					}
 
-					String tempname = (String) JOptionPane
-							.showInputDialog(
-									SwingUtilities
-											.getRoot(ApplicationSubscribePanel.this),
-									"Please provide the name of the new template.\nA template with the same name will be overwritten.",
-									"Create new template",
-									JOptionPane.PLAIN_MESSAGE, null, null,
-									"my_" + s);
+					final String tempname = (String) JOptionPane.showInputDialog(
+							SwingUtilities
+									.getRoot(ApplicationSubscribePanel.this),
+							"Please provide the name of the new template.\nA template with the same name will be overwritten.",
+							"Create new template", JOptionPane.PLAIN_MESSAGE,
+							null, null, "my_" + s);
 
 					if (StringUtils.isBlank(tempname)) {
 						return;
 					}
 
-					File file = new File(Environment.getTemplateDirectory(),
-							tempname + ".template");
+					final File file = new File(Environment
+							.getTemplateDirectory(), tempname + ".template");
 
 					if (file.exists()) {
 						file.delete();
@@ -267,18 +297,18 @@ public class ApplicationSubscribePanel extends JPanel {
 
 					try {
 						FileUtils.writeLines(file, temp);
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						throw new RuntimeException(e);
 					}
 
 					try {
-						TemplateEditDialog dialog = new TemplateEditDialog(si,
-								file);
+						final TemplateEditDialog dialog = new TemplateEditDialog(
+								si, file);
 						dialog.setVisible(true);
 						if (!localModel.contains(tempname)) {
 							localModel.addElement(tempname);
 						}
-					} catch (TemplateException e1) {
+					} catch (final TemplateException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
@@ -295,20 +325,8 @@ public class ApplicationSubscribePanel extends JPanel {
 			deleteMenuItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 
-					int n = JOptionPane.showConfirmDialog(SwingUtilities
-							.getRoot(ApplicationSubscribePanel.this),
-							"Do you really want to delete those templates?",
-							"Confirm delete files", JOptionPane.YES_NO_OPTION);
+					deleteLocalTemplate();
 
-					if (n == JOptionPane.NO_OPTION) {
-						return;
-					}
-
-					for (Object name : getLocalList().getSelectedValues()) {
-
-						tm.removeLocalApplication((String) name);
-						localModel.removeElement(name);
-					}
 				}
 			});
 		}
@@ -321,16 +339,16 @@ public class ApplicationSubscribePanel extends JPanel {
 			editItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 
-					for (Object name : getLocalList().getSelectedValues()) {
+					for (final Object name : getLocalList().getSelectedValues()) {
 
-						File templateFile = new File(Environment
+						final File templateFile = new File(Environment
 								.getTemplateDirectory(), (String) name
 								+ ".template");
 						try {
-							TemplateEditDialog dialog = new TemplateEditDialog(
+							final TemplateEditDialog dialog = new TemplateEditDialog(
 									si, templateFile);
 							dialog.setVisible(true);
-						} catch (TemplateException e1) {
+						} catch (final TemplateException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
@@ -387,24 +405,23 @@ public class ApplicationSubscribePanel extends JPanel {
 
 	private JButton getNewTemplateButton() {
 		if (remoteToLocalButton == null) {
-			remoteToLocalButton = new JButton("new");
+			remoteToLocalButton = new JButton("New");
 			remoteToLocalButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 
-					String s = (String) JOptionPane
-							.showInputDialog(
-									SwingUtilities
-											.getRoot(ApplicationSubscribePanel.this),
-									"Please provide the name of the new template.\nA template with the same name will be overwritten.",
-									"Create new template",
-									JOptionPane.PLAIN_MESSAGE, null, null, "");
+					final String s = (String) JOptionPane.showInputDialog(
+							SwingUtilities
+									.getRoot(ApplicationSubscribePanel.this),
+							"Please provide the name of the new template.\nA template with the same name will be overwritten.",
+							"Create new template", JOptionPane.PLAIN_MESSAGE,
+							null, null, "");
 
 					if (StringUtils.isBlank(s)) {
 						return;
 					}
 
-					File file = new File(Environment.getTemplateDirectory(), s
-							+ ".template");
+					final File file = new File(Environment
+							.getTemplateDirectory(), s + ".template");
 
 					if (file.exists()) {
 						file.delete();
@@ -412,19 +429,19 @@ public class ApplicationSubscribePanel extends JPanel {
 
 					try {
 						file.createNewFile();
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						throw new RuntimeException(e);
 					}
 
 					try {
-						TemplateEditDialog dialog = new TemplateEditDialog(si,
-								file);
+						final TemplateEditDialog dialog = new TemplateEditDialog(
+								si, file);
 						dialog.setVisible(true);
 
 						if (!localModel.contains(s)) {
 							localModel.addElement(s);
 						}
-					} catch (TemplateException e1) {
+					} catch (final TemplateException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
@@ -460,31 +477,31 @@ public class ApplicationSubscribePanel extends JPanel {
 
 				public void actionPerformed(ActionEvent arg0) {
 
-					Object[] temp = getLocalList().getSelectedValues();
+					final Object[] temp = getLocalList().getSelectedValues();
 					if (temp.length != 1) {
 						return;
 					}
 
-					String s = (String) JOptionPane
-							.showInputDialog(
-									SwingUtilities
-											.getRoot(ApplicationSubscribePanel.this),
-									"Please provide the new name of the template.\nA template with the same name will be overwritten.",
-									"Rename template",
-									JOptionPane.PLAIN_MESSAGE, null, null, "");
+					final String s = (String) JOptionPane.showInputDialog(
+							SwingUtilities
+									.getRoot(ApplicationSubscribePanel.this),
+							"Please provide the new name of the template.\nA template with the same name will be overwritten.",
+							"Rename template", JOptionPane.PLAIN_MESSAGE, null,
+							null, "");
 
 					if (StringUtils.isBlank(s)) {
 						return;
 					}
 
-					File oldfile = new File(Environment.getTemplateDirectory(),
-							(String) temp[0] + ".template");
-					File newFile = new File(Environment.getTemplateDirectory(),
-							s + ".template");
+					final File oldfile = new File(Environment
+							.getTemplateDirectory(), (String) temp[0]
+							+ ".template");
+					final File newFile = new File(Environment
+							.getTemplateDirectory(), s + ".template");
 
 					try {
 						FileUtils.moveFile(oldfile, newFile);
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						throw new RuntimeException(e);
 					}
 					tm.removeLocalApplication((String) temp[0]);
@@ -534,11 +551,11 @@ public class ApplicationSubscribePanel extends JPanel {
 		myRemoteModel.clear();
 
 		// my remote list
-		for (String name : ClientPropertiesManager.getServerTemplates()) {
+		for (final String name : ClientPropertiesManager.getServerTemplates()) {
 
 			try {
-				List<String> rt = tm.getRemoteTemplate(name);
-			} catch (NoSuchTemplateException e) {
+				final List<String> rt = tm.getRemoteTemplate(name);
+			} catch (final NoSuchTemplateException e) {
 				myLogger.info("Could not find template " + name
 						+ " on this backend. Ignoring it...");
 				continue;
@@ -547,13 +564,13 @@ public class ApplicationSubscribePanel extends JPanel {
 		}
 
 		// remote list
-		for (String name : tm.getRemoteTemplateNames()) {
+		for (final String name : tm.getRemoteTemplateNames()) {
 			if (!myRemoteModel.contains(name)) {
 				remoteModel.addElement(name);
 			}
 		}
 		// local list
-		for (String name : tm.getLocalTemplates().keySet()) {
+		for (final String name : tm.getLocalTemplates().keySet()) {
 			localModel.addElement(name);
 		}
 

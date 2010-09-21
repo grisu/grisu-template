@@ -33,33 +33,26 @@ public class VoChanger extends AbstractInputPanel {
 				FormFactory.RELATED_GAP_ROWSPEC, }));
 	}
 
+	@Override
+	protected Map<String, String> getDefaultPanelProperties() {
+
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
+
+		return defaultProperties;
+
+	}
+
 	public DefaultFqanChangePanel getFqanChangePanel() {
 
 		if (fqanChangePanel == null) {
 			fqanChangePanel = new DefaultFqanChangePanel();
 			try {
 				fqanChangePanel.setServiceInterface(getServiceInterface());
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 		return fqanChangePanel;
-	}
-
-	@Override
-	protected Map<String, String> getDefaultPanelProperties() {
-
-		Map<String, String> defaultProperties = new HashMap<String, String>();
-
-		return defaultProperties;
-
-	}
-
-	@Override
-	public void setServiceInterface(ServiceInterface si) {
-		super.setServiceInterface(si);
-		add(getFqanChangePanel(), "2, 2");
-
 	}
 
 	@Override
@@ -80,6 +73,13 @@ public class VoChanger extends AbstractInputPanel {
 
 	@Override
 	void setInitialValue() throws TemplateException {
+
+	}
+
+	@Override
+	public void setServiceInterface(ServiceInterface si) {
+		super.setServiceInterface(si);
+		add(getFqanChangePanel(), "2, 2");
 
 	}
 

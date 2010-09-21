@@ -69,9 +69,61 @@ public class QueueSelector extends AbstractInputPanel implements
 
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
-		Map<String, String> defaultProperties = new HashMap<String, String>();
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
 
 		return defaultProperties;
+	}
+
+	private HidingQueueInfoPanel getHidingQueueInfoPanel() {
+		if (hidingQueueInfoPanel == null) {
+			hidingQueueInfoPanel = new HidingQueueInfoPanel();
+		}
+		return hidingQueueInfoPanel;
+	}
+
+	private JLabel getLblQueue() {
+		if (lblQueue == null) {
+			lblQueue = new JLabel("Submit to:");
+		}
+		return lblQueue;
+	}
+
+	private JComboBox getQueueComboBox() {
+		if (queueComboBox == null) {
+			queueComboBox = new JComboBox(queueModel);
+			queueComboBox
+					.setPrototypeDisplayValue("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+			queueComboBox.addItemListener(new ItemListener() {
+				public void itemStateChanged(ItemEvent e) {
+
+					GridResource gr;
+					try {
+						gr = (GridResource) (queueModel.getSelectedItem());
+						if (gr == null) {
+							return;
+						}
+					} catch (final Exception ex) {
+						return;
+					}
+					final String subLoc = SubmissionLocationHelpers
+							.createSubmissionLocationString(gr);
+
+					System.out.println(subLoc);
+					if (subLoc.equals(lastSubLoc)) {
+						return;
+					}
+					lastSubLoc = subLoc;
+
+					try {
+						System.out.println("Setting: " + subLoc);
+						setValue("submissionLocation", subLoc);
+					} catch (final TemplateException e1) {
+						e1.printStackTrace();
+					}
+				}
+			});
+		}
+		return queueComboBox;
 	}
 
 	@Override
@@ -82,15 +134,15 @@ public class QueueSelector extends AbstractInputPanel implements
 	@Override
 	protected void jobPropertyChanged(PropertyChangeEvent e) {
 
-		String[] possibleBeans = new String[] { Constants.COMMANDLINE_KEY,
-				Constants.APPLICATIONNAME_KEY,
+		final String[] possibleBeans = new String[] {
+				Constants.COMMANDLINE_KEY, Constants.APPLICATIONNAME_KEY,
 				Constants.APPLICATIONVERSION_KEY, Constants.FORCE_MPI_KEY,
 				Constants.FORCE_SINGLE_KEY, Constants.HOSTCOUNT_KEY,
 				Constants.MEMORY_IN_B_KEY, Constants.NO_CPUS_KEY,
 				Constants.WALLTIME_IN_MINUTES_KEY };
 
 		boolean reloadQueues = false;
-		for (String bean : possibleBeans) {
+		for (final String bean : possibleBeans) {
 			if (bean.equals(e.getPropertyName())) {
 				reloadQueues = true;
 				break;
@@ -102,7 +154,7 @@ public class QueueSelector extends AbstractInputPanel implements
 		}
 
 		if (Constants.COMMANDLINE_KEY.equals(e.getPropertyName())) {
-			String temp = getJobSubmissionObject().getApplication();
+			final String temp = getJobSubmissionObject().getApplication();
 			if (temp == null) {
 				if (lastApplication == null) {
 					lastApplication = temp;
@@ -118,16 +170,22 @@ public class QueueSelector extends AbstractInputPanel implements
 		loadQueues();
 	}
 
-	@Override
-	protected void preparePanel(Map<String, String> panelProperties)
-			throws TemplateException {
+	private void loadQueues() {
 
-	}
+		if (loadThread != null && loadThread.isAlive()) {
+			// I know, I know. But I think it's ok in this case.
+			loadThread.interrupt();
+		}
 
-	@Override
-	void setInitialValue() throws TemplateException {
+		loadThread = new Thread() {
+			@Override
+			public void run() {
+				loadQueuesIntoComboBox();
+			}
 
-		loadQueues();
+		};
+
+		loadThread.start();
 
 	}
 
@@ -136,11 +194,11 @@ public class QueueSelector extends AbstractInputPanel implements
 
 		try {
 			oldSubLoc = (GridResource) queueModel.getSelectedItem();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// doesn't matter
 		}
 		setLoading(true);
-		JobSubmissionObjectImpl job = getJobSubmissionObject();
+		final JobSubmissionObjectImpl job = getJobSubmissionObject();
 		if (job == null) {
 			return;
 		}
@@ -148,7 +206,7 @@ public class QueueSelector extends AbstractInputPanel implements
 		if (StringUtils.isBlank(applicationName)) {
 			applicationName = Constants.GENERIC_APPLICATION_NAME;
 		}
-		ApplicationInformation ai = GrisuRegistryManager.getDefault(
+		final ApplicationInformation ai = GrisuRegistryManager.getDefault(
 				getServiceInterface()).getApplicationInformation(
 				applicationName);
 
@@ -199,31 +257,22 @@ public class QueueSelector extends AbstractInputPanel implements
 		}
 	}
 
-	private void loadQueues() {
+	public void onEvent(FqanEvent arg0) {
 
-		if (loadThread != null && loadThread.isAlive()) {
-			// I know, I know. But I think it's ok in this case.
-			loadThread.interrupt();
-		}
-
-		loadThread = new Thread() {
-			@Override
-			public void run() {
-				loadQueuesIntoComboBox();
-			}
-
-		};
-
-		loadThread.start();
+		loadQueues();
 
 	}
 
 	@Override
-	protected void templateRefresh(JobSubmissionObjectImpl jobObject) {
+	protected void preparePanel(Map<String, String> panelProperties)
+			throws TemplateException {
 
-		if (useHistory()) {
-			addValueToHistory();
-		}
+	}
+
+	@Override
+	void setInitialValue() throws TemplateException {
+
+		loadQueues();
 
 	}
 
@@ -243,61 +292,12 @@ public class QueueSelector extends AbstractInputPanel implements
 		});
 	}
 
-	private JLabel getLblQueue() {
-		if (lblQueue == null) {
-			lblQueue = new JLabel("Submit to:");
+	@Override
+	protected void templateRefresh(JobSubmissionObjectImpl jobObject) {
+
+		if (useHistory()) {
+			addValueToHistory();
 		}
-		return lblQueue;
-	}
-
-	private JComboBox getQueueComboBox() {
-		if (queueComboBox == null) {
-			queueComboBox = new JComboBox(queueModel);
-			queueComboBox
-					.setPrototypeDisplayValue("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-			queueComboBox.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent e) {
-
-					GridResource gr;
-					try {
-						gr = (GridResource) (queueModel.getSelectedItem());
-						if (gr == null) {
-							return;
-						}
-					} catch (Exception ex) {
-						return;
-					}
-					String subLoc = SubmissionLocationHelpers
-							.createSubmissionLocationString(gr);
-
-					System.out.println(subLoc);
-					if (subLoc.equals(lastSubLoc)) {
-						return;
-					}
-					lastSubLoc = subLoc;
-
-					try {
-						System.out.println("Setting: " + subLoc);
-						setValue("submissionLocation", subLoc);
-					} catch (TemplateException e1) {
-						e1.printStackTrace();
-					}
-				}
-			});
-		}
-		return queueComboBox;
-	}
-
-	private HidingQueueInfoPanel getHidingQueueInfoPanel() {
-		if (hidingQueueInfoPanel == null) {
-			hidingQueueInfoPanel = new HidingQueueInfoPanel();
-		}
-		return hidingQueueInfoPanel;
-	}
-
-	public void onEvent(FqanEvent arg0) {
-
-		loadQueues();
 
 	}
 }

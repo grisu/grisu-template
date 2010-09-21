@@ -35,10 +35,10 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 			public void run() {
 				try {
 
-					GrisuApplicationWindow appWindow = new GrisuTemplateApp();
+					final GrisuApplicationWindow appWindow = new GrisuTemplateApp();
 					appWindow.setVisible(true);
 
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -68,12 +68,12 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 								+ panelClassName);
 			}
 
-			JobCreationPanel panel = (JobCreationPanel) panelClass
+			final JobCreationPanel panel = (JobCreationPanel) panelClass
 					.newInstance();
 
 			return panel;
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -101,14 +101,14 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 			return new JobCreationPanel[] {};
 		}
 
-		List<JobCreationPanel> panels = new LinkedList<JobCreationPanel>();
+		final List<JobCreationPanel> panels = new LinkedList<JobCreationPanel>();
 
-		String fixedPanels = System.getProperty("grisu.createJobPanels");
+		final String fixedPanels = System.getProperty("grisu.createJobPanels");
 		if (StringUtils.isNotBlank(fixedPanels)) {
 
-			for (String panel : fixedPanels.split(",")) {
+			for (final String panel : fixedPanels.split(",")) {
 
-				JobCreationPanel creationPanel = createFixedPanel(panel);
+				final JobCreationPanel creationPanel = createFixedPanel(panel);
 				if (creationPanel != null) {
 					panels.add(creationPanel);
 				}
@@ -118,27 +118,28 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 		}
 
 		SortedSet<String> allTemplates = null;
-		String fixedTemplates = System.getProperty("grisu.defaultApplications");
+		final String fixedTemplates = System
+				.getProperty("grisu.defaultApplications");
 		if (StringUtils.isNotBlank(fixedTemplates)) {
 			myLogger.debug("Found defaultApplications: " + fixedTemplates);
-			String[] temp = fixedTemplates.split(",");
+			final String[] temp = fixedTemplates.split(",");
 			allTemplates = new TreeSet<String>(Arrays.asList(temp));
 		} else {
 			myLogger.debug("Didn't find defaultApplications,");
 			allTemplates = tm.getAllTemplateNames();
 		}
 
-		for (String name : allTemplates) {
+		for (final String name : allTemplates) {
 			try {
-				JobCreationPanel panel = new TemplateJobCreationPanel(name,
-						tm.getTemplate(name));
+				final JobCreationPanel panel = new TemplateJobCreationPanel(
+						name, tm.getTemplate(name));
 				if (panel == null) {
 					myLogger.warn("Can't find template " + name);
 					continue;
 				}
 				panel.setServiceInterface(getServiceInterface());
 				panels.add(panel);
-			} catch (NoSuchTemplateException e) {
+			} catch (final NoSuchTemplateException e) {
 				myLogger.warn("Can't find template " + name);
 				continue;
 			}
@@ -150,7 +151,7 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 	@Override
 	public String getName() {
 
-		String name = System.getProperty("name");
+		final String name = System.getProperty("name");
 		if (StringUtils.isNotBlank(name)) {
 			return name;
 		} else {

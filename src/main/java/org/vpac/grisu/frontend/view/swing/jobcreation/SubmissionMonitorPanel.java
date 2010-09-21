@@ -50,7 +50,7 @@ public class SubmissionMonitorPanel extends JPanel implements
 				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC, }));
 
-		JScrollPane scrollPane = new JScrollPane();
+		final JScrollPane scrollPane = new JScrollPane();
 		add(scrollPane, "2, 2, fill, fill");
 
 		scrollPane.setViewportView(textArea);
@@ -59,7 +59,7 @@ public class SubmissionMonitorPanel extends JPanel implements
 
 			public void actionPerformed(ActionEvent arg0) {
 
-				String btnText = cancelButton.getText();
+				final String btnText = cancelButton.getText();
 
 				if ("Cancel".equals(btnText)) {
 
@@ -67,7 +67,7 @@ public class SubmissionMonitorPanel extends JPanel implements
 
 						try {
 							submissionThread.interrupt();
-						} catch (Exception e) {
+						} catch (final Exception e) {
 							e.printStackTrace();
 						}
 					}
@@ -78,7 +78,7 @@ public class SubmissionMonitorPanel extends JPanel implements
 
 						try {
 							templateWrapperPanel.resetTemplate();
-						} catch (TemplateException e) {
+						} catch (final TemplateException e) {
 							e.printStackTrace();
 						}
 
@@ -97,8 +97,8 @@ public class SubmissionMonitorPanel extends JPanel implements
 		if (job == null) {
 			textArea.setText("No job associated yet.");
 		}
-		StringBuffer temp = new StringBuffer();
-		for (String line : job.getSubmissionLog()) {
+		final StringBuffer temp = new StringBuffer();
+		for (final String line : job.getSubmissionLog()) {
 			temp.append(line + "\n");
 		}
 		textArea.setText(temp.toString());
@@ -150,20 +150,20 @@ public class SubmissionMonitorPanel extends JPanel implements
 					// job.createJob();
 					job.submitJob();
 
-				} catch (JobPropertiesException e) {
-					StringBuffer temp = new StringBuffer(
+				} catch (final JobPropertiesException e) {
+					final StringBuffer temp = new StringBuffer(
 							"Job submission failed: " + e.getLocalizedMessage());
 					textArea.append("\n" + temp.toString());
 
 					e.printStackTrace();
-				} catch (JobSubmissionException e) {
-					StringBuffer temp = new StringBuffer(
+				} catch (final JobSubmissionException e) {
+					final StringBuffer temp = new StringBuffer(
 							"Job submission failed: " + e.getLocalizedMessage());
 					textArea.append("\n" + temp.toString());
 
 					e.printStackTrace();
-				} catch (InterruptedException e) {
-					StringBuffer temp = new StringBuffer(
+				} catch (final InterruptedException e) {
+					final StringBuffer temp = new StringBuffer(
 							"Job submission failed: " + e.getLocalizedMessage());
 					textArea.append("\n" + temp.toString());
 

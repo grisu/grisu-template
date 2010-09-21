@@ -30,16 +30,16 @@ public class FileExistsValidator implements Validator {
 			return true;
 		}
 
-		String file = (String) arg2;
+		final String file = (String) arg2;
 
 		try {
 			if (this.fm.fileExists(file)) {
 				return true;
 			}
-		} catch (RemoteFileSystemException e) {
+		} catch (final RemoteFileSystemException e) {
 			// doesn't matter, does it?
 		}
-		arg0.add("File " + this.fm.getFilename(file) + " doesn't exist.");
+		arg0.add("File " + FileManager.getFilename(file) + " doesn't exist.");
 		return false;
 	}
 

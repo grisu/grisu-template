@@ -32,7 +32,7 @@ import org.vpac.grisu.frontend.view.swing.jobcreation.templates.filters.Filter;
 import org.vpac.grisu.frontend.view.swing.jobcreation.templates.inputPanels.AbstractInputPanel;
 
 public class TemplateHelpers {
-	
+
 	public static final String COMMANDLINE_KEY = "commandline";
 	public static final String USE_SCROLLBARS_KEY = "useScrollbars";
 
@@ -49,12 +49,12 @@ public class TemplateHelpers {
 
 		line = line.trim();
 
-		int index = line.indexOf("=");
+		final int index = line.indexOf("=");
 		if (index < 0) {
 			throw new TemplateException("Can't find = char in line: " + line);
 		}
 
-		String key = line.substring(0, index - 1).trim();
+		final String key = line.substring(0, index - 1).trim();
 		String value = line.substring(index + 1).trim();
 
 		if (StringUtils.isBlank(key)) {
@@ -70,10 +70,10 @@ public class TemplateHelpers {
 		if ("type".equals(key)) {
 			config.setType(value);
 		} else if ("filter".equals(key)) {
-			Filter filter = createFilter(value);
+			final Filter filter = createFilter(value);
 			config.addFilter(filter);
 		} else if ("validator".equals(key)) {
-			Validator<String> val = createValidator(value);
+			final Validator<String> val = createValidator(value);
 			config.addValidator(val);
 		} else {
 			config.addConfig(key, value);
@@ -86,11 +86,11 @@ public class TemplateHelpers {
 
 		try {
 
-			String[] configParts = configString.split(":");
+			final String[] configParts = configString.split(":");
 
-			Map<String, String> filterConfig = createFilterConfig(configString);
+			final Map<String, String> filterConfig = createFilterConfig(configString);
 
-			Class filterClass = Class
+			final Class filterClass = Class
 					.forName("org.vpac.grisu.frontend.view.swing.jobcreation.templates.filters."
 							+ filterConfig.get("type"));
 			filterConfig.remove("type");
@@ -99,7 +99,7 @@ public class TemplateHelpers {
 			if (filterConfig.size() == 0) {
 				filter = (Filter) filterClass.newInstance();
 			} else {
-				Constructor<Filter> filterConstructor = filterClass
+				final Constructor<Filter> filterConstructor = filterClass
 						.getConstructor(Map.class);
 				filter = filterConstructor.newInstance(filterConfig);
 
@@ -107,7 +107,7 @@ public class TemplateHelpers {
 
 			return filter;
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new TemplateException(
 					"Can't create filter for config string: " + configString, e);
 		}
@@ -119,24 +119,24 @@ public class TemplateHelpers {
 
 		configString = configString.trim();
 
-		Map<String, String> config = new HashMap<String, String>();
+		final Map<String, String> config = new HashMap<String, String>();
 
-		int startIndex = configString.indexOf("[");
+		final int startIndex = configString.indexOf("[");
 		if (startIndex > 0) {
 			// means configuration
-			int endIndex = configString.indexOf("]");
-			String[] initValues = configString.substring(startIndex + 1,
+			final int endIndex = configString.indexOf("]");
+			final String[] initValues = configString.substring(startIndex + 1,
 					endIndex).split(":");
 			for (String value : initValues) {
 				value = value.trim();
-				int index = value.indexOf("=");
+				final int index = value.indexOf("=");
 				if (index <= 0) {
 					throw new TemplateException(
 							"Can't create filter config because. Unable to find = character in string "
 									+ value);
 				}
-				String key = value.substring(0, index).trim();
-				String value2 = value.substring(index + 1).trim();
+				final String key = value.substring(0, index).trim();
+				final String value2 = value.substring(index + 1).trim();
 				config.put(key, value2);
 			}
 		}
@@ -159,21 +159,21 @@ public class TemplateHelpers {
 			throw new TemplateException("No config object. Can't create panel.");
 		}
 
-		String type = config.getType();
+		final String type = config.getType();
 
 		try {
-			Class inputPanelClass = Class
+			final Class inputPanelClass = Class
 					.forName("org.vpac.grisu.frontend.view.swing.jobcreation.templates.inputPanels."
 							+ type);
-			Constructor<AbstractInputPanel> constructor = inputPanelClass
+			final Constructor<AbstractInputPanel> constructor = inputPanelClass
 					.getConstructor(String.class, PanelConfig.class);
 
-			AbstractInputPanel panel = constructor.newInstance(templateName,
-					config);
+			final AbstractInputPanel panel = constructor.newInstance(
+					templateName, config);
 
 			return panel;
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new TemplateException("Can't create input panel "
 					+ config.getProperties().get(AbstractInputPanel.NAME)
 					+ " of type " + config.getType(), e);
@@ -181,23 +181,25 @@ public class TemplateHelpers {
 
 	}
 
-	public static JPanel createTab(LinkedList<JPanel> rows, boolean useScrollbars) {
+	public static JPanel createTab(LinkedList<JPanel> rows,
+			boolean useScrollbars) {
 
-		
-		JPanel panel = new JPanel();		
+		final JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		for (JPanel row : rows) {
+		for (final JPanel row : rows) {
 			panel.add(row);
 		}
 
 		if (useScrollbars) {
-		JScrollPane scrollPane = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		JPanel rootPanel = new JPanel();
-		rootPanel.setLayout(new BorderLayout());
-		rootPanel.add(scrollPane, BorderLayout.CENTER);
-		
-		return rootPanel;
+			final JScrollPane scrollPane = new JScrollPane(panel,
+					ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+					ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			final JPanel rootPanel = new JPanel();
+			rootPanel.setLayout(new BorderLayout());
+			rootPanel.add(scrollPane, BorderLayout.CENTER);
+
+			return rootPanel;
 		} else {
 			return panel;
 		}
@@ -209,24 +211,24 @@ public class TemplateHelpers {
 
 		configString = configString.trim();
 
-		Map<String, String> config = new HashMap<String, String>();
+		final Map<String, String> config = new HashMap<String, String>();
 
-		int startIndex = configString.indexOf("[");
+		final int startIndex = configString.indexOf("[");
 		if (startIndex > 0) {
 			// means configuration
-			int endIndex = configString.indexOf("]");
-			String[] initValues = configString.substring(startIndex + 1,
+			final int endIndex = configString.indexOf("]");
+			final String[] initValues = configString.substring(startIndex + 1,
 					endIndex).split(":");
 			for (String value : initValues) {
 				value = value.trim();
-				int index = value.indexOf("=");
+				final int index = value.indexOf("=");
 				if (index <= 0) {
 					throw new TemplateException(
 							"Can't create filter config because. Unable to find = character in string "
 									+ value);
 				}
-				String key = value.substring(0, index).trim();
-				String value2 = value.substring(index + 1).trim();
+				final String key = value.substring(0, index).trim();
+				final String value2 = value.substring(index + 1).trim();
 				config.put(key, value2);
 			}
 		}
@@ -238,24 +240,25 @@ public class TemplateHelpers {
 			valName = configString.substring(0, startIndex).trim();
 		}
 
-		Exception exception;
+		final Exception exception;
 		// try {
 		Class validatorClass = null;
 		try {
 			validatorClass = Class
 					.forName("org.vpac.grisu.frontend.view.swing.jobcreation.templates.validators."
 							+ valName);
-		} catch (ClassNotFoundException e1) {
+		} catch (final ClassNotFoundException e1) {
 			// that's ok. let's try the inbuild ones
 			myLogger.debug("Can't find validator with name: " + valName
 					+ "in classpath. Trying inbuild ones...");
-			Class valClass = Validators.class;
+			final Class valClass = Validators.class;
 
 			try {
-				Field field = valClass.getField(valName);
-				Validator<String> value = (Validator<String>) field.get(null);
+				final Field field = valClass.getField(valName);
+				final Validator<String> value = (Validator<String>) field
+						.get(null);
 				return value;
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				throw new TemplateException("Can't find validator with name "
 						+ valName + ".", e);
 			}
@@ -265,16 +268,16 @@ public class TemplateHelpers {
 		try {
 
 			if (config == null || config.size() == 0) {
-				Validator<String> val = (Validator<String>) validatorClass
+				final Validator<String> val = (Validator<String>) validatorClass
 						.newInstance();
 				return val;
 			}
 
 			constructor = validatorClass.getConstructor(Map.class);
-			Validator<String> val = constructor.newInstance(config);
+			final Validator<String> val = constructor.newInstance(config);
 
 			return val;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new TemplateException("Can't create validator with name "
 					+ valName + ": " + e.getLocalizedMessage());
 		}
@@ -284,7 +287,7 @@ public class TemplateHelpers {
 	public static Map<String, String> getAllStaticValues(List<String> lines)
 			throws TemplateException {
 
-		Map<String, String> result = new HashMap<String, String>();
+		final Map<String, String> result = new HashMap<String, String>();
 		for (String line : lines) {
 
 			line = line.trim();
@@ -296,7 +299,7 @@ public class TemplateHelpers {
 				break;
 			}
 
-			int index = line.indexOf("=");
+			final int index = line.indexOf("=");
 			if (index <= 0) {
 				throw new TemplateException(
 						"Config needs to have proper specification of the property "
@@ -304,8 +307,8 @@ public class TemplateHelpers {
 								+ " (in the form of for example \"commandline = echo hello world\"");
 			}
 
-			String propertyKey = line.substring(0, index).trim();
-			String propertyValue = line.substring(index + 1).trim();
+			final String propertyKey = line.substring(0, index).trim();
+			final String propertyValue = line.substring(index + 1).trim();
 			if (StringUtils.isBlank(propertyKey)
 					|| StringUtils.isBlank(propertyValue)) {
 				throw new TemplateException(
@@ -364,24 +367,23 @@ public class TemplateHelpers {
 
 		line = line.trim();
 
-		int start = line.indexOf("[");
+		final int start = line.indexOf("[");
 		if (start < 0) {
 			myLogger.debug("No panel name config.");
 			return null;
 		}
 
 		if (start != 0) {
-			myLogger
-					.debug("No panel name because [ is not the first character.");
+			myLogger.debug("No panel name because [ is not the first character.");
 			return null;
 		}
 
-		int end = line.indexOf("]");
+		final int end = line.indexOf("]");
 		if (end < 0) {
 			throw new TemplateException("No closing ] bracket in line " + line);
 		}
 
-		String name = line.substring(start + 1, end);
+		final String name = line.substring(start + 1, end);
 
 		return name;
 
@@ -392,7 +394,7 @@ public class TemplateHelpers {
 
 		String propertValue = null;
 
-		for (String line : lines) {
+		for (final String line : lines) {
 			propertValue = line.trim();
 
 			if (propertValue.startsWith("=")) {
@@ -407,7 +409,7 @@ public class TemplateHelpers {
 				continue;
 			}
 
-			int index = propertValue.indexOf("=");
+			final int index = propertValue.indexOf("=");
 			if (index <= 0) {
 				throw new TemplateException(
 						"Config needs to have proper specification of the property "
@@ -439,7 +441,7 @@ public class TemplateHelpers {
 	public static void main(String[] args) throws IOException,
 			TemplateException {
 
-		List<String> lines = FileUtils.readLines(new File(
+		final List<String> lines = FileUtils.readLines(new File(
 				"/home/markus/Desktop/test.template"));
 
 		// LinkedHashMap<String, AbstractInputPanel> panels =
@@ -456,33 +458,35 @@ public class TemplateHelpers {
 			ServiceInterface si, String templateFileName, List<String> lines)
 			throws TemplateException {
 
-		Map<String, String> values = getAllStaticValues(lines);
-		String commandline = values.remove(COMMANDLINE_KEY);
+		final Map<String, String> values = getAllStaticValues(lines);
+		final String commandline = values.remove(COMMANDLINE_KEY);
 
 		if (StringUtils.isBlank(commandline)) {
 			throw new TemplateException(
 					"\"commandline\" property not specified. You need to have a line like: \'commandline = echo hello\' in your config");
 		}
-		
+
 		Boolean useScrollbars = false;
 		try {
-			
-			useScrollbars = Boolean.parseBoolean(values.remove(USE_SCROLLBARS_KEY));
-			
-		} catch (Exception e) {
+
+			useScrollbars = Boolean.parseBoolean(values
+					.remove(USE_SCROLLBARS_KEY));
+
+		} catch (final Exception e) {
 			// doesn't matter
 		}
 
-		TemplateObject template = new TemplateObject(si, commandline, values);
+		final TemplateObject template = new TemplateObject(si, commandline,
+				values);
 
-		ValidationPanel validationPanel = new ValidationPanel();
+		final ValidationPanel validationPanel = new ValidationPanel();
 
 		template.setTemplateName(templateFileName);
 
-		LinkedHashMap<String, PanelConfig> inputConfigs = parseConfig(lines);
-		LinkedHashMap<String, AbstractInputPanel> inputPanels = new LinkedHashMap<String, AbstractInputPanel>();
+		final LinkedHashMap<String, PanelConfig> inputConfigs = parseConfig(lines);
+		final LinkedHashMap<String, AbstractInputPanel> inputPanels = new LinkedHashMap<String, AbstractInputPanel>();
 
-		LinkedHashMap<String, LinkedList<JPanel>> tabs = new LinkedHashMap<String, LinkedList<JPanel>>();
+		final LinkedHashMap<String, LinkedList<JPanel>> tabs = new LinkedHashMap<String, LinkedList<JPanel>>();
 
 		LinkedList<JPanel> currentTab = null;
 		JPanel currentRow = null;
@@ -520,7 +524,8 @@ public class TemplateHelpers {
 				currentRow = new JPanel();
 				currentRow.setAlignmentX(Component.LEFT_ALIGNMENT);
 				currentRow.setAlignmentY(Component.TOP_ALIGNMENT);
-				BoxLayout layout = new BoxLayout(currentRow, BoxLayout.X_AXIS);
+				final BoxLayout layout = new BoxLayout(currentRow,
+						BoxLayout.X_AXIS);
 				currentRow.setLayout(layout);
 				if (lineType.length() > 0) {
 					currentRow
@@ -538,18 +543,18 @@ public class TemplateHelpers {
 
 			lineType = getPanelName(line);
 			if (StringUtils.isNotBlank(lineType)) {
-				PanelConfig config = inputConfigs.get(lineType);
+				final PanelConfig config = inputConfigs.get(lineType);
 
-				AbstractInputPanel iPanel = createInputPanel(templateFileName,
-						config);
+				final AbstractInputPanel iPanel = createInputPanel(
+						templateFileName, config);
 				inputPanels.put(lineType, iPanel);
-				for (Validator<String> val : config.getValidators()) {
+				for (final Validator<String> val : config.getValidators()) {
 
 					try {
-						Method method = val.getClass().getMethod(
+						final Method method = val.getClass().getMethod(
 								"setServiceInterface", ServiceInterface.class);
 						method.invoke(val, si);
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						// doesn't matter. apparently serviceinterface is not
 						// needed by this validator
 					}
@@ -582,7 +587,7 @@ public class TemplateHelpers {
 
 		}
 
-		for (AbstractInputPanel panel : inputPanels.values()) {
+		for (final AbstractInputPanel panel : inputPanels.values()) {
 			panel.setServiceInterface(si);
 			panel.initPanel(template, template.getJobSubmissionObject());
 		}
@@ -592,16 +597,18 @@ public class TemplateHelpers {
 		if (tabs.size() > 1) {
 			mainPanel = new JPanel();
 			mainPanel.setLayout(new BorderLayout());
-			JTabbedPane tabbedPanel = new JTabbedPane();
+			final JTabbedPane tabbedPanel = new JTabbedPane();
 
-			for (String tabname : tabs.keySet()) {
-				tabbedPanel.addTab(tabname, createTab(tabs.get(tabname), useScrollbars));
+			for (final String tabname : tabs.keySet()) {
+				tabbedPanel.addTab(tabname,
+						createTab(tabs.get(tabname), useScrollbars));
 			}
 
 			mainPanel.add(tabbedPanel, BorderLayout.CENTER);
 
 		} else {
-			mainPanel = createTab(tabs.values().iterator().next(), useScrollbars);
+			mainPanel = createTab(tabs.values().iterator().next(),
+					useScrollbars);
 		}
 
 		template.setTemplatePanel(mainPanel);
@@ -617,7 +624,7 @@ public class TemplateHelpers {
 	public static LinkedHashMap<String, PanelConfig> parseConfig(
 			final List<String> lines) throws TemplateException {
 
-		LinkedHashMap<String, PanelConfig> panels = new LinkedHashMap<String, PanelConfig>();
+		final LinkedHashMap<String, PanelConfig> panels = new LinkedHashMap<String, PanelConfig>();
 		String currentPanel = null;
 		PanelConfig currentConfig = null;
 
@@ -639,7 +646,7 @@ public class TemplateHelpers {
 				continue;
 			}
 
-			String panelName = getPanelName(line);
+			final String panelName = getPanelName(line);
 			if (StringUtils.isNotBlank(panelName)) {
 				// means new or first panel
 				if ((currentPanel != null) && (currentConfig != null)) {

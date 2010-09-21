@@ -25,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 import org.apache.commons.io.FilenameUtils;
 import org.vpac.grisu.backend.info.InformationManagerManager;
@@ -112,7 +113,7 @@ public class TemplateEditPanel extends JPanel implements
 				informationManager = InformationManagerManager
 						.getInformationManager(ServerPropertiesManager
 								.getInformationManagerConf());
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				return null;
 			}
 		}
@@ -120,8 +121,8 @@ public class TemplateEditPanel extends JPanel implements
 	}
 
 	public static String getStackTrace(Throwable t) {
-		StringWriter stringWritter = new StringWriter();
-		PrintWriter printWritter = new PrintWriter(stringWritter, true);
+		final StringWriter stringWritter = new StringWriter();
+		final PrintWriter printWritter = new PrintWriter(stringWritter, true);
 		t.printStackTrace(printWritter);
 		printWritter.flush();
 		stringWritter.flush();
@@ -182,15 +183,15 @@ public class TemplateEditPanel extends JPanel implements
 			setLayout(new BorderLayout(0, 0));
 			add(getSplitPane(), BorderLayout.CENTER);
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
 
 		try {
-			FileReader reader = new FileReader(currentFile);
+			final FileReader reader = new FileReader(currentFile);
 			textArea.read(reader, ""); // Use TextComponent read
 			TemplateEditPanel.this.actionPerformed(null);
-		} catch (IOException ioex) {
+		} catch (final IOException ioex) {
 			throw new TemplateException("Could not open template "
 					+ currentFile.toString());
 		}
@@ -205,10 +206,10 @@ public class TemplateEditPanel extends JPanel implements
 
 		getErrorTextArea().setText("");
 		getJsdlTextArea().setText("");
-		CardLayout cl = (CardLayout) (getCardPanel().getLayout());
+		final CardLayout cl = (CardLayout) (getCardPanel().getLayout());
 		cl.show(getCardPanel(), "error");
 
-		List<String> lines = new LinkedList(Arrays.asList(getTextArea()
+		final List<String> lines = new LinkedList(Arrays.asList(getTextArea()
 				.getText().split("\n")));
 
 		try {
@@ -227,7 +228,7 @@ public class TemplateEditPanel extends JPanel implements
 			template.getJobSubmissionObject().addPropertyChangeListener(
 					TemplateEditPanel.this);
 
-			JPanel tempPanel = new JPanel();
+			final JPanel tempPanel = new JPanel();
 			tempPanel.setLayout(new BorderLayout());
 			tempPanel.add(template.getTemplatePanel(), BorderLayout.CENTER);
 			tempPanel.add(template.getValidationPanel(), BorderLayout.SOUTH);
@@ -239,9 +240,9 @@ public class TemplateEditPanel extends JPanel implements
 			getCardPanel().add(currentTemplatePanel, "currentTemplate");
 			cl.show(getCardPanel(), "currentTemplate");
 
-		} catch (TemplateException e) {
+		} catch (final TemplateException e) {
 
-			StringBuffer temp = new StringBuffer(
+			final StringBuffer temp = new StringBuffer(
 					"Error when building template: " + e.getLocalizedMessage()
 							+ "\n\n");
 			temp.append(getStackTrace(e));
@@ -273,7 +274,7 @@ public class TemplateEditPanel extends JPanel implements
 				public void actionPerformed(ActionEvent arg0) {
 					File f = currentFile;
 					if (f == null) {
-						int retval = _fileChooser
+						final int retval = _fileChooser
 								.showSaveDialog(TemplateEditPanel.this);
 						if (retval == JFileChooser.APPROVE_OPTION) {
 							f = _fileChooser.getSelectedFile();
@@ -282,7 +283,7 @@ public class TemplateEditPanel extends JPanel implements
 						}
 					}
 					try {
-						FileWriter writer = new FileWriter(f);
+						final FileWriter writer = new FileWriter(f);
 						textArea.write(writer); // Use TextComponent write
 
 						if (si != null) {
@@ -295,7 +296,7 @@ public class TemplateEditPanel extends JPanel implements
 							optionalDialog.dispose();
 						}
 
-					} catch (Exception ioex) {
+					} catch (final Exception ioex) {
 						JOptionPane.showMessageDialog(TemplateEditPanel.this,
 								ioex);
 						// System.exit(1);
@@ -440,7 +441,7 @@ public class TemplateEditPanel extends JPanel implements
 
 	private JTabbedPane getTabbedPane() {
 		if (tabbedPane == null) {
-			tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+			tabbedPane = new JTabbedPane(SwingConstants.TOP);
 			tabbedPane.addTab("Jsdl", null, getScrollPane_3(), null);
 			tabbedPane.addTab("GT4 RSL", null, getScrollPane_2(), null);
 			tabbedPane.addTab("GT5 RSL", null, getScrollPane_4(), null);
@@ -476,8 +477,8 @@ public class TemplateEditPanel extends JPanel implements
 						.getJobDescriptionDocumentAsString();
 				getJsdlTextArea().setText(jsdl);
 				getJsdlTextArea().setCaretPosition(0);
-			} catch (JobPropertiesException e) {
-				StringBuffer temp = new StringBuffer(
+			} catch (final JobPropertiesException e) {
+				final StringBuffer temp = new StringBuffer(
 						"Can't calculate jsdl right now: "
 								+ e.getLocalizedMessage() + "\n\n");
 				temp.append(getStackTrace(e));
@@ -501,20 +502,22 @@ public class TemplateEditPanel extends JPanel implements
 			}
 
 			try {
-				String gt4rsl = GT4Submitter.createJobSubmissionDescription(
-						getInformationManager(),
-						SeveralXMLHelpers.fromString(jsdl));
+				final String gt4rsl = GT4Submitter
+						.createJobSubmissionDescription(
+								getInformationManager(),
+								SeveralXMLHelpers.fromString(jsdl));
 				getGt4TextArea().setText(gt4rsl);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 
 			try {
-				String gt5rsl = GT5Submitter.createJobSubmissionDescription(
-						getInformationManager(),
-						SeveralXMLHelpers.fromString(jsdl));
+				final String gt5rsl = GT5Submitter
+						.createJobSubmissionDescription(
+								getInformationManager(),
+								SeveralXMLHelpers.fromString(jsdl));
 				getGt5TextArea().setText(gt5rsl);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 

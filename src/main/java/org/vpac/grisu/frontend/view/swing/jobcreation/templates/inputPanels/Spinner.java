@@ -45,7 +45,7 @@ public class Spinner extends AbstractInputPanel {
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 
-		Map<String, String> defaultProperties = new HashMap<String, String>();
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
 		return defaultProperties;
 
 	}
@@ -74,10 +74,10 @@ public class Spinner extends AbstractInputPanel {
 		Set<String> modelList = null;
 		modelList = new LinkedHashSet<String>();
 
-		String prefills = panelProperties.get(PREFILLS);
+		final String prefills = panelProperties.get(PREFILLS);
 		if (StringUtils.isNotBlank(prefills)) {
 
-			for (String value : prefills.split(",")) {
+			for (final String value : prefills.split(",")) {
 				modelList.add(value);
 			}
 		} else {
@@ -98,19 +98,19 @@ public class Spinner extends AbstractInputPanel {
 			int maxI;
 			try {
 				maxI = Integer.parseInt(max);
-			} catch (NumberFormatException e) {
+			} catch (final NumberFormatException e) {
 				throw new TemplateException(e);
 			}
 			int minI;
 			try {
 				minI = Integer.parseInt(min);
-			} catch (NumberFormatException e) {
+			} catch (final NumberFormatException e) {
 				throw new TemplateException(e);
 			}
 			int stepI;
 			try {
 				stepI = Integer.parseInt(step);
-			} catch (NumberFormatException e) {
+			} catch (final NumberFormatException e) {
 				throw new TemplateException(e);
 			}
 
@@ -121,7 +121,7 @@ public class Spinner extends AbstractInputPanel {
 		}
 
 		if (useHistory()) {
-			for (String value : getHistoryValues()) {
+			for (final String value : getHistoryValues()) {
 				if (StringUtils.isNotBlank(value)) {
 					modelList.add(value);
 				}
@@ -145,7 +145,7 @@ public class Spinner extends AbstractInputPanel {
 
 	@Override
 	void setInitialValue() throws TemplateException {
-		String value = getDefaultValue();
+		final String value = getDefaultValue();
 		if (StringUtils.isNotBlank(value) && !"empty".equals(value)) {
 			getSpinner().setValue(value);
 		}

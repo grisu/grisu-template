@@ -53,9 +53,10 @@ public class Walltime extends AbstractInputPanel {
 
 				public void itemStateChanged(ItemEvent e) {
 
-					String amount = (String) (getAmountComboBox()
+					final String amount = (String) (getAmountComboBox()
 							.getSelectedItem());
-					String unit = (String) (getUnitComboBox().getSelectedItem());
+					final String unit = (String) (getUnitComboBox()
+							.getSelectedItem());
 
 					if (StringUtils.isBlank(amount)
 							|| StringUtils.isBlank(unit)) {
@@ -67,7 +68,7 @@ public class Walltime extends AbstractInputPanel {
 						walltimeInSeconds = WalltimeUtils
 								.convertHumanReadableStringIntoSeconds(new String[] {
 										amount, unit });
-					} catch (Exception e1) {
+					} catch (final Exception e1) {
 						myLogger.debug("Can't parse " + amount + ",  " + unit
 								+ ": " + e1.getLocalizedMessage());
 						return;
@@ -75,7 +76,7 @@ public class Walltime extends AbstractInputPanel {
 
 					try {
 						setValue("walltimeInSeconds", walltimeInSeconds);
-					} catch (TemplateException e1) {
+					} catch (final TemplateException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
@@ -88,7 +89,7 @@ public class Walltime extends AbstractInputPanel {
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 
-		Map<String, String> defaultProperties = new HashMap<String, String>();
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
 		defaultProperties.put(TITLE, "Walltime");
 		defaultProperties.put("defaultAmountList",
 				"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,30,45");
@@ -108,7 +109,7 @@ public class Walltime extends AbstractInputPanel {
 
 				public void itemStateChanged(ItemEvent e) {
 
-					int walltimeInSeconds = WalltimeUtils
+					final int walltimeInSeconds = WalltimeUtils
 							.convertHumanReadableStringIntoSeconds(new String[] {
 									(String) (getAmountComboBox()
 											.getSelectedItem()),
@@ -116,7 +117,7 @@ public class Walltime extends AbstractInputPanel {
 											.getSelectedItem()) });
 					try {
 						setValue("walltimeInSeconds", walltimeInSeconds);
-					} catch (TemplateException e1) {
+					} catch (final TemplateException e1) {
 						e1.printStackTrace();
 					}
 				}
@@ -127,14 +128,14 @@ public class Walltime extends AbstractInputPanel {
 
 	@Override
 	protected String getValueAsString() {
-		String amount = (String) getAmountComboBox().getSelectedItem();
-		String unit = (String) getUnitComboBox().getSelectedItem();
+		final String amount = (String) getAmountComboBox().getSelectedItem();
+		final String unit = (String) getUnitComboBox().getSelectedItem();
 		try {
-			Integer secs = WalltimeUtils
+			final Integer secs = WalltimeUtils
 					.convertHumanReadableStringIntoSeconds(new String[] {
 							amount, unit });
 			return secs.toString();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return null;
 		}
 
@@ -145,7 +146,7 @@ public class Walltime extends AbstractInputPanel {
 
 		if ("walltimeInSeconds".equals(e.getPropertyName())) {
 
-			String[] humanReadable = WalltimeUtils
+			final String[] humanReadable = WalltimeUtils
 					.convertSecondsInHumanReadableString((Integer) (e
 							.getNewValue()));
 			amountModel.setSelectedItem(humanReadable[0]);
@@ -157,21 +158,23 @@ public class Walltime extends AbstractInputPanel {
 	@Override
 	protected void preparePanel(Map<String, String> panelProperties) {
 
-		String[] amounts = panelProperties.get("defaultAmountList").split(",");
+		final String[] amounts = panelProperties.get("defaultAmountList")
+				.split(",");
 		amountModel.removeAllElements();
-		for (String amount : amounts) {
+		for (final String amount : amounts) {
 			try {
-				Integer a = Integer.parseInt(amount);
+				final Integer a = Integer.parseInt(amount);
 				amountModel.addElement(amount);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				myLogger.error("Can't add amount " + amount
 						+ " to WalltimePanel: " + e.getLocalizedMessage());
 			}
 		}
 
 		unitModel.removeAllElements();
-		String[] units = panelProperties.get("defaultUnitList").split(",");
-		for (String unit : units) {
+		final String[] units = panelProperties.get("defaultUnitList")
+				.split(",");
+		for (final String unit : units) {
 			if ("minutes,hours,days,weeks".indexOf(unit) >= 0) {
 				unitModel.addElement(unit);
 			} else {
@@ -188,17 +191,17 @@ public class Walltime extends AbstractInputPanel {
 		String defaultAmount = null;
 		String defaultUnit = null;
 		if (useHistory()) {
-			String defValue = getDefaultValue();
+			final String defValue = getDefaultValue();
 
 			try {
-				String[] humanreadable = WalltimeUtils
+				final String[] humanreadable = WalltimeUtils
 						.convertSecondsInHumanReadableString(Integer
 								.parseInt(defValue));
 				if (humanreadable != null && humanreadable.length == 2) {
 					defaultAmount = humanreadable[0];
 					defaultUnit = humanreadable[1];
 				}
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				myLogger.debug("Can't parse history value for walltime: "
 						+ e.getLocalizedMessage());
 			}
@@ -210,9 +213,9 @@ public class Walltime extends AbstractInputPanel {
 		}
 		if (StringUtils.isNotBlank(defaultAmount)) {
 			try {
-				Integer a = Integer.parseInt(defaultAmount);
+				final Integer a = Integer.parseInt(defaultAmount);
 				amountModel.setSelectedItem(defaultAmount);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				myLogger.error("Can't set amount " + defaultAmount
 						+ " as default to WalltimePanel: "
 						+ e.getLocalizedMessage());

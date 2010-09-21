@@ -44,7 +44,7 @@ public class SimpleCommandline extends AbstractInputPanel {
 		String commandline;
 		try {
 			commandline = ((String) getComboBox().getEditor().getItem()).trim();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			myLogger.debug(e.getLocalizedMessage());
 			return;
 		}
@@ -53,7 +53,7 @@ public class SimpleCommandline extends AbstractInputPanel {
 		if (commandline == null) {
 			exe = "";
 		} else {
-			int firstWhitespace = commandline.indexOf(" ");
+			final int firstWhitespace = commandline.indexOf(" ");
 			if (firstWhitespace == -1) {
 				exe = commandline;
 			} else {
@@ -92,7 +92,7 @@ public class SimpleCommandline extends AbstractInputPanel {
 					if (ItemEvent.SELECTED == e.getStateChange()) {
 						try {
 							commandlineChanged();
-						} catch (TemplateException e1) {
+						} catch (final TemplateException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
@@ -106,7 +106,7 @@ public class SimpleCommandline extends AbstractInputPanel {
 						public void keyReleased(KeyEvent e) {
 							try {
 								commandlineChanged();
-							} catch (TemplateException e1) {
+							} catch (final TemplateException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
@@ -119,7 +119,7 @@ public class SimpleCommandline extends AbstractInputPanel {
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 
-		Map<String, String> defaultProperties = new HashMap<String, String>();
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
 		defaultProperties.put(TITLE, "Commandline");
 		defaultProperties.put(HISTORY_ITEMS, "8");
 		return defaultProperties;
@@ -127,7 +127,7 @@ public class SimpleCommandline extends AbstractInputPanel {
 
 	@Override
 	protected String getValueAsString() {
-		String value = ((String) (getComboBox().getEditor().getItem()));
+		final String value = ((String) (getComboBox().getEditor().getItem()));
 		return value;
 	}
 
@@ -141,7 +141,7 @@ public class SimpleCommandline extends AbstractInputPanel {
 
 		getComboBox().removeAllItems();
 
-		for (String value : getHistoryValues()) {
+		for (final String value : getHistoryValues()) {
 			getComboBox().addItem(value);
 		}
 

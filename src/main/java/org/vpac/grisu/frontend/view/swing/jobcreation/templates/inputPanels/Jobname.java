@@ -42,14 +42,14 @@ public class Jobname extends AbstractInputPanel {
 				FormFactory.RELATED_GAP_ROWSPEC, }));
 		add(getJobnameTextField(), "2, 2, fill, fill");
 
-		Validator<String> val = new JobnameValidator();
+		final Validator<String> val = new JobnameValidator();
 		config.addValidator(val);
 	}
 
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 
-		Map<String, String> defaultProperties = new HashMap<String, String>();
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
 
 		defaultProperties.put(TITLE, "Jobname");
 		// defaultProperties.put(DEFAULT_VALUE, "gridJob");
@@ -68,13 +68,13 @@ public class Jobname extends AbstractInputPanel {
 				public void keyReleased(KeyEvent e) {
 					try {
 						String input = jobnameTextField.getText();
-						int index = jobnameTextField.getCaretPosition();
+						final int index = jobnameTextField.getCaretPosition();
 						input = input.replaceAll(REPLACEMENT_CHARACTERS, "_");
 						jobnameTextField.setText(input.trim());
 						jobnameTextField.setCaretPosition(index);
 
 						setValue("jobname", jobnameTextField.getText());
-					} catch (TemplateException e1) {
+					} catch (final TemplateException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
@@ -99,7 +99,7 @@ public class Jobname extends AbstractInputPanel {
 	protected void jobPropertyChanged(PropertyChangeEvent e) {
 
 		if ("jobname".equals(e.getPropertyName())) {
-			String newJobname = (String) e.getNewValue();
+			final String newJobname = (String) e.getNewValue();
 			getJobnameTextField().setText(newJobname);
 		}
 
@@ -114,9 +114,9 @@ public class Jobname extends AbstractInputPanel {
 	@Override
 	void setInitialValue() throws TemplateException {
 
-		String defaultValue = getPanelProperty(DEFAULT_VALUE);
+		final String defaultValue = getPanelProperty(DEFAULT_VALUE);
 		if (StringUtils.isNotBlank(defaultValue)) {
-			String sugJobname = getUserEnvironmentManager()
+			final String sugJobname = getUserEnvironmentManager()
 					.calculateUniqueJobname(defaultValue);
 			setValue("jobname", sugJobname);
 		}

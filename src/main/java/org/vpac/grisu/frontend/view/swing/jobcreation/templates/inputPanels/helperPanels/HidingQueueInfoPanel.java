@@ -1,13 +1,15 @@
 package org.vpac.grisu.frontend.view.swing.jobcreation.templates.inputPanels.helperPanels;
 
-import javax.swing.JPanel;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.factories.FormFactory;
-import javax.swing.JCheckBox;
-import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+
+import com.jgoodies.forms.factories.FormFactory;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
 
 public class HidingQueueInfoPanel extends JPanel {
 	private JCheckBox chckbxShowQueueInformation;
@@ -20,13 +22,11 @@ public class HidingQueueInfoPanel extends JPanel {
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),
-				FormFactory.RELATED_GAP_COLSPEC,},
-			new RowSpec[] {
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),
-				FormFactory.RELATED_GAP_ROWSPEC,}));
+				FormFactory.RELATED_GAP_ROWSPEC, }));
 		add(getChckbxShowQueueInformation(), "2, 2");
 		add(getQueueInfoPanel(), "2, 4, fill, fill");
 
@@ -37,18 +37,19 @@ public class HidingQueueInfoPanel extends JPanel {
 			chckbxShowQueueInformation = new JCheckBox("Show queue information");
 			chckbxShowQueueInformation.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent e) {
-					
-					if ( chckbxShowQueueInformation.isSelected() ) {
+
+					if (chckbxShowQueueInformation.isSelected()) {
 						getQueueInfoPanel().setVisible(true);
 					} else {
 						getQueueInfoPanel().setVisible(false);
 					}
-					
+
 				}
 			});
 		}
 		return chckbxShowQueueInformation;
 	}
+
 	private QueueInfoPanel getQueueInfoPanel() {
 		if (queueInfoPanel == null) {
 			queueInfoPanel = new QueueInfoPanel();
@@ -61,6 +62,6 @@ public class HidingQueueInfoPanel extends JPanel {
 
 		getChckbxShowQueueInformation().setEnabled(!loading);
 		getQueueInfoPanel().setLoading(loading);
-		
+
 	}
 }

@@ -45,7 +45,7 @@ public class CheckBox extends AbstractInputPanel {
 
 					try {
 						setValue(bean, getValueAsString());
-					} catch (TemplateException e) {
+					} catch (final TemplateException e) {
 						e.printStackTrace();
 					}
 
@@ -58,7 +58,7 @@ public class CheckBox extends AbstractInputPanel {
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 
-		Map<String, String> defaultProperties = new HashMap<String, String>();
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
 		defaultProperties.put(LABEL, null);
 		defaultProperties.put(DEFAULT_VALUE, "false");
 		defaultProperties.put(CHECKED_VALUE, "true");
@@ -91,7 +91,7 @@ public class CheckBox extends AbstractInputPanel {
 	@Override
 	void setInitialValue() throws TemplateException {
 
-		boolean checked = false;
+		final boolean checked = false;
 		try {
 			if (StringUtils.isNotBlank(getDefaultValue())) {
 				if (getDefaultValue().equals(getPanelProperty(CHECKED_VALUE))) {
@@ -101,7 +101,7 @@ public class CheckBox extends AbstractInputPanel {
 					getCheckBox().setSelected(false);
 				}
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new TemplateException("Can't parse initial checkbox value: "
 					+ e.getLocalizedMessage());
 		}

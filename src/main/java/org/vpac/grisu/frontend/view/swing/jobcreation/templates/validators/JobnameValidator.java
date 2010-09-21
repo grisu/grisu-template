@@ -23,8 +23,9 @@ public class JobnameValidator implements Validator {
 		}
 
 		// TODO: this is not very fast, need to cache it somehow
-		SortedSet<String> allJobnames = GrisuRegistryManager.getDefault(si)
-				.getUserEnvironmentManager().getCurrentJobnames(false);
+		final SortedSet<String> allJobnames = GrisuRegistryManager
+				.getDefault(si).getUserEnvironmentManager()
+				.getCurrentJobnames(false);
 
 		if (allJobnames.contains(arg2)) {
 			arg0.add("Jobname " + arg2 + " already exists.");

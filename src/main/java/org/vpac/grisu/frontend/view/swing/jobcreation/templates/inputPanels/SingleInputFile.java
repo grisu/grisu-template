@@ -103,7 +103,7 @@ public class SingleInputFile extends AbstractInputPanel {
 						return;
 					}
 
-					GlazedFile file = popupFileDialogAndAskForFile();
+					final GlazedFile file = popupFileDialogAndAskForFile();
 
 					if (file == null) {
 						return;
@@ -149,7 +149,7 @@ public class SingleInputFile extends AbstractInputPanel {
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 
-		Map<String, String> defaultProperties = new HashMap<String, String>();
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
 		defaultProperties.put(TITLE, "Input file");
 		defaultProperties.put(HISTORY_ITEMS, "8");
 
@@ -185,17 +185,17 @@ public class SingleInputFile extends AbstractInputPanel {
 
 		getComboBox().removeAllItems();
 
-		String prefills = panelProperties.get(PREFILLS);
+		final String prefills = panelProperties.get(PREFILLS);
 		if (StringUtils.isNotBlank(prefills)) {
 
-			for (String value : prefills.split(",")) {
+			for (final String value : prefills.split(",")) {
 				comboBoxModel.addElement(value);
 			}
 
 		}
 
 		if (useHistory()) {
-			for (String value : getHistoryValues()) {
+			for (final String value : getHistoryValues()) {
 				if (comboBoxModel.getIndexOf(value) < 0) {
 					comboBoxModel.addElement(value);
 				}

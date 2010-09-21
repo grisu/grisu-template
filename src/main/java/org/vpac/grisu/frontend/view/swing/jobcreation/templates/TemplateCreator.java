@@ -22,9 +22,9 @@ public class TemplateCreator {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TemplateCreator window = new TemplateCreator();
+					final TemplateCreator window = new TemplateCreator();
 					window.frame.setVisible(true);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -42,13 +42,13 @@ public class TemplateCreator {
 
 		new ApplicationEventListener();
 
-		Toolkit tk = Toolkit.getDefaultToolkit();
+		final Toolkit tk = Toolkit.getDefaultToolkit();
 		tk.addAWTEventListener(WindowSaver.getInstance(),
 				AWTEvent.WINDOW_EVENT_MASK);
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 
@@ -63,9 +63,9 @@ public class TemplateCreator {
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		TemplateTestFrame templateframe = new TemplateTestFrame();
+		final TemplateTestFrame templateframe = new TemplateTestFrame();
 
-		LoginPanel lp = new LoginPanel(templateframe, null);
+		final LoginPanel lp = new LoginPanel(templateframe, null);
 		frame.getContentPane().add(lp, BorderLayout.CENTER);
 	}
 

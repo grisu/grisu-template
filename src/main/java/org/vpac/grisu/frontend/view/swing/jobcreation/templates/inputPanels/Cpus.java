@@ -51,11 +51,11 @@ public class Cpus extends AbstractInputPanel {
 					}
 
 					if (ItemEvent.SELECTED == e.getStateChange()) {
-						Integer value = (Integer) getComboBox()
+						final Integer value = (Integer) getComboBox()
 								.getSelectedItem();
 						try {
 							setValue("cpus", value);
-						} catch (TemplateException e1) {
+						} catch (final TemplateException e1) {
 							e1.printStackTrace();
 						}
 					}
@@ -69,7 +69,7 @@ public class Cpus extends AbstractInputPanel {
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 
-		Map<String, String> defaultProperties = new HashMap<String, String>();
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
 
 		defaultProperties.put(TITLE, "CPUS");
 		defaultProperties.put(DEFAULT_VALUE, "1");
@@ -82,10 +82,10 @@ public class Cpus extends AbstractInputPanel {
 	protected String getValueAsString() {
 
 		try {
-			String result = ((Integer) (getComboBox().getSelectedItem()))
+			final String result = ((Integer) (getComboBox().getSelectedItem()))
 					.toString();
 			return result;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			myLogger.debug("Can't get value for panel " + getPanelName() + ": "
 					+ e.getLocalizedMessage());
 			return null;
@@ -99,7 +99,7 @@ public class Cpus extends AbstractInputPanel {
 		userInput = false;
 
 		if ("cpus".equals(e.getPropertyName())) {
-			int value = (Integer) e.getNewValue();
+			final int value = (Integer) e.getNewValue();
 			getComboBox().setSelectedItem(value);
 		}
 
@@ -111,16 +111,17 @@ public class Cpus extends AbstractInputPanel {
 
 		getComboBox().removeAllItems();
 
-		for (String key : panelProperties.keySet()) {
+		for (final String key : panelProperties.keySet()) {
 			try {
 				if (PREFILLS.equals(key)) {
 					userInput = false;
-					for (String item : panelProperties.get(PREFILLS).split(",")) {
+					for (final String item : panelProperties.get(PREFILLS)
+							.split(",")) {
 						getComboBox().addItem(Integer.parseInt(item));
 					}
 					userInput = true;
 				}
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -130,11 +131,11 @@ public class Cpus extends AbstractInputPanel {
 	@Override
 	void setInitialValue() {
 
-		String def = getDefaultValue();
+		final String def = getDefaultValue();
 		if (StringUtils.isNotBlank(def)) {
 			try {
 				setValue("cpus", Integer.parseInt(def));
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		}

@@ -36,7 +36,7 @@ public class JobType extends AbstractInputPanel implements ActionListener {
 
 		super(name, config);
 
-		String orientation = config.getProperties().get("orientation");
+		final String orientation = config.getProperties().get("orientation");
 		if (!StringUtils.isBlank(orientation) && "Y_AXIS".equals(orientation)) {
 			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		} else {
@@ -64,7 +64,7 @@ public class JobType extends AbstractInputPanel implements ActionListener {
 				}
 				setValue("cpus", 1);
 				setValue("force_single", Boolean.TRUE);
-			} catch (TemplateException e1) {
+			} catch (final TemplateException e1) {
 				e1.printStackTrace();
 			}
 		} else if (THREADED.equals(currentActionCommand)) {
@@ -74,13 +74,13 @@ public class JobType extends AbstractInputPanel implements ActionListener {
 				}
 				setValue("force_single", Boolean.TRUE);
 				setValue("hostCount", 1);
-			} catch (TemplateException e1) {
+			} catch (final TemplateException e1) {
 				e1.printStackTrace();
 			}
 		} else if (MPI.equals(currentActionCommand)) {
 			try {
 				setValue("force_mpi", Boolean.TRUE);
-			} catch (TemplateException e1) {
+			} catch (final TemplateException e1) {
 				e1.printStackTrace();
 			}
 		} else {
@@ -93,7 +93,7 @@ public class JobType extends AbstractInputPanel implements ActionListener {
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 
-		Map<String, String> defaultProperties = new HashMap<String, String>();
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
 		defaultProperties.put("orientation", "X_AXIS");
 		defaultProperties.put(TITLE, "Jobtype");
 
@@ -135,7 +135,7 @@ public class JobType extends AbstractInputPanel implements ActionListener {
 	@Override
 	protected void jobPropertyChanged(PropertyChangeEvent e) {
 
-		String propertyName = e.getPropertyName();
+		final String propertyName = e.getPropertyName();
 
 		if ("force_single".equals(propertyName)) {
 			if ((Boolean) e.getNewValue()) {
@@ -154,7 +154,7 @@ public class JobType extends AbstractInputPanel implements ActionListener {
 		} else if ("cpus".equals(propertyName)) {
 			if (SINGLE.equals(currentActionCommand)
 					|| THREADED.equals(currentActionCommand)) {
-				int cpus = getJobSubmissionObject().getCpus();
+				final int cpus = getJobSubmissionObject().getCpus();
 				if (cpus == 1) {
 					getSingleRadioBox().setSelected(true);
 				} else {
@@ -180,7 +180,7 @@ public class JobType extends AbstractInputPanel implements ActionListener {
 		}
 
 		if (StringUtils.isBlank(last)) {
-			int cpus = getJobSubmissionObject().getCpus();
+			final int cpus = getJobSubmissionObject().getCpus();
 			if (cpus == 1) {
 				getSingleRadioBox().setSelected(true);
 			} else {

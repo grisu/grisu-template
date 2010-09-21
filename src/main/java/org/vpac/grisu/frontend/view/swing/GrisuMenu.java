@@ -20,9 +20,9 @@ public class GrisuMenu extends JMenuBar {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					GrisuMenu frame = new GrisuMenu();
+					final GrisuMenu frame = new GrisuMenu();
 					frame.setVisible(true);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					e.printStackTrace();
 				}
 			}

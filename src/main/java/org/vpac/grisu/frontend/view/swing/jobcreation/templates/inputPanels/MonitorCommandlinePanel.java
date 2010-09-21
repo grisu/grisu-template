@@ -35,7 +35,7 @@ public class MonitorCommandlinePanel extends AbstractInputPanel {
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 
-		Map<String, String> defaultProperties = new HashMap<String, String>();
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
 		defaultProperties.put(NAME, "Name");
 		defaultProperties.put(TITLE, "Commandline");
 		defaultProperties.put(DEFAULT_VALUE, "n/a");
@@ -66,7 +66,7 @@ public class MonitorCommandlinePanel extends AbstractInputPanel {
 	protected void jobPropertyChanged(PropertyChangeEvent e) {
 
 		if ("commandline".equals(e.getPropertyName())) {
-			String newJobname = (String) e.getNewValue();
+			final String newJobname = (String) e.getNewValue();
 			getTextField().setText(newJobname);
 		}
 

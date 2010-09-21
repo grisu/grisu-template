@@ -26,11 +26,11 @@ public class TemplateObject {
 	public static Map<String, String> parseCommandlineTemplate(String template)
 			throws TemplateException {
 
-		Map<String, String> map = new HashMap<String, String>();
+		final Map<String, String> map = new HashMap<String, String>();
 
-		String[] parts = template.split("\\$");
+		final String[] parts = template.split("\\$");
 
-		for (String part : parts) {
+		for (final String part : parts) {
 
 			if (!part.startsWith("{")) {
 				continue;
@@ -42,7 +42,7 @@ public class TemplateObject {
 						"Template format wrong: opening { does not have a closing }");
 			}
 
-			String variableName = part.substring(1, part.indexOf("}"));
+			final String variableName = part.substring(1, part.indexOf("}"));
 			map.put(variableName, "");
 
 		}
@@ -110,7 +110,7 @@ public class TemplateObject {
 
 		this.jobObject = new JobSubmissionObjectImpl();
 
-		for (AbstractInputPanel panel : getInputPanels().values()) {
+		for (final AbstractInputPanel panel : getInputPanels().values()) {
 			panel.initPanel(this, this.jobObject);
 		}
 
@@ -121,26 +121,26 @@ public class TemplateObject {
 
 	private void setFixedValues() throws TemplateException {
 
-		for (String key : fixedValues.keySet()) {
+		for (final String key : fixedValues.keySet()) {
 
 			Object value = fixedValues.get(key);
 
-			Method[] methods = jobObject.getClass().getMethods();
+			final Method[] methods = jobObject.getClass().getMethods();
 
-			for (Method m : methods) {
+			for (final Method m : methods) {
 
 				if (m.getName().equals("set" + StringUtils.capitalize(key))) {
 
-					Class parameterType = m.getParameterTypes()[0];
+					final Class parameterType = m.getParameterTypes()[0];
 
 					if (!parameterType.equals(String.class)) {
 						try {
-							Method fromMethod = parameterType.getMethod(
+							final Method fromMethod = parameterType.getMethod(
 									"valueOf", String.class);
 
 							value = fromMethod.invoke(null, value);
 							break;
-						} catch (Exception e) {
+						} catch (final Exception e) {
 							e.printStackTrace();
 							throw new TemplateException(
 									"Can't set fixed key/value pair: " + key
@@ -157,7 +157,7 @@ public class TemplateObject {
 				method = jobObject.getClass().getMethod(
 						"set" + StringUtils.capitalize(key), value.getClass());
 				method.invoke(jobObject, value);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				throw new TemplateException("Can't set fixed key/value pair: "
 						+ key + "/" + value.toString());
 			}
@@ -173,7 +173,7 @@ public class TemplateObject {
 
 		this.inputPanels = inputPanels;
 
-		for (AbstractInputPanel panel : this.inputPanels.values()) {
+		for (final AbstractInputPanel panel : this.inputPanels.values()) {
 			panel.initPanel(this, this.jobObject);
 		}
 
@@ -196,13 +196,6 @@ public class TemplateObject {
 	public void setValidationPanel(ValidationPanel valP) {
 		this.validationPanel = valP;
 
-	}
-
-	public void validateManually() {
-		if (this.validationPanel != null
-				&& this.validationPanel.getValidationGroup() != null) {
-			this.validationPanel.getValidationGroup().validateAll();
-		}
 	}
 
 	public void submitJob() throws JobPropertiesException,
@@ -233,12 +226,19 @@ public class TemplateObject {
 			changedValues.put(panelName, newValue);
 		}
 		String newCommandline = commandlineTemplate;
-		for (String key : changedValues.keySet()) {
+		for (final String key : changedValues.keySet()) {
 			newCommandline = newCommandline.replace("${" + key + "}",
 					changedValues.get(key));
 		}
 
 		jobObject.setCommandline(newCommandline);
+	}
+
+	public void validateManually() {
+		if (this.validationPanel != null
+				&& this.validationPanel.getValidationGroup() != null) {
+			this.validationPanel.getValidationGroup().validateAll();
+		}
 	}
 
 }

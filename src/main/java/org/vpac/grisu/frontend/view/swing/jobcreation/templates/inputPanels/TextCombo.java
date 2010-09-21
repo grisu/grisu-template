@@ -70,7 +70,7 @@ public class TextCombo extends AbstractInputPanel {
 							try {
 								currentValue = (String) model.getSelectedItem();
 								setValue(bean, currentValue);
-							} catch (TemplateException e1) {
+							} catch (final TemplateException e1) {
 								e1.printStackTrace();
 							}
 						}
@@ -92,7 +92,7 @@ public class TextCombo extends AbstractInputPanel {
 								currentValue = (String) getComboBox()
 										.getEditor().getItem();
 								setValue(bean, currentValue);
-							} catch (TemplateException e1) {
+							} catch (final TemplateException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
@@ -106,7 +106,7 @@ public class TextCombo extends AbstractInputPanel {
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 
-		Map<String, String> defaultProperties = new HashMap<String, String>();
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
 
 		return defaultProperties;
 
@@ -134,17 +134,17 @@ public class TextCombo extends AbstractInputPanel {
 
 		getComboBox().removeAllItems();
 
-		String prefills = panelProperties.get(PREFILLS);
+		final String prefills = panelProperties.get(PREFILLS);
 		if (StringUtils.isNotBlank(prefills)) {
 
-			for (String value : prefills.split(",")) {
+			for (final String value : prefills.split(",")) {
 				model.addElement(value);
 			}
 
 		}
 
 		if (useHistory()) {
-			for (String value : getHistoryValues()) {
+			for (final String value : getHistoryValues()) {
 				if (model.getIndexOf(value) < 0) {
 					model.addElement(value);
 				}
@@ -157,7 +157,7 @@ public class TextCombo extends AbstractInputPanel {
 				isEditable = Boolean.parseBoolean(panelProperties
 						.get(IS_EDITABLE));
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new TemplateException("Can't parse \"editable\" value: "
 					+ panelProperties.get(IS_EDITABLE));
 		}
@@ -177,7 +177,7 @@ public class TextCombo extends AbstractInputPanel {
 			if (StringUtils.isNotBlank(getPanelProperty(IS_EDITABLE))) {
 				fill = !Boolean.parseBoolean(getPanelProperty(IS_EDITABLE));
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new TemplateException(
 					"Can't parse editable value for combobox: "
 							+ e.getLocalizedMessage());
@@ -189,7 +189,7 @@ public class TextCombo extends AbstractInputPanel {
 			if (StringUtils.isBlank(value)) {
 				try {
 					value = (String) model.getElementAt(0);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					e.printStackTrace();
 				}
 			}

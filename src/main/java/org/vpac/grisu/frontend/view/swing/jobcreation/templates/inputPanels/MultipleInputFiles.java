@@ -62,17 +62,17 @@ public class MultipleInputFiles extends AbstractInputPanel {
 						return;
 					}
 
-					Set<GlazedFile> files = popupFileDialogAndAskForFiles();
+					final Set<GlazedFile> files = popupFileDialogAndAskForFiles();
 
 					if (files == null) {
 						return;
 					}
 
-					for (GlazedFile file : files) {
+					for (final GlazedFile file : files) {
 
-						String filename = file.getName();
+						final String filename = file.getName();
 						for (int i = 0; i < fileModel.getSize(); i++) {
-							GlazedFile existingFile = (GlazedFile) fileModel
+							final GlazedFile existingFile = (GlazedFile) fileModel
 									.getElementAt(i);
 							if (existingFile.getName().equals(filename)) {
 								fileModel.removeElement(existingFile);
@@ -96,9 +96,9 @@ public class MultipleInputFiles extends AbstractInputPanel {
 
 				public void actionPerformed(ActionEvent e) {
 
-					Object[] selFiles = getList_1().getSelectedValues();
+					final Object[] selFiles = getList_1().getSelectedValues();
 
-					for (Object file : selFiles) {
+					for (final Object file : selFiles) {
 						removeValue("inputFileUrl",
 								((GlazedFile) file).getUrl());
 						fileModel.removeElement(file);
@@ -113,7 +113,7 @@ public class MultipleInputFiles extends AbstractInputPanel {
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 
-		Map<String, String> defaultProperties = new HashMap<String, String>();
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
 		defaultProperties.put(TITLE, "Input files");
 
 		return defaultProperties;
@@ -138,10 +138,11 @@ public class MultipleInputFiles extends AbstractInputPanel {
 
 	@Override
 	protected String getValueAsString() {
-		StringBuffer temp = new StringBuffer();
+		final StringBuffer temp = new StringBuffer();
 
 		for (int i = 0; i < fileModel.getSize(); i++) {
-			GlazedFile existingFile = (GlazedFile) fileModel.getElementAt(i);
+			final GlazedFile existingFile = (GlazedFile) fileModel
+					.getElementAt(i);
 			temp.append(existingFile.getUrl() + ",");
 		}
 

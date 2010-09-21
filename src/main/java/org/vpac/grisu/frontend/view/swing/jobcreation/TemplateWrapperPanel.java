@@ -86,7 +86,7 @@ public class TemplateWrapperPanel extends JPanel {
 			try {
 				defaultFqanChangePanel.setServiceInterface(template
 						.getServiceInterface());
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -101,11 +101,11 @@ public class TemplateWrapperPanel extends JPanel {
 				public void actionPerformed(ActionEvent arg0) {
 
 					try {
-						JobObject job = JobObject.createJobObject(
+						final JobObject job = JobObject.createJobObject(
 								template.getServiceInterface(),
 								template.getJobSubmissionObject());
 						monitorPanel.startJobSubmission(job);
-					} catch (JobPropertiesException e) {
+					} catch (final JobPropertiesException e) {
 
 						JXErrorPane.showDialog(e);
 

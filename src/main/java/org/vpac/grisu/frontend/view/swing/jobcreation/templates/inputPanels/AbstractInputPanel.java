@@ -111,13 +111,13 @@ public abstract class AbstractInputPanel extends JPanel implements
 						startUrl = new File(System.getProperty("user.home"))
 								.toURI().toString();
 					}
-				} catch (RemoteFileSystemException e) {
+				} catch (final RemoteFileSystemException e) {
 					myLogger.debug(e);
 					startUrl = new File(System.getProperty("user.home"))
 							.toURI().toString();
 				}
 			}
-			GrisuFileDialog dialog = new GrisuFileDialog(si, startUrl);
+			final GrisuFileDialog dialog = new GrisuFileDialog(si, startUrl);
 			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			dialogs.put(templateName, dialog);
 		}
@@ -130,6 +130,8 @@ public abstract class AbstractInputPanel extends JPanel implements
 		}
 		return dialogs.get(templateName);
 	}
+
+	private Object oldAddValue = null;
 
 	public AbstractInputPanel(String templateName, PanelConfig config)
 			throws TemplateException {
@@ -188,7 +190,7 @@ public abstract class AbstractInputPanel extends JPanel implements
 			try {
 				isVisible = Boolean.parseBoolean(this.panelProperties
 						.get(IS_VISIBLE));
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				throw new TemplateException("Can't parse isVisible property: "
 						+ e.getLocalizedMessage(), e);
 			}
@@ -197,27 +199,27 @@ public abstract class AbstractInputPanel extends JPanel implements
 			title = this.panelProperties.get(TITLE);
 			setBorder(new TitledBorder(null, title, TitledBorder.LEADING,
 					TitledBorder.TOP, null, null));
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 
-		String size = this.panelProperties.get(SIZE);
+		final String size = this.panelProperties.get(SIZE);
 		if (StringUtils.isNotBlank(size)) {
 			try {
-				int width = Integer.parseInt(size.substring(0,
+				final int width = Integer.parseInt(size.substring(0,
 						size.indexOf("x")).trim());
-				int height = Integer.parseInt(size.substring(
+				final int height = Integer.parseInt(size.substring(
 						size.indexOf("x") + 1).trim());
 				setPreferredSize(new Dimension(width, height));
 				setMaximumSize(new Dimension(width, height));
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				throw new TemplateException(
 						"Can't parse size property for panel "
 								+ this.panelProperties.get(NAME) + ": " + size);
 			}
 		}
 
-		String help = this.panelProperties.get(HELP);
+		final String help = this.panelProperties.get(HELP);
 
 		if (StringUtils.isNotBlank(help)) {
 
@@ -242,10 +244,6 @@ public abstract class AbstractInputPanel extends JPanel implements
 
 	}
 
-	protected TemplateObject getTemplateObject() {
-		return this.template;
-	}
-
 	protected void addValue(String bean, Object value) {
 
 		if (!isInitFinished()) {
@@ -253,11 +251,11 @@ public abstract class AbstractInputPanel extends JPanel implements
 		}
 
 		try {
-			Method method = jobObject.getClass().getMethod(
+			final Method method = jobObject.getClass().getMethod(
 					"add" + StringUtils.capitalize(bean), value.getClass());
 			method.invoke(jobObject, value);
 			applyFilters();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -265,7 +263,7 @@ public abstract class AbstractInputPanel extends JPanel implements
 
 	public void addValueToHistory() {
 
-		String value = getValueAsString();
+		final String value = getValueAsString();
 
 		if (StringUtils.isNotBlank(value)) {
 			addHistoryValue(value);
@@ -280,7 +278,7 @@ public abstract class AbstractInputPanel extends JPanel implements
 			myLogger.debug("Value is null. Not applying filters...");
 			return;
 		}
-		for (Filter filter : filters) {
+		for (final Filter filter : filters) {
 			string = filter.filter(string);
 		}
 
@@ -295,13 +293,13 @@ public abstract class AbstractInputPanel extends JPanel implements
 
 		try {
 			if (panelProperties.get(FILL_WITH_DEFAULT_VALUE) != null) {
-				boolean use = Boolean.parseBoolean(panelProperties
+				final boolean use = Boolean.parseBoolean(panelProperties
 						.get(FILL_WITH_DEFAULT_VALUE));
 				return use;
 			} else {
 				return false;
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return false;
 		}
 	}
@@ -326,7 +324,7 @@ public abstract class AbstractInputPanel extends JPanel implements
 				if (last != null) {
 					return last;
 				}
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				myLogger.debug("No history value for "
 						+ panelProperties.get(NAME));
 			}
@@ -344,7 +342,7 @@ public abstract class AbstractInputPanel extends JPanel implements
 		if (helpLabel == null) {
 			helpLabel = new JButton("");
 			helpLabel.setBorder(null);
-			Icon icon = new ImageIcon(
+			final Icon icon = new ImageIcon(
 					TextField.class.getResource("/help_icon.gif"));
 			helpLabel.setIcon(icon);
 			helpLabel.setDisabledIcon(icon);
@@ -422,6 +420,10 @@ public abstract class AbstractInputPanel extends JPanel implements
 		return this.si;
 	}
 
+	protected TemplateObject getTemplateObject() {
+		return this.template;
+	}
+
 	public JTextComponent getTextComponent() {
 		return null;
 	}
@@ -455,10 +457,10 @@ public abstract class AbstractInputPanel extends JPanel implements
 		if (useHistory()) {
 			if (StringUtils.isNotBlank(panelProperties.get(HISTORY_ITEMS))) {
 				try {
-					Integer max = Integer.parseInt(panelProperties
+					final Integer max = Integer.parseInt(panelProperties
 							.get(HISTORY_ITEMS));
 					hm.setMaxNumberOfEntries(historyManagerEntryName, max);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					throw new TemplateException(
 							"Can't setup history management for panel "
 									+ getPanelName(), e);
@@ -492,10 +494,10 @@ public abstract class AbstractInputPanel extends JPanel implements
 
 		getFileDialog().setVisible(true);
 
-		GlazedFile file = getFileDialog().getSelectedFile();
+		final GlazedFile file = getFileDialog().getSelectedFile();
 		getFileDialog().clearSelection();
 
-		GlazedFile currentDir = getFileDialog().getCurrentDirectory();
+		final GlazedFile currentDir = getFileDialog().getCurrentDirectory();
 
 		hm.addHistoryEntry(templateName + "_" + FILE_DIALOG_LAST_DIRECTORY_KEY,
 				currentDir.getUrl());
@@ -507,10 +509,10 @@ public abstract class AbstractInputPanel extends JPanel implements
 
 		getFileDialog().setVisible(true);
 
-		Set<GlazedFile> files = getFileDialog().getSelectedFiles();
+		final Set<GlazedFile> files = getFileDialog().getSelectedFiles();
 		getFileDialog().clearSelection();
 
-		GlazedFile currentDir = getFileDialog().getCurrentDirectory();
+		final GlazedFile currentDir = getFileDialog().getCurrentDirectory();
 
 		hm.addHistoryEntry(templateName + "_" + FILE_DIALOG_LAST_DIRECTORY_KEY,
 				currentDir.getUrl());
@@ -560,11 +562,11 @@ public abstract class AbstractInputPanel extends JPanel implements
 			return;
 		}
 		try {
-			Method method = jobObject.getClass().getMethod(
+			final Method method = jobObject.getClass().getMethod(
 					"remove" + StringUtils.capitalize(bean), value.getClass());
 			method.invoke(jobObject, value);
 			applyFilters();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -599,7 +601,7 @@ public abstract class AbstractInputPanel extends JPanel implements
 					method = jobObject.getClass().getMethod(
 							"set" + StringUtils.capitalize(bean),
 							value.getClass());
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					// try add method
 					method = jobObject.getClass().getMethod(
 							"add" + StringUtils.capitalize(bean),
@@ -608,9 +610,11 @@ public abstract class AbstractInputPanel extends JPanel implements
 					System.out.println("Adding instead of setting for value: "
 							+ value);
 					if (oldAddValue != null) {
-						Method removeMethod = jobObject.getClass().getMethod(
-								"remove" + StringUtils.capitalize(bean),
-								oldAddValue.getClass());
+						final Method removeMethod = jobObject
+								.getClass()
+								.getMethod(
+										"remove" + StringUtils.capitalize(bean),
+										oldAddValue.getClass());
 						removeMethod.invoke(jobObject, oldAddValue);
 						System.out.println("Removed old value: " + oldAddValue);
 					}
@@ -620,29 +624,27 @@ public abstract class AbstractInputPanel extends JPanel implements
 				method.invoke(jobObject, value);
 			}
 			applyFilters();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new TemplateException("Can't set value for property " + bean
 					+ ": " + e.getLocalizedMessage(), e);
 		}
 	}
-
-	private Object oldAddValue = null;
 
 	abstract protected void templateRefresh(JobSubmissionObjectImpl jobObject);
 
 	@Override
 	public String toString() {
 
-		StringBuffer temp = new StringBuffer();
+		final StringBuffer temp = new StringBuffer();
 
 		temp.append("Name: " + getName() + "\n");
 		temp.append("Class: " + this.getClass().toString() + "\n");
 		temp.append("Properties: \n");
-		for (String key : panelProperties.keySet()) {
+		for (final String key : panelProperties.keySet()) {
 			temp.append("\t" + key + ": " + panelProperties.get(key) + "\n");
 		}
 		temp.append("Filters:\n");
-		for (Filter filter : filters) {
+		for (final Filter filter : filters) {
 			temp.append("\tClass: " + filter.getClass().toString() + "\n");
 		}
 
@@ -654,13 +656,13 @@ public abstract class AbstractInputPanel extends JPanel implements
 
 		try {
 			if (panelProperties.get(USE_HISTORY) != null) {
-				boolean use = Boolean.parseBoolean(panelProperties
+				final boolean use = Boolean.parseBoolean(panelProperties
 						.get(USE_HISTORY));
 				return use;
 			} else {
 				return true;
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return true;
 		}
 

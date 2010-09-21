@@ -9,6 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.lang.StringUtils;
@@ -22,13 +24,13 @@ public class SettingsDialog extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			SettingsDialog dialog = new SettingsDialog();
+			final SettingsDialog dialog = new SettingsDialog();
 
-			ServiceInterface si = LoginManager.loginCommandline();
+			final ServiceInterface si = LoginManager.loginCommandline();
 			dialog.setServiceInterface(si);
 
 			dialog.setVisible(true);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -43,14 +45,14 @@ public class SettingsDialog extends JDialog {
 	 */
 	public SettingsDialog() {
 		setTitle("Settings");
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 701, 522);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		{
-			JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+			final JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
 			contentPanel.add(tabbedPane, BorderLayout.CENTER);
 			{
 
@@ -70,11 +72,11 @@ public class SettingsDialog extends JDialog {
 			}
 		}
 		{
-			JPanel buttonPane = new JPanel();
+			final JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
+				final JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						dispose();

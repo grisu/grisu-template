@@ -44,7 +44,7 @@ public class TextField extends AbstractInputPanel {
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 
-		Map<String, String> defaultProperties = new HashMap<String, String>();
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
 
 		return defaultProperties;
 	}
@@ -69,7 +69,7 @@ public class TextField extends AbstractInputPanel {
 						// }
 
 						setValue(bean, textField.getText());
-					} catch (TemplateException e1) {
+					} catch (final TemplateException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
@@ -104,7 +104,7 @@ public class TextField extends AbstractInputPanel {
 	@Override
 	void setInitialValue() throws TemplateException {
 
-		String defaultValue = getPanelProperty(DEFAULT_VALUE);
+		final String defaultValue = getPanelProperty(DEFAULT_VALUE);
 		if (StringUtils.isNotBlank(defaultValue)) {
 			setValue(bean, defaultValue);
 		}

@@ -75,7 +75,7 @@ public class Email extends AbstractInputPanel {
 						} else {
 							setValue("email_address", "");
 						}
-					} catch (TemplateException e) {
+					} catch (final TemplateException e) {
 						e.printStackTrace();
 					}
 
@@ -88,7 +88,7 @@ public class Email extends AbstractInputPanel {
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 
-		Map<String, String> defaultProperties = new HashMap<String, String>();
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
 
 		defaultProperties.put(TITLE, "Send email when job...");
 
@@ -110,7 +110,7 @@ public class Email extends AbstractInputPanel {
 						} else {
 							setValue("email_address", "");
 						}
-					} catch (TemplateException e) {
+					} catch (final TemplateException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -141,7 +141,7 @@ public class Email extends AbstractInputPanel {
 						} else {
 							setValue("email_address", "");
 						}
-					} catch (TemplateException e1) {
+					} catch (final TemplateException e1) {
 						e1.printStackTrace();
 					}
 				}

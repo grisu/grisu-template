@@ -38,8 +38,8 @@ public class TemplateJobCreationPanel extends JPanel implements
 	public static final String ERROR_PANEL = "error";
 
 	public static String getStackTrace(Throwable t) {
-		StringWriter stringWritter = new StringWriter();
-		PrintWriter printWritter = new PrintWriter(stringWritter, true);
+		final StringWriter stringWritter = new StringWriter();
+		final PrintWriter printWritter = new PrintWriter(stringWritter, true);
 		t.printStackTrace(printWritter);
 		printWritter.flush();
 		stringWritter.flush();
@@ -67,7 +67,7 @@ public class TemplateJobCreationPanel extends JPanel implements
 		this.lines = lines;
 		try {
 			this.panelConfigs = TemplateHelpers.parseConfig(lines);
-		} catch (TemplateException e) {
+		} catch (final TemplateException e) {
 			e.printStackTrace();
 		}
 		setLayout(cardLayout);
@@ -158,10 +158,11 @@ public class TemplateJobCreationPanel extends JPanel implements
 
 	public String getSupportedApplication() {
 
-		for (PanelConfig config : panelConfigs.values()) {
-			String bean = config.getProperties().get(AbstractInputPanel.BEAN);
+		for (final PanelConfig config : panelConfigs.values()) {
+			final String bean = config.getProperties().get(
+					AbstractInputPanel.BEAN);
 			if (AbstractInputPanel.APPLICATION.equals(bean)) {
-				String app = config.getProperties().get(
+				final String app = config.getProperties().get(
 						AbstractInputPanel.DEFAULT_VALUE);
 				if (StringUtils.isNotBlank(app)) {
 					return app;
@@ -203,7 +204,7 @@ public class TemplateJobCreationPanel extends JPanel implements
 			currentTemplatePanel = new TemplateWrapperPanel(template);
 			add(currentTemplatePanel, TEMPLATE_PANEL);
 			cardLayout.show(this, TEMPLATE_PANEL);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			getErrorTextArea().setText(getStackTrace(e));
 			cardLayout.show(this, ERROR_PANEL);

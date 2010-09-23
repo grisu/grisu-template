@@ -1,12 +1,14 @@
 package org.vpac.grisu.frontend.view.swing;
 
 import java.awt.EventQueue;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import org.vpac.grisu.GrisuVersion;
 import org.vpac.grisu.control.ServiceInterface;
@@ -21,7 +23,7 @@ public class GrisuMenu extends JMenuBar {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					final GrisuMenu frame = new GrisuMenu();
+					final GrisuMenu frame = new GrisuMenu(null);
 					frame.setVisible(true);
 				} catch (final Exception e) {
 					e.printStackTrace();
@@ -30,7 +32,9 @@ public class GrisuMenu extends JMenuBar {
 		});
 	}
 
-	private final SettingsDialog dialog = new SettingsDialog();
+	private final SettingsDialog dialog;
+
+	private final Frame parent;
 
 	private ServiceInterface si;
 
@@ -45,11 +49,21 @@ public class GrisuMenu extends JMenuBar {
 	/**
 	 * Create the frame.
 	 */
-	public GrisuMenu() {
-
+	public GrisuMenu(Frame parent) {
+		dialog = new SettingsDialog(parent);
+		this.parent = parent;
 		add(getFileMenu());
 		add(getToolsMenu());
 		setHelpMenu(getGrisuHelpMenu());
+	}
+
+	@Override
+	public JMenu add(JMenu menu) {
+		if (helpMenu != null) {
+			return (JMenu) add(menu, getComponentCount() - 1);
+		} else {
+			return super.add(menu);
+		}
 	}
 
 	private JMenuItem getExitItem() {
@@ -81,6 +95,11 @@ public class GrisuMenu extends JMenuBar {
 		return helpMenu;
 	}
 
+	@Override
+	public JMenu getHelpMenu() {
+		return helpMenu;
+	}
+
 	private JMenuItem getSettingsItem() {
 		if (settingsItem == null) {
 			settingsItem = new JMenuItem("Settings");
@@ -105,14 +124,21 @@ public class GrisuMenu extends JMenuBar {
 
 	private JMenuItem getVersionItem() {
 		if (versionItem == null) {
-			versionItem = new JMenuItem("Version");
+			versionItem = new JMenuItem("About");
 			versionItem.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent e) {
 
-					String grisuCommonsVersion = GrisuVersion
-							.get("grisu-commons");
-					System.out.println(grisuCommonsVersion);
+					String clientVersion = GrisuVersion.get("this-client");
+
+					String grisuclientversion = GrisuVersion
+							.get("grisu-client");
+
+					String message = "Version:\t\t" + clientVersion + "\n"
+							+ "Grisu client lib version:\t"
+							+ grisuclientversion;
+
+					JOptionPane.showMessageDialog(parent, message);
 
 				}
 			});
@@ -120,42 +146,31 @@ public class GrisuMenu extends JMenuBar {
 		return versionItem;
 	}
 
+	public void remove(JMenu menu) {
+		if (menu == helpMenu) {
+			helpMenu = null;
+		}
+		super.remove(menu);
+	}
+
+	@Override
+	public void removeAll() {
+		super.removeAll();
+		helpMenu = null;
+	}
+
+	@Override
+	public void setHelpMenu(JMenu menu) {
+		if (helpMenu != null) {
+			remove(helpMenu);
+		}
+		helpMenu = menu;
+		super.add(helpMenu);
+	}
+
 	public void setServiceInterface(ServiceInterface si) {
 		this.si = si;
 		dialog.setServiceInterface(si);
 	}
-	
-	  public void setHelpMenu(JMenu menu) {
-		    if (helpMenu != null) {
-		      remove(helpMenu);
-		    }
-		    helpMenu = menu;
-		    super.add(helpMenu);
-		  }
-
-		  public JMenu add(JMenu menu) {
-		    if (helpMenu != null) {
-		      return (JMenu) add(menu, getComponentCount() - 1);
-		    }
-		    else {
-		      return super.add(menu);
-		    }
-		  }
-
-		  public JMenu getHelpMenu() {
-		    return helpMenu;
-		  }
-
-		  public void remove(JMenu menu) {
-		    if (menu == helpMenu) {
-		      helpMenu = null;
-		    }
-		    super.remove(menu);
-		  }
-
-		  public void removeAll() {
-		    super.removeAll();
-		    helpMenu = null;
-		  }
 
 }

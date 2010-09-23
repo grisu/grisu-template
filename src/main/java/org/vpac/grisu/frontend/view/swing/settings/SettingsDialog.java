@@ -2,6 +2,7 @@ package org.vpac.grisu.frontend.view.swing.settings;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -24,7 +25,7 @@ public class SettingsDialog extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			final SettingsDialog dialog = new SettingsDialog();
+			final SettingsDialog dialog = new SettingsDialog(null);
 
 			final ServiceInterface si = LoginManager.loginCommandline();
 			dialog.setServiceInterface(si);
@@ -43,7 +44,8 @@ public class SettingsDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public SettingsDialog() {
+	public SettingsDialog(Frame parent) {
+		super(parent);
 		setTitle("Settings");
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 701, 522);

@@ -44,11 +44,12 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 
 	}
 
-	private final GrisuMenu menu = new GrisuMenu();
+	private final GrisuMenu menu;
 	private TemplateManager tm;
 
 	public GrisuTemplateApp() {
 		super();
+		menu = new GrisuMenu(this.getFrame());
 		getFrame().setJMenuBar(menu);
 	}
 

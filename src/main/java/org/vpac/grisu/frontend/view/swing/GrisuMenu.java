@@ -8,6 +8,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import org.vpac.grisu.GrisuVersion;
 import org.vpac.grisu.control.ServiceInterface;
 import org.vpac.grisu.frontend.view.swing.settings.SettingsDialog;
 
@@ -35,9 +36,11 @@ public class GrisuMenu extends JMenuBar {
 
 	private JMenu fileMenu;
 	private JMenu toolsMenu;
+	private JMenu helpMenu;
 
 	private JMenuItem settingsItem;
 	private JMenuItem exitItem;
+	private JMenuItem versionItem;
 
 	/**
 	 * Create the frame.
@@ -46,6 +49,7 @@ public class GrisuMenu extends JMenuBar {
 
 		add(getFileMenu());
 		add(getToolsMenu());
+		setHelpMenu(getGrisuHelpMenu());
 	}
 
 	private JMenuItem getExitItem() {
@@ -67,6 +71,14 @@ public class GrisuMenu extends JMenuBar {
 			fileMenu.add(getExitItem());
 		}
 		return fileMenu;
+	}
+
+	private JMenu getGrisuHelpMenu() {
+		if (helpMenu == null) {
+			helpMenu = new JMenu("Help");
+			helpMenu.add(getVersionItem());
+		}
+		return helpMenu;
 	}
 
 	private JMenuItem getSettingsItem() {
@@ -91,8 +103,59 @@ public class GrisuMenu extends JMenuBar {
 		return toolsMenu;
 	}
 
+	private JMenuItem getVersionItem() {
+		if (versionItem == null) {
+			versionItem = new JMenuItem("Version");
+			versionItem.addActionListener(new ActionListener() {
+
+				public void actionPerformed(ActionEvent e) {
+
+					String grisuCommonsVersion = GrisuVersion
+							.get("grisu-commons");
+					System.out.println(grisuCommonsVersion);
+
+				}
+			});
+		}
+		return versionItem;
+	}
+
 	public void setServiceInterface(ServiceInterface si) {
 		this.si = si;
 		dialog.setServiceInterface(si);
 	}
+	
+	  public void setHelpMenu(JMenu menu) {
+		    if (helpMenu != null) {
+		      remove(helpMenu);
+		    }
+		    helpMenu = menu;
+		    super.add(helpMenu);
+		  }
+
+		  public JMenu add(JMenu menu) {
+		    if (helpMenu != null) {
+		      return (JMenu) add(menu, getComponentCount() - 1);
+		    }
+		    else {
+		      return super.add(menu);
+		    }
+		  }
+
+		  public JMenu getHelpMenu() {
+		    return helpMenu;
+		  }
+
+		  public void remove(JMenu menu) {
+		    if (menu == helpMenu) {
+		      helpMenu = null;
+		    }
+		    super.remove(menu);
+		  }
+
+		  public void removeAll() {
+		    super.removeAll();
+		    helpMenu = null;
+		  }
+
 }

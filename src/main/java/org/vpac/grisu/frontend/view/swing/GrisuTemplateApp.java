@@ -1,6 +1,8 @@
 package org.vpac.grisu.frontend.view.swing;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
@@ -9,6 +11,8 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.swing.JMenuItem;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.vpac.grisu.control.ServiceInterface;
@@ -16,6 +20,7 @@ import org.vpac.grisu.control.TemplateManager;
 import org.vpac.grisu.control.exceptions.NoSuchTemplateException;
 import org.vpac.grisu.frontend.view.swing.jobcreation.JobCreationPanel;
 import org.vpac.grisu.frontend.view.swing.jobcreation.TemplateJobCreationPanel;
+import org.vpac.grisu.frontend.view.swing.settings.SettingsDialog;
 import org.vpac.grisu.model.GrisuRegistryManager;
 import org.vpac.security.light.Init;
 
@@ -44,12 +49,22 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 
 	}
 
+	private JMenuItem settingsItem;
+
+	private final SettingsDialog dialog;
+
 	private final GrisuMenu menu;
+
 	private TemplateManager tm;
 
 	public GrisuTemplateApp() {
 		super();
+		dialog = new SettingsDialog(this.getFrame());
+
 		menu = new GrisuMenu(this.getFrame());
+
+		menu.getToolsMenu().add(getSettingsItem());
+
 		getFrame().setJMenuBar(menu);
 	}
 
@@ -158,10 +173,25 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 		}
 	}
 
+	private JMenuItem getSettingsItem() {
+		if (settingsItem == null) {
+			settingsItem = new JMenuItem("Settings");
+			settingsItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+
+					dialog.setVisible(true);
+
+				}
+			});
+		}
+		return settingsItem;
+	}
+
 	@Override
 	public void initOptionalStuff(ServiceInterface si) {
 
 		menu.setServiceInterface(si);
+		dialog.setServiceInterface(si);
 		tm = GrisuRegistryManager.getDefault(si).getTemplateManager();
 		tm.addTemplateManagerListener(this);
 	}

@@ -63,7 +63,7 @@ public class SimpleCommandline extends AbstractInputPanel {
 
 		if ((lastCalculatedExecutable != null)
 				&& lastCalculatedExecutable.equals(exe)) {
-			setValue("commandline", commandline);
+			getTemplateObject().userInput(getPanelName(), commandline);
 			return;
 		}
 
@@ -73,12 +73,12 @@ public class SimpleCommandline extends AbstractInputPanel {
 			lastCalculatedExecutable = null;
 			// setValue("application", "");
 			// setValue("applicationVersion", "");
-			setValue("commandline", "");
+			getTemplateObject().userInput(getPanelName(), "");
 			return;
 		}
 
 		// jobObject.setApplication(exe);
-		setValue("commandline", commandline);
+		getTemplateObject().userInput(getPanelName(), commandline);
 
 	}
 

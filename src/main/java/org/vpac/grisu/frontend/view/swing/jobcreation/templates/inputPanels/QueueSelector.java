@@ -108,7 +108,6 @@ public class QueueSelector extends AbstractInputPanel implements
 					final String subLoc = SubmissionLocationHelpers
 							.createSubmissionLocationString(gr);
 
-					System.out.println(subLoc);
 					if (subLoc.equals(lastSubLoc)) {
 						return;
 					}
@@ -161,18 +160,20 @@ public class QueueSelector extends AbstractInputPanel implements
 					return;
 				}
 			} else {
-				if (lastApplication == null || temp.equals(lastApplication)) {
+				if ((lastApplication == null) || temp.equals(lastApplication)) {
 					lastApplication = temp;
 					return;
 				}
 			}
 		}
+
+		System.out.println("LOading queues.");
 		loadQueues();
 	}
 
 	private void loadQueues() {
 
-		if (loadThread != null && loadThread.isAlive()) {
+		if ((loadThread != null) && loadThread.isAlive()) {
 			// I know, I know. But I think it's ok in this case.
 			loadThread.interrupt();
 		}

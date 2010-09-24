@@ -212,6 +212,7 @@ public class TemplateObject {
 
 	public void userInput(String panelName, String newValue) {
 
+		System.out.println(newValue);
 		if (newValue == null) {
 			newValue = "";
 		}
@@ -235,8 +236,8 @@ public class TemplateObject {
 	}
 
 	public void validateManually() {
-		if (this.validationPanel != null
-				&& this.validationPanel.getValidationGroup() != null) {
+		if ((this.validationPanel != null)
+				&& (this.validationPanel.getValidationGroup() != null)) {
 			this.validationPanel.getValidationGroup().validateAll();
 		}
 	}

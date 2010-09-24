@@ -312,7 +312,11 @@ public abstract class AbstractInputPanel extends JPanel implements
 	 * 
 	 * @return the properties
 	 */
-	abstract protected Map<String, String> getDefaultPanelProperties();
+	protected Map<String, String> getDefaultPanelProperties() {
+		final Map<String, String> defaultProperties = new HashMap<String, String>();
+
+		return defaultProperties;
+	}
 
 	public String getDefaultValue() {
 
@@ -607,8 +611,6 @@ public abstract class AbstractInputPanel extends JPanel implements
 							"add" + StringUtils.capitalize(bean),
 							value.getClass());
 
-					System.out.println("Adding instead of setting for value: "
-							+ value);
 					if (oldAddValue != null) {
 						final Method removeMethod = jobObject
 								.getClass()
@@ -616,7 +618,6 @@ public abstract class AbstractInputPanel extends JPanel implements
 										"remove" + StringUtils.capitalize(bean),
 										oldAddValue.getClass());
 						removeMethod.invoke(jobObject, oldAddValue);
-						System.out.println("Removed old value: " + oldAddValue);
 					}
 					oldAddValue = value;
 

@@ -4,6 +4,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -25,6 +26,10 @@ public class ApplicationSelector extends AbstractInputPanel {
 	private JComboBox comboBox;
 	private final DefaultComboBoxModel appModel = new DefaultComboBoxModel();
 
+	private Set<String> allApps;
+
+	private boolean lastAppEmpty = false;
+
 	public ApplicationSelector(String templateName, PanelConfig config)
 			throws TemplateException {
 		super(templateName, config);
@@ -35,7 +40,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC, }));
 		add(getComboBox(), "2, 2, fill, default");
-		// TODO Auto-generated constructor stub
+
 	}
 
 	private JComboBox getComboBox() {
@@ -98,17 +103,28 @@ public class ApplicationSelector extends AbstractInputPanel {
 
 	}
 
-	private void setApplicationPackages(String[] appPackages) {
-
-		appModel.removeAllElements();
+	private synchronized void setApplicationPackages(String[] appPackages) {
 
 		if ((appPackages == null) || (appPackages.length == 0)) {
-			appModel.addElement("n/a");
+			if (!lastAppEmpty) {
+				appModel.removeAllElements();
+				appModel.addElement(Constants.GENERIC_APPLICATION_NAME);
+				Set<String> allApps = GrisuRegistryManager
+						.getDefault(getServiceInterface())
+						.getResourceInformation().getAllApplications();
+				for (String app : allApps) {
+					appModel.addElement(app);
+				}
+			}
+			lastAppEmpty = true;
 		} else {
+			appModel.removeAllElements();
 			for (String app : appPackages) {
 				appModel.addElement(app);
 			}
+			lastAppEmpty = false;
 		}
+
 	}
 
 	@Override

@@ -188,8 +188,15 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 	}
 
 	@Override
-	public void initOptionalStuff(ServiceInterface si) {
+	public void initOptionalStuff(final ServiceInterface si) {
 
+		new Thread() {
+			@Override
+			public void run() {
+				GrisuRegistryManager.getDefault(si).getResourceInformation()
+						.getAllApplications();
+			}
+		}.start();
 		menu.setServiceInterface(si);
 		dialog.setServiceInterface(si);
 		tm = GrisuRegistryManager.getDefault(si).getTemplateManager();

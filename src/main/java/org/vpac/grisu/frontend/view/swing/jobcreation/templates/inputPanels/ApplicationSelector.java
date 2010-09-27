@@ -78,12 +78,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 			if (StringUtils.isBlank(cmdln)) {
 				return;
 			}
-			String exe = JobSubmissionObjectImpl.extractExecutable(cmdln);
-			String[] appPackages = GrisuRegistryManager
-					.getDefault(getServiceInterface()).getResourceInformation()
-					.getApplicationPackageForExecutable(exe);
-
-			setApplicationPackages(appPackages);
+			setProperApplicationPackage(cmdln);
 			return;
 
 		} else if (Constants.APPLICATIONNAME_KEY.equals(e.getPropertyName())) {
@@ -129,8 +124,16 @@ public class ApplicationSelector extends AbstractInputPanel {
 
 	@Override
 	void setInitialValue() throws TemplateException {
-		// TODO Auto-generated method stub
+		setProperApplicationPackage(getJobSubmissionObject().getCommandline());
+	}
 
+	private void setProperApplicationPackage(String cmdln) {
+		String exe = JobSubmissionObjectImpl.extractExecutable(cmdln);
+		String[] appPackages = GrisuRegistryManager
+				.getDefault(getServiceInterface()).getResourceInformation()
+				.getApplicationPackageForExecutable(exe);
+
+		setApplicationPackages(appPackages);
 	}
 
 	@Override

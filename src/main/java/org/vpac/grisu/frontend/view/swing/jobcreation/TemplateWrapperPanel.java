@@ -3,12 +3,14 @@ package org.vpac.grisu.frontend.view.swing.jobcreation;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 import org.netbeans.validation.api.ui.ValidationPanel;
 import org.vpac.grisu.control.exceptions.JobPropertiesException;
 import org.vpac.grisu.control.exceptions.TemplateException;
@@ -109,7 +111,14 @@ public class TemplateWrapperPanel extends JPanel {
 						monitorPanel.startJobSubmission(job);
 					} catch (final JobPropertiesException e) {
 
-						JXErrorPane.showDialog(e);
+						ErrorInfo info = new ErrorInfo("Job property error",
+								"Can't submit job:\n\n"
+										+ e.getLocalizedMessage(), null,
+								"Error", e, Level.SEVERE, null);
+
+						System.out.println(e.getLocalizedMessage());
+						JXErrorPane.showDialog(
+								TemplateWrapperPanel.this.getRootPane(), info);
 
 						return;
 					}

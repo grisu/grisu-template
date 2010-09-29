@@ -13,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.lang.StringUtils;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.EventSubscriber;
 import org.vpac.grisu.control.exceptions.TemplateException;
@@ -44,11 +43,15 @@ public class QueueSelector extends AbstractInputPanel implements
 
 	private SortedSet<GridResource> currentQueues = null;
 
-	private String lastApplication = null;
+	private String lastApplication = Constants.GENERIC_APPLICATION_NAME;
+	private String lastVersion = Constants.NO_VERSION_INDICATOR_STRING;
+	private String lastFqan = null;
 
 	private Thread loadThread;
 
 	private String lastSubLoc = null;
+
+	private boolean interrupted = false;
 
 	public QueueSelector(String templateName, PanelConfig config)
 			throws TemplateException {
@@ -131,7 +134,11 @@ public class QueueSelector extends AbstractInputPanel implements
 	}
 
 	@Override
-	protected void jobPropertyChanged(PropertyChangeEvent e) {
+	protected synchronized void jobPropertyChanged(PropertyChangeEvent e) {
+
+		if (!isInitFinished()) {
+			return;
+		}
 
 		final String[] possibleBeans = new String[] {
 				Constants.COMMANDLINE_KEY, Constants.APPLICATIONNAME_KEY,
@@ -152,20 +159,13 @@ public class QueueSelector extends AbstractInputPanel implements
 			return;
 		}
 
-		if (Constants.COMMANDLINE_KEY.equals(e.getPropertyName())) {
-			final String temp = getJobSubmissionObject().getApplication();
-			if (temp == null) {
-				if (lastApplication == null) {
-					lastApplication = temp;
-					return;
-				}
-			} else {
-				if ((lastApplication == null) || temp.equals(lastApplication)) {
-					lastApplication = temp;
-					return;
-				}
-			}
-		}
+		// if (Constants.COMMANDLINE_KEY.equals(e.getPropertyName())
+		// || Constants.APPLICATIONNAME_KEY.equals(e.getPropertyName())
+		// || Constants.APPLICATIONVERSION_KEY.equals(e.getPropertyName())) {
+		//
+		//
+		//
+		// }
 
 		System.out.println("LOading queues.");
 		loadQueues();
@@ -173,8 +173,37 @@ public class QueueSelector extends AbstractInputPanel implements
 
 	private void loadQueues() {
 
+		String tempApp = getJobSubmissionObject().getApplication();
+		String tempVers = getJobSubmissionObject().getApplicationVersion();
+
+		String currentFqan = getUserEnvironmentManager().getCurrentFqan();
+
+		// if (!interrupted) {
+
+		if (tempApp == null) {
+
+			if ((lastApplication == null) && tempVers.equals(lastVersion)
+					&& currentFqan.equals(lastFqan)) {
+				return;
+			}
+
+		} else {
+
+			if (tempApp.equals(lastApplication) && tempVers.equals(lastVersion)
+					&& currentFqan.equals(lastFqan)) {
+				return;
+			}
+		}
+		// }
+
+		lastApplication = tempApp;
+		lastVersion = tempVers;
+		lastFqan = currentFqan;
+		System.out.println("App: " + lastApplication);
+		System.out.println("Version: " + lastVersion);
+		System.out.println("Fqan: " + lastFqan);
+
 		if ((loadThread != null) && loadThread.isAlive()) {
-			// I know, I know. But I think it's ok in this case.
 			loadThread.interrupt();
 		}
 
@@ -201,61 +230,71 @@ public class QueueSelector extends AbstractInputPanel implements
 		setLoading(true);
 		final JobSubmissionObjectImpl job = getJobSubmissionObject();
 		if (job == null) {
+			setLoading(false);
 			return;
 		}
 		String applicationName = job.getApplication();
-		if (StringUtils.isBlank(applicationName)) {
+		if (applicationName == null) {
 			applicationName = Constants.GENERIC_APPLICATION_NAME;
 		}
+
 		final ApplicationInformation ai = GrisuRegistryManager.getDefault(
 				getServiceInterface()).getApplicationInformation(
 				applicationName);
 
-		if (Thread.interrupted()) {
-			return;
-		}
+		// if (Thread.interrupted()) {
+		// System.out.println("interrupted 1");
+		// setLoading(false);
+		// interrupted = true;
+		// return;
+		// }
 
 		currentQueues = ai.getAllSubmissionLocationsAsGridResources(
 				getJobSubmissionObject().getJobSubmissionPropertyMap(),
 				GrisuRegistryManager.getDefault(getServiceInterface())
 						.getUserEnvironmentManager().getCurrentFqan());
 
-		if (Thread.interrupted()) {
-			return;
-		}
+		// if (Thread.interrupted()) {
+		// System.out.println("Interrupted 2");
+		// interrupted = true;
+		// return;
+		// }
 
-		if (currentQueues == null) {
+		if ((currentQueues == null) || (currentQueues.size() == 0)) {
+
+			SwingUtilities.invokeLater(new Thread() {
+				@Override
+				public void run() {
+					queueModel.removeAllElements();
+					queueModel
+							.addElement("No location available for selected values");
+					setLoading(false);
+				}
+			});
 			return;
 		}
 
 		setLoading(false);
+
+		// if (Thread.interrupted()) {
+		// System.out.println("interrupted 3");
+		// interrupted = true;
+		// return;
+		// }
+
 		queueModel.removeAllElements();
 		boolean containsOld = false;
 		for (final GridResource gr : currentQueues) {
 			if (gr.equals(oldSubLoc)) {
 				containsOld = true;
 			}
-			SwingUtilities.invokeLater(new Thread() {
-
-				@Override
-				public void run() {
-					queueModel.addElement(gr);
-				}
-
-			});
-
+			queueModel.addElement(gr);
 		}
 		if (containsOld) {
 			final GridResource temp = oldSubLoc;
-			SwingUtilities.invokeLater(new Thread() {
-
-				@Override
-				public void run() {
-					queueModel.setSelectedItem(temp);
-				}
-
-			});
+			queueModel.setSelectedItem(temp);
 		}
+		interrupted = false;
 	}
 
 	public void onEvent(FqanEvent arg0) {
@@ -284,7 +323,9 @@ public class QueueSelector extends AbstractInputPanel implements
 			public void run() {
 				if (loading) {
 					queueModel.removeAllElements();
-					queueModel.addElement("Calculating...");
+					queueModel.addElement("Searching...");
+				} else {
+					queueModel.removeElement("Searching...");
 				}
 
 				getQueueComboBox().setEnabled(!loading);

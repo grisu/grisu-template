@@ -116,9 +116,12 @@ public class TemplateWrapperPanel extends JPanel {
 										+ e.getLocalizedMessage(), null,
 								"Error", e, Level.SEVERE, null);
 
-						System.out.println(e.getLocalizedMessage());
+						JXErrorPane pane = new JXErrorPane();
+						pane.setErrorInfo(info);
+						// pane.setErrorReporter(new GrisuErrorReporter());
+
 						JXErrorPane.showDialog(
-								TemplateWrapperPanel.this.getRootPane(), info);
+								TemplateWrapperPanel.this.getRootPane(), pane);
 
 						return;
 					}

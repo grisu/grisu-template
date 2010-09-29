@@ -441,6 +441,8 @@ public abstract class AbstractInputPanel extends JPanel implements
 	public void initPanel(TemplateObject template,
 			JobSubmissionObjectImpl jobObject) throws TemplateException {
 
+		myLogger.debug("Initializing panel: " + getPanelName());
+
 		if (si == null) {
 			throw new IllegalStateException("ServiceInterface not set yet.");
 		}
@@ -542,6 +544,9 @@ public abstract class AbstractInputPanel extends JPanel implements
 	public void refresh(JobSubmissionObjectImpl jobObject)
 			throws TemplateException {
 
+		myLogger.debug("Refreshing panel with new job: "
+				+ getTemplateObject().getTemplateName() + "/" + getPanelName());
+
 		initFinished = false;
 
 		if (this.jobObject != null) {
@@ -551,12 +556,18 @@ public abstract class AbstractInputPanel extends JPanel implements
 		this.jobObject = jobObject;
 		this.jobObject.addPropertyChangeListener(this);
 
+		myLogger.debug("Refreshing template: "
+				+ getTemplateObject().getTemplateName() + "/" + getPanelName());
 		templateRefresh(jobObject);
 
+		myLogger.debug("Preparing panel: "
+				+ getTemplateObject().getTemplateName() + "/" + getPanelName());
 		preparePanel(panelProperties);
 
 		initFinished = true;
 
+		myLogger.debug("Setting initial value: "
+				+ getTemplateObject().getTemplateName() + "/" + getPanelName());
 		setInitialValue();
 	}
 
@@ -601,15 +612,19 @@ public abstract class AbstractInputPanel extends JPanel implements
 			if (StringUtils.isNotBlank(bean)) {
 
 				Method method = null;
+				Class valueClass = null;
+				if (value == null) {
+					valueClass = String.class;
+				} else {
+					valueClass = value.getClass();
+				}
 				try {
 					method = jobObject.getClass().getMethod(
-							"set" + StringUtils.capitalize(bean),
-							value.getClass());
+							"set" + StringUtils.capitalize(bean), valueClass);
 				} catch (final Exception e) {
 					// try add method
 					method = jobObject.getClass().getMethod(
-							"add" + StringUtils.capitalize(bean),
-							value.getClass());
+							"add" + StringUtils.capitalize(bean), valueClass);
 
 					if (oldAddValue != null) {
 						final Method removeMethod = jobObject

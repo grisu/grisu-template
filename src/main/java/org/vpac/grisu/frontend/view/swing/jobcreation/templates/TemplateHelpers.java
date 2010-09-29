@@ -369,7 +369,7 @@ public class TemplateHelpers {
 
 		final int start = line.indexOf("[");
 		if (start < 0) {
-			myLogger.debug("No panel name config.");
+			// myLogger.debug("No panel name config.");
 			return null;
 		}
 

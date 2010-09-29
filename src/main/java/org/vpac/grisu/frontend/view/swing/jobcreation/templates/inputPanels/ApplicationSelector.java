@@ -3,11 +3,13 @@ package org.vpac.grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.StringUtils;
 import org.vpac.grisu.control.exceptions.TemplateException;
@@ -26,9 +28,10 @@ public class ApplicationSelector extends AbstractInputPanel {
 	private JComboBox comboBox;
 	private final DefaultComboBoxModel appModel = new DefaultComboBoxModel();
 
-	private Set<String> allApps;
+	private String lastExe;
 
 	private boolean lastAppEmpty = false;
+	private String[] lastAppPackages = null;
 
 	public ApplicationSelector(String templateName, PanelConfig config)
 			throws TemplateException {
@@ -53,6 +56,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 						String app = (String) appModel.getSelectedItem();
 						try {
 							setValue("application", app);
+							System.out.println("Setvalue: " + app);
 						} catch (TemplateException e1) {
 							e1.printStackTrace();
 						}
@@ -72,7 +76,10 @@ public class ApplicationSelector extends AbstractInputPanel {
 	@Override
 	protected void jobPropertyChanged(PropertyChangeEvent e) {
 
-		// Thread.dumpStack();
+		if (!isInitFinished()) {
+			return;
+		}
+
 		if (Constants.EXECUTABLE_KEY.equals(e.getPropertyName())) {
 			String cmdln = (String) e.getNewValue();
 			if (StringUtils.isBlank(cmdln)) {
@@ -80,43 +87,53 @@ public class ApplicationSelector extends AbstractInputPanel {
 			}
 			setProperApplicationPackage(cmdln);
 			return;
-
-		} else if (Constants.APPLICATIONNAME_KEY.equals(e.getPropertyName())) {
-
-			String app = (String) e.getNewValue();
-			if (StringUtils.isNotBlank(app)) {
-				appModel.setSelectedItem(app);
-			}
 		}
-
 	}
 
 	@Override
 	protected void preparePanel(Map<String, String> panelProperties)
 			throws TemplateException {
-		// TODO Auto-generated method stub
 
 	}
 
-	private synchronized void setApplicationPackages(String[] appPackages) {
+	private synchronized void setApplicationPackages(final String[] appPackages) {
+
+		if ((lastAppPackages == appPackages)
+				|| Arrays.equals(lastAppPackages, appPackages)) {
+			return;
+		}
+		lastAppPackages = appPackages;
+		System.out.println("Thread...");
 
 		if ((appPackages == null) || (appPackages.length == 0)) {
 			if (!lastAppEmpty) {
-				appModel.removeAllElements();
-				appModel.addElement(Constants.GENERIC_APPLICATION_NAME);
-				Set<String> allApps = GrisuRegistryManager
-						.getDefault(getServiceInterface())
-						.getResourceInformation().getAllApplications();
-				for (String app : allApps) {
-					appModel.addElement(app);
-				}
+				SwingUtilities.invokeLater(new Thread() {
+					@Override
+					public void run() {
+						appModel.removeAllElements();
+						appModel.addElement(Constants.GENERIC_APPLICATION_NAME);
+						final Set<String> allApps = GrisuRegistryManager
+								.getDefault(getServiceInterface())
+								.getResourceInformation().getAllApplications();
+						for (String app : allApps) {
+							appModel.addElement(app);
+						}
+					}
+
+				});
 			}
 			lastAppEmpty = true;
+
 		} else {
-			appModel.removeAllElements();
-			for (String app : appPackages) {
-				appModel.addElement(app);
-			}
+			SwingUtilities.invokeLater(new Thread() {
+				@Override
+				public void run() {
+					appModel.removeAllElements();
+					for (String app : appPackages) {
+						appModel.addElement(app);
+					}
+				}
+			});
 			lastAppEmpty = false;
 		}
 
@@ -124,21 +141,47 @@ public class ApplicationSelector extends AbstractInputPanel {
 
 	@Override
 	void setInitialValue() throws TemplateException {
-		setProperApplicationPackage(getJobSubmissionObject().getCommandline());
+		new Thread() {
+			@Override
+			public void run() {
+
+				appModel.removeAllElements();
+				appModel.addElement(Constants.GENERIC_APPLICATION_NAME);
+				final Set<String> allApps = GrisuRegistryManager
+						.getDefault(getServiceInterface())
+						.getResourceInformation().getAllApplications();
+				for (String app : allApps) {
+					appModel.addElement(app);
+				}
+
+			}
+		}.start();
 	}
 
-	private void setProperApplicationPackage(String cmdln) {
-		String exe = JobSubmissionObjectImpl.extractExecutable(cmdln);
-		String[] appPackages = GrisuRegistryManager
-				.getDefault(getServiceInterface()).getResourceInformation()
-				.getApplicationPackageForExecutable(exe);
+	private void setProperApplicationPackage(final String cmdln) {
+		final String exe = JobSubmissionObjectImpl.extractExecutable(cmdln);
+		if ((exe != null) && exe.equals(lastExe)) {
+			return;
+		}
+		lastExe = exe;
 
-		setApplicationPackages(appPackages);
+		new Thread() {
+			@Override
+			public void run() {
+
+				String[] appPackages = GrisuRegistryManager
+						.getDefault(getServiceInterface())
+						.getResourceInformation()
+						.getApplicationPackageForExecutable(exe);
+
+				setApplicationPackages(appPackages);
+			}
+		}.start();
+
 	}
 
 	@Override
 	protected void templateRefresh(JobSubmissionObjectImpl jobObject) {
-		// TODO Auto-generated method stub
 
 	}
 }

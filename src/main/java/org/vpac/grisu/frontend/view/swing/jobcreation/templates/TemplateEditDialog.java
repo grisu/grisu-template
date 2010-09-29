@@ -42,6 +42,8 @@ public class TemplateEditDialog extends JDialog {
 	public TemplateEditDialog(ServiceInterface si, File templateFile)
 			throws TemplateException {
 		this.setModal(false);
+		this.setTitle("Template editor: " + templateFile.getName());
+
 		this.si = si;
 		this.tm = GrisuRegistryManager.getDefault(si).getTemplateManager();
 

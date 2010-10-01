@@ -49,9 +49,9 @@ public class QueueSelector extends AbstractInputPanel implements
 
 	private Thread loadThread;
 
-	private String lastSubLoc = null;
-
 	private boolean interrupted = false;
+
+	private String lastSubLoc = null;
 
 	public QueueSelector(String templateName, PanelConfig config)
 			throws TemplateException {
@@ -99,6 +99,14 @@ public class QueueSelector extends AbstractInputPanel implements
 			queueComboBox.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent e) {
 
+					if ((ItemEvent.DESELECTED == e.getStateChange())
+							|| "Searching...".equals(e.getItem())) {
+						return;
+					}
+
+					if (!isInitFinished()) {
+						return;
+					}
 					GridResource gr;
 					try {
 						gr = (GridResource) (queueModel.getSelectedItem());
@@ -117,7 +125,6 @@ public class QueueSelector extends AbstractInputPanel implements
 					lastSubLoc = subLoc;
 
 					try {
-						System.out.println("Setting: " + subLoc);
 						setValue("submissionLocation", subLoc);
 					} catch (final TemplateException e1) {
 						e1.printStackTrace();
@@ -134,15 +141,15 @@ public class QueueSelector extends AbstractInputPanel implements
 	}
 
 	@Override
-	protected synchronized void jobPropertyChanged(PropertyChangeEvent e) {
+	protected void jobPropertyChanged(PropertyChangeEvent e) {
 
 		if (!isInitFinished()) {
 			return;
 		}
 
-		final String[] possibleBeans = new String[] {
-				Constants.COMMANDLINE_KEY, Constants.APPLICATIONNAME_KEY,
-				Constants.APPLICATIONVERSION_KEY, Constants.FORCE_MPI_KEY,
+		System.out.println(e.getPropertyName() + " " + e.getNewValue());
+
+		final String[] possibleBeans = new String[] { Constants.FORCE_MPI_KEY,
 				Constants.FORCE_SINGLE_KEY, Constants.HOSTCOUNT_KEY,
 				Constants.MEMORY_IN_B_KEY, Constants.NO_CPUS_KEY,
 				Constants.WALLTIME_IN_MINUTES_KEY };
@@ -153,6 +160,15 @@ public class QueueSelector extends AbstractInputPanel implements
 				reloadQueues = true;
 				break;
 			}
+		}
+
+		boolean force = true;
+
+		if (Constants.APPLICATIONNAME_KEY.equals(e.getPropertyName())
+				|| Constants.APPLICATIONVERSION_KEY.equals(e.getPropertyName())
+				|| Constants.COMMANDLINE_KEY.equals(e.getPropertyName())) {
+			force = false;
+			reloadQueues = true;
 		}
 
 		if (!reloadQueues) {
@@ -167,41 +183,42 @@ public class QueueSelector extends AbstractInputPanel implements
 		//
 		// }
 
-		System.out.println("LOading queues.");
-		loadQueues();
+		loadQueues(force);
 	}
 
-	private void loadQueues() {
+	private synchronized void loadQueues(boolean force) {
 
 		String tempApp = getJobSubmissionObject().getApplication();
 		String tempVers = getJobSubmissionObject().getApplicationVersion();
 
 		String currentFqan = getUserEnvironmentManager().getCurrentFqan();
 
-		// if (!interrupted) {
+		if (!force) {
 
-		if (tempApp == null) {
+			if (!interrupted) {
 
-			if ((lastApplication == null) && tempVers.equals(lastVersion)
-					&& currentFqan.equals(lastFqan)) {
-				return;
-			}
+				if (tempApp == null) {
 
-		} else {
+					if ((lastApplication == null)
+							&& tempVers.equals(lastVersion)
+							&& currentFqan.equals(lastFqan)) {
+						return;
+					}
 
-			if (tempApp.equals(lastApplication) && tempVers.equals(lastVersion)
-					&& currentFqan.equals(lastFqan)) {
-				return;
+				} else {
+
+					if (tempApp.equals(lastApplication)
+							&& tempVers.equals(lastVersion)
+							&& currentFqan.equals(lastFqan)) {
+						return;
+					}
+				}
 			}
 		}
-		// }
 
 		lastApplication = tempApp;
 		lastVersion = tempVers;
 		lastFqan = currentFqan;
-		System.out.println("App: " + lastApplication);
-		System.out.println("Version: " + lastVersion);
-		System.out.println("Fqan: " + lastFqan);
 
 		if ((loadThread != null) && loadThread.isAlive()) {
 			loadThread.interrupt();
@@ -220,13 +237,15 @@ public class QueueSelector extends AbstractInputPanel implements
 	}
 
 	private synchronized void loadQueuesIntoComboBox() {
-		GridResource oldSubLoc = null;
 
+		interrupted = false;
+		GridResource oldSubLoc = null;
 		try {
 			oldSubLoc = (GridResource) queueModel.getSelectedItem();
-		} catch (final Exception e) {
-			// doesn't matter
+		} catch (Exception e) {
+
 		}
+
 		setLoading(true);
 		final JobSubmissionObjectImpl job = getJobSubmissionObject();
 		if (job == null) {
@@ -243,7 +262,6 @@ public class QueueSelector extends AbstractInputPanel implements
 				applicationName);
 
 		// if (Thread.interrupted()) {
-		// System.out.println("interrupted 1");
 		// setLoading(false);
 		// interrupted = true;
 		// return;
@@ -255,51 +273,45 @@ public class QueueSelector extends AbstractInputPanel implements
 						.getUserEnvironmentManager().getCurrentFqan());
 
 		// if (Thread.interrupted()) {
-		// System.out.println("Interrupted 2");
 		// interrupted = true;
 		// return;
 		// }
 
 		if ((currentQueues == null) || (currentQueues.size() == 0)) {
 
-			SwingUtilities.invokeLater(new Thread() {
-				@Override
-				public void run() {
-					queueModel.removeAllElements();
-					queueModel
-							.addElement("No location available for selected values");
-					setLoading(false);
-				}
-			});
+			queueModel.removeAllElements();
+			queueModel.addElement("No location available for selected values");
+			setLoading(false);
 			return;
 		}
 
-		setLoading(false);
-
 		// if (Thread.interrupted()) {
-		// System.out.println("interrupted 3");
 		// interrupted = true;
 		// return;
 		// }
 
+		final GridResource oldSubLocT = oldSubLoc;
+
 		queueModel.removeAllElements();
 		boolean containsOld = false;
 		for (final GridResource gr : currentQueues) {
-			if (gr.equals(oldSubLoc)) {
+			if (gr.equals(oldSubLocT)) {
 				containsOld = true;
 			}
 			queueModel.addElement(gr);
 		}
 		if (containsOld) {
-			final GridResource temp = oldSubLoc;
+			final GridResource temp = oldSubLocT;
 			queueModel.setSelectedItem(temp);
 		}
+
+		setLoading(false);
 		interrupted = false;
 	}
 
 	public void onEvent(FqanEvent arg0) {
 
-		loadQueues();
+		loadQueues(false);
 
 	}
 
@@ -312,21 +324,23 @@ public class QueueSelector extends AbstractInputPanel implements
 	@Override
 	void setInitialValue() throws TemplateException {
 
-		loadQueues();
+		loadQueues(false);
 
 	}
 
 	private void setLoading(final boolean loading) {
 
+		if (loading) {
+			queueModel.removeAllElements();
+			queueModel.addElement("Searching...");
+		} else {
+			if (queueModel.getIndexOf("Searching...") >= 0) {
+				queueModel.removeElement("Searching...");
+			}
+		}
 		SwingUtilities.invokeLater(new Thread() {
 			@Override
 			public void run() {
-				if (loading) {
-					queueModel.removeAllElements();
-					queueModel.addElement("Searching...");
-				} else {
-					queueModel.removeElement("Searching...");
-				}
 
 				getQueueComboBox().setEnabled(!loading);
 				getHidingQueueInfoPanel().setLoading(loading);

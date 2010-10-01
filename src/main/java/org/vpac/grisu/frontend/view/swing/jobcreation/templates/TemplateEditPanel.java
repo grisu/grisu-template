@@ -200,6 +200,11 @@ public class TemplateEditPanel extends JPanel implements
 
 	public void actionPerformed(ActionEvent arg0) {
 
+		// save backup file
+		File tempF = new File(System.getProperty("java.io.tmpdir"),
+				currentFile.getName());
+		saveCurrentTextToFile(tempF);
+
 		if (currentTemplatePanel != null) {
 			getCardPanel().remove(currentTemplatePanel);
 		}
@@ -288,25 +293,18 @@ public class TemplateEditPanel extends JPanel implements
 							return;
 						}
 					}
-					try {
-						final FileWriter writer = new FileWriter(f);
-						textArea.write(writer); // Use TextComponent write
+					saveCurrentTextToFile(f);
 
-						if (si != null) {
-							GrisuRegistryManager.getDefault(si)
-									.getTemplateManager()
-									.addLocalTemplate(currentFile);
-						}
-
-						if (optionalDialog != null) {
-							optionalDialog.dispose();
-						}
-
-					} catch (final Exception ioex) {
-						JOptionPane.showMessageDialog(TemplateEditPanel.this,
-								ioex);
-						// System.exit(1);
+					if (si != null) {
+						GrisuRegistryManager.getDefault(si)
+								.getTemplateManager()
+								.addLocalTemplate(currentFile);
 					}
+
+					if (optionalDialog != null) {
+						optionalDialog.dispose();
+					}
+
 				}
 			});
 		}
@@ -467,6 +465,17 @@ public class TemplateEditPanel extends JPanel implements
 
 	}
 
+	private void saveCurrentTextToFile(File file) {
+		try {
+			final FileWriter writer = new FileWriter(file);
+			textArea.write(writer); // Use TextComponent write
+
+		} catch (final Exception ioex) {
+			JOptionPane.showMessageDialog(TemplateEditPanel.this, ioex);
+			// System.exit(1);
+		}
+	}
+
 	public void setDialog(JDialog templateEditDialog) {
 
 		this.optionalDialog = templateEditDialog;
@@ -513,7 +522,7 @@ public class TemplateEditPanel extends JPanel implements
 								SeveralXMLHelpers.fromString(jsdl));
 				getGt4TextArea().setText(gt4rsl);
 			} catch (final Exception e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 
 			try {
@@ -523,7 +532,7 @@ public class TemplateEditPanel extends JPanel implements
 								SeveralXMLHelpers.fromString(jsdl));
 				getGt5TextArea().setText(gt5rsl);
 			} catch (final Exception e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 
 		}

@@ -212,7 +212,6 @@ public class TemplateObject {
 
 	public void userInput(String panelName, String newValue) {
 
-		System.out.println(newValue);
 		if (newValue == null) {
 			newValue = "";
 		}

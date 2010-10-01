@@ -96,13 +96,10 @@ public class TemplateHelpers {
 			filterConfig.remove("type");
 
 			Filter filter = null;
-			if (filterConfig.size() == 0) {
-				filter = (Filter) filterClass.newInstance();
-			} else {
-				final Constructor<Filter> filterConstructor = filterClass
-						.getConstructor(Map.class);
-				filter = filterConstructor.newInstance(filterConfig);
+			filter = (Filter) filterClass.newInstance();
 
+			if (filterConfig.size() > 0) {
+				filter.config(filterConfig);
 			}
 
 			return filter;
@@ -128,7 +125,7 @@ public class TemplateHelpers {
 			final String[] initValues = configString.substring(startIndex + 1,
 					endIndex).split(":");
 			for (String value : initValues) {
-				value = value.trim();
+				// value = value.trim();
 				final int index = value.indexOf("=");
 				if (index <= 0) {
 					throw new TemplateException(
@@ -136,7 +133,8 @@ public class TemplateHelpers {
 									+ value);
 				}
 				final String key = value.substring(0, index).trim();
-				final String value2 = value.substring(index + 1).trim();
+				// final String value2 = value.substring(index + 1).trim();
+				final String value2 = value.substring(index + 1);
 				config.put(key, value2);
 			}
 		}

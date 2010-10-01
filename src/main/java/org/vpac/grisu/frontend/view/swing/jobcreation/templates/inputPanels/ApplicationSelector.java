@@ -52,14 +52,24 @@ public class ApplicationSelector extends AbstractInputPanel {
 			comboBox.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent e) {
 
+					if (!isInitFinished()) {
+						return;
+					}
+
 					if (ItemEvent.SELECTED == e.getStateChange()) {
-						String app = (String) appModel.getSelectedItem();
-						try {
-							setValue("application", app);
-							System.out.println("Setvalue: " + app);
-						} catch (TemplateException e1) {
-							e1.printStackTrace();
-						}
+						final String app = (String) appModel.getSelectedItem();
+						new Thread() {
+							@Override
+							public void run() {
+
+								try {
+									setValue("application", app);
+								} catch (TemplateException e1) {
+									e1.printStackTrace();
+								}
+							}
+						}.start();
+
 					}
 
 				}
@@ -103,7 +113,6 @@ public class ApplicationSelector extends AbstractInputPanel {
 			return;
 		}
 		lastAppPackages = appPackages;
-		System.out.println("Thread...");
 
 		if ((appPackages == null) || (appPackages.length == 0)) {
 			if (!lastAppEmpty) {

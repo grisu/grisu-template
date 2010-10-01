@@ -9,6 +9,8 @@ import java.util.Set;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerListModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.apache.commons.lang.StringUtils;
 import org.vpac.grisu.control.exceptions.TemplateException;
@@ -53,6 +55,17 @@ public class Spinner extends AbstractInputPanel {
 	private JSpinner getSpinner() {
 		if (spinner == null) {
 			spinner = new JSpinner(model);
+			spinner.addChangeListener(new ChangeListener() {
+
+				public void stateChanged(ChangeEvent e) {
+					String value = (String) spinner.getModel().getValue();
+					try {
+						setValue(bean, value);
+					} catch (TemplateException e1) {
+						e1.printStackTrace();
+					}
+				}
+			});
 		}
 		return spinner;
 	}

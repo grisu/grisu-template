@@ -6,7 +6,6 @@ import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 
@@ -14,6 +13,11 @@ import org.apache.commons.lang.StringUtils;
 import org.vpac.grisu.control.exceptions.TemplateException;
 import org.vpac.grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import org.vpac.grisu.model.job.JobSubmissionObjectImpl;
+
+import com.jgoodies.forms.factories.FormFactory;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
 
 public class CheckBox extends AbstractInputPanel {
 
@@ -25,11 +29,17 @@ public class CheckBox extends AbstractInputPanel {
 	public CheckBox(String templateName, PanelConfig config)
 			throws TemplateException {
 		super(templateName, config);
-		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-		add(getCheckBox());
-		if (displayHelpLabel()) {
-			add(getHelpLabel());
-		}
+		setLayout(new FormLayout(new ColumnSpec[] {
+				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
+				ColumnSpec.decode("21px:grow"),
+				FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("21px"),
+				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("21px"),
+				FormFactory.RELATED_GAP_ROWSPEC, }));
+		add(getCheckBox(), "2, 2, 3, 1, fill, top");
+		// if (displayHelpLabel()) {
+		// add(getHelpLabel());
+		// }
 
 	}
 
@@ -60,9 +70,9 @@ public class CheckBox extends AbstractInputPanel {
 
 		final Map<String, String> defaultProperties = new HashMap<String, String>();
 		defaultProperties.put(LABEL, null);
-		defaultProperties.put(DEFAULT_VALUE, "false");
-		defaultProperties.put(CHECKED_VALUE, "true");
-		defaultProperties.put(UNCHECKED_VALUE, "false");
+		// defaultProperties.put(DEFAULT_VALUE, "false");
+		// defaultProperties.put(CHECKED_VALUE, "true");
+		// defaultProperties.put(UNCHECKED_VALUE, "false");
 		return defaultProperties;
 
 	}
@@ -91,7 +101,6 @@ public class CheckBox extends AbstractInputPanel {
 	@Override
 	void setInitialValue() throws TemplateException {
 
-		final boolean checked = false;
 		try {
 			if (StringUtils.isNotBlank(getDefaultValue())) {
 				if (getDefaultValue().equals(getPanelProperty(CHECKED_VALUE))) {
@@ -100,14 +109,12 @@ public class CheckBox extends AbstractInputPanel {
 						getPanelProperty(UNCHECKED_VALUE))) {
 					getCheckBox().setSelected(false);
 				}
+				setValue(bean, getDefaultValue());
 			}
 		} catch (final Exception e) {
 			throw new TemplateException("Can't parse initial checkbox value: "
 					+ e.getLocalizedMessage());
 		}
-
-		getCheckBox().setSelected(checked);
-
 	}
 
 	@Override

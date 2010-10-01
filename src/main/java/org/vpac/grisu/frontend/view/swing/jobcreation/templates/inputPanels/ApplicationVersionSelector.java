@@ -62,8 +62,7 @@ public class ApplicationVersionSelector extends AbstractInputPanel implements
 		}
 		try {
 			if (StringUtils.isBlank(version)
-					|| Constants.NO_VERSION_INDICATOR_STRING.equals(version)
-					|| "n/a".equals(version)) {
+					|| Constants.NO_VERSION_INDICATOR_STRING.equals(version)) {
 
 				if (lastVersionEmpty) {
 					return;
@@ -87,11 +86,21 @@ public class ApplicationVersionSelector extends AbstractInputPanel implements
 			comboBox.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent e) {
 
+					if (!isInitFinished()) {
+						return;
+					}
+
 					if (ItemEvent.SELECTED == e.getStateChange()) {
-						String version = (String) versionModel
+						final String version = (String) versionModel
 								.getSelectedItem();
 
-						changeJobApplicationVersion(version);
+						new Thread() {
+							@Override
+							public void run() {
+								changeJobApplicationVersion(version);
+
+							}
+						}.start();
 					}
 
 				}
@@ -163,8 +172,14 @@ public class ApplicationVersionSelector extends AbstractInputPanel implements
 		if (StringUtils.isBlank(app)
 				|| Constants.GENERIC_APPLICATION_NAME.equals(app)) {
 
-			versionModel.removeAllElements();
-			versionModel.addElement("n/a");
+			SwingUtilities.invokeLater(new Thread() {
+				@Override
+				public void run() {
+					versionModel.removeAllElements();
+					versionModel
+							.addElement(Constants.NO_VERSION_INDICATOR_STRING);
+				}
+			});
 			lockVersion = false;
 			lockUI(false);
 			changeJobApplicationVersion(Constants.NO_VERSION_INDICATOR_STRING);
@@ -196,7 +211,8 @@ public class ApplicationVersionSelector extends AbstractInputPanel implements
 				versionModel.removeAllElements();
 
 				if (allVersions.size() == 0) {
-					versionModel.addElement("n/a");
+					versionModel
+							.addElement(Constants.NO_VERSION_INDICATOR_STRING);
 				} else {
 					if (allVersions.size() > 1) {
 						versionModel
@@ -210,11 +226,8 @@ public class ApplicationVersionSelector extends AbstractInputPanel implements
 				if (StringUtils.isNotBlank(lastVersion)
 						&& (versionModel.getIndexOf(lastVersion) >= 0)) {
 					versionModel.setSelectedItem(lastVersion);
-					System.out.println("Last version: " + lastVersion);
 				} else {
 					versionModel.setSelectedItem(versionModel.getElementAt(0));
-					System.out.println("First entry version: "
-							+ versionModel.getElementAt(0));
 				}
 
 			}
@@ -230,11 +243,9 @@ public class ApplicationVersionSelector extends AbstractInputPanel implements
 
 	}
 
-	private void setProperApplicationVersion(final String app) {
+	private synchronized void setProperApplicationVersion(final String app) {
 
 		final String currentFqan = getUserEnvironmentManager().getCurrentFqan();
-		System.out.println(app + "/" + lastApplication);
-		System.out.println(currentFqan + "/" + lastFqan);
 
 		if (app == null) {
 			if ((lastApplication == null) && currentFqan.equals(lastFqan)) {

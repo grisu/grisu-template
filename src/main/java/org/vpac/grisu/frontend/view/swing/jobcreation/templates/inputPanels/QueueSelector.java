@@ -141,7 +141,7 @@ public class QueueSelector extends AbstractInputPanel implements
 	}
 
 	@Override
-	protected void jobPropertyChanged(PropertyChangeEvent e) {
+	protected synchronized void jobPropertyChanged(PropertyChangeEvent e) {
 
 		if (!isInitFinished()) {
 			return;
@@ -236,7 +236,7 @@ public class QueueSelector extends AbstractInputPanel implements
 
 	}
 
-	private synchronized void loadQueuesIntoComboBox() {
+	private void loadQueuesIntoComboBox() {
 
 		interrupted = false;
 		GridResource oldSubLoc = null;
@@ -261,21 +261,22 @@ public class QueueSelector extends AbstractInputPanel implements
 				getServiceInterface()).getApplicationInformation(
 				applicationName);
 
-		// if (Thread.interrupted()) {
-		// setLoading(false);
-		// interrupted = true;
-		// return;
-		// }
+		if (Thread.currentThread().isInterrupted()) {
+			// setLoading(false);
+			interrupted = true;
+			return;
+		}
 
 		currentQueues = ai.getAllSubmissionLocationsAsGridResources(
 				getJobSubmissionObject().getJobSubmissionPropertyMap(),
 				GrisuRegistryManager.getDefault(getServiceInterface())
 						.getUserEnvironmentManager().getCurrentFqan());
 
-		// if (Thread.interrupted()) {
-		// interrupted = true;
-		// return;
-		// }
+		if (Thread.currentThread().isInterrupted()) {
+			interrupted = true;
+			// setLoading(false);
+			return;
+		}
 
 		if ((currentQueues == null) || (currentQueues.size() == 0)) {
 
@@ -285,10 +286,11 @@ public class QueueSelector extends AbstractInputPanel implements
 			return;
 		}
 
-		// if (Thread.interrupted()) {
-		// interrupted = true;
-		// return;
-		// }
+		if (Thread.currentThread().isInterrupted()) {
+			interrupted = true;
+			// setLoading(false);
+			return;
+		}
 
 		final GridResource oldSubLocT = oldSubLoc;
 
@@ -324,11 +326,11 @@ public class QueueSelector extends AbstractInputPanel implements
 	@Override
 	void setInitialValue() throws TemplateException {
 
-		loadQueues(false);
+		// loadQueues(false);
 
 	}
 
-	private void setLoading(final boolean loading) {
+	private synchronized void setLoading(final boolean loading) {
 
 		if (loading) {
 			queueModel.removeAllElements();

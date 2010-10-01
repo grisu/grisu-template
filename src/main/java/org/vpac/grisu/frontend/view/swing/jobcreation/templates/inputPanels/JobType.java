@@ -15,6 +15,11 @@ import org.vpac.grisu.control.exceptions.TemplateException;
 import org.vpac.grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import org.vpac.grisu.model.job.JobSubmissionObjectImpl;
 
+import com.jgoodies.forms.factories.FormFactory;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
+
 public class JobType extends AbstractInputPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
@@ -42,10 +47,19 @@ public class JobType extends AbstractInputPanel implements ActionListener {
 		} else {
 			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		}
+		setLayout(new FormLayout(new ColumnSpec[] {
+				FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("69px"),
+				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
+				ColumnSpec.decode("93px"),
+				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
+				ColumnSpec.decode("50px:grow"),
+				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("23px"),
+				FormFactory.RELATED_GAP_ROWSPEC, }));
 
-		add(getSingleRadioBox());
-		add(getThreadedRadioBox());
-		add(getMpiRadioBox());
+		add(getSingleRadioBox(), "2, 2, left, top");
+		add(getThreadedRadioBox(), "4, 2, left, top");
+		add(getMpiRadioBox(), "6, 2, left, top");
 
 		group.add(getSingleRadioBox());
 		group.add(getThreadedRadioBox());

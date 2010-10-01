@@ -55,7 +55,7 @@ public class ApplicationVersionSelector extends AbstractInputPanel implements
 
 	}
 
-	private void changeJobApplicationVersion(String version) {
+	private synchronized void changeJobApplicationVersion(String version) {
 
 		if (lockVersion) {
 			return;
@@ -115,7 +115,7 @@ public class ApplicationVersionSelector extends AbstractInputPanel implements
 	}
 
 	@Override
-	protected void jobPropertyChanged(PropertyChangeEvent e) {
+	protected synchronized void jobPropertyChanged(PropertyChangeEvent e) {
 
 		if (!isInitFinished()) {
 			return;
@@ -149,7 +149,7 @@ public class ApplicationVersionSelector extends AbstractInputPanel implements
 
 	}
 
-	public void onEvent(FqanEvent arg0) {
+	public synchronized void onEvent(FqanEvent arg0) {
 
 		setProperApplicationVersion(getJobSubmissionObject().getApplication());
 	}

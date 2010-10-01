@@ -9,7 +9,6 @@ import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.StringUtils;
 import org.vpac.grisu.control.exceptions.TemplateException;
@@ -84,7 +83,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 	}
 
 	@Override
-	protected void jobPropertyChanged(PropertyChangeEvent e) {
+	protected synchronized void jobPropertyChanged(PropertyChangeEvent e) {
 
 		if (!isInitFinished()) {
 			return;
@@ -116,43 +115,6 @@ public class ApplicationSelector extends AbstractInputPanel {
 
 		if ((appPackages == null) || (appPackages.length == 0)) {
 			if (!lastAppEmpty) {
-				SwingUtilities.invokeLater(new Thread() {
-					@Override
-					public void run() {
-						appModel.removeAllElements();
-						appModel.addElement(Constants.GENERIC_APPLICATION_NAME);
-						final Set<String> allApps = GrisuRegistryManager
-								.getDefault(getServiceInterface())
-								.getResourceInformation().getAllApplications();
-						for (String app : allApps) {
-							appModel.addElement(app);
-						}
-					}
-
-				});
-			}
-			lastAppEmpty = true;
-
-		} else {
-			SwingUtilities.invokeLater(new Thread() {
-				@Override
-				public void run() {
-					appModel.removeAllElements();
-					for (String app : appPackages) {
-						appModel.addElement(app);
-					}
-				}
-			});
-			lastAppEmpty = false;
-		}
-
-	}
-
-	@Override
-	void setInitialValue() throws TemplateException {
-		new Thread() {
-			@Override
-			public void run() {
 
 				appModel.removeAllElements();
 				appModel.addElement(Constants.GENERIC_APPLICATION_NAME);
@@ -162,9 +124,31 @@ public class ApplicationSelector extends AbstractInputPanel {
 				for (String app : allApps) {
 					appModel.addElement(app);
 				}
-
 			}
-		}.start();
+			lastAppEmpty = true;
+
+		} else {
+			appModel.removeAllElements();
+			for (String app : appPackages) {
+				appModel.addElement(app);
+			}
+			lastAppEmpty = false;
+		}
+
+	}
+
+	@Override
+	void setInitialValue() throws TemplateException {
+
+		appModel.removeAllElements();
+		appModel.addElement(Constants.GENERIC_APPLICATION_NAME);
+		final Set<String> allApps = GrisuRegistryManager
+				.getDefault(getServiceInterface()).getResourceInformation()
+				.getAllApplications();
+		for (String app : allApps) {
+			appModel.addElement(app);
+		}
+
 	}
 
 	private void setProperApplicationPackage(final String cmdln) {

@@ -165,8 +165,8 @@ public class QueueSelector extends AbstractInputPanel implements
 		boolean force = true;
 
 		if (Constants.APPLICATIONNAME_KEY.equals(e.getPropertyName())
-				|| Constants.APPLICATIONVERSION_KEY.equals(e.getPropertyName())
-				|| Constants.COMMANDLINE_KEY.equals(e.getPropertyName())) {
+				|| Constants.APPLICATIONVERSION_KEY.equals(e.getPropertyName())) {
+			// || Constants.COMMANDLINE_KEY.equals(e.getPropertyName())) {
 			force = false;
 			reloadQueues = true;
 		}

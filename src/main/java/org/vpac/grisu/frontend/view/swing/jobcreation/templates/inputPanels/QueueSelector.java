@@ -107,6 +107,7 @@ public class QueueSelector extends AbstractInputPanel implements
 					if (!isInitFinished()) {
 						return;
 					}
+
 					GridResource gr;
 					try {
 						gr = (GridResource) (queueModel.getSelectedItem());
@@ -332,14 +333,14 @@ public class QueueSelector extends AbstractInputPanel implements
 
 	private synchronized void setLoading(final boolean loading) {
 
-		if (loading) {
-			queueModel.removeAllElements();
-			queueModel.addElement("Searching...");
-		} else {
-			if (queueModel.getIndexOf("Searching...") >= 0) {
-				queueModel.removeElement("Searching...");
-			}
-		}
+		// if (loading) {
+		// queueModel.removeAllElements();
+		// queueModel.addElement("Searching...");
+		// } else {
+		// if (queueModel.getIndexOf("Searching...") >= 0) {
+		// queueModel.removeElement("Searching...");
+		// }
+		// }
 		SwingUtilities.invokeLater(new Thread() {
 			@Override
 			public void run() {

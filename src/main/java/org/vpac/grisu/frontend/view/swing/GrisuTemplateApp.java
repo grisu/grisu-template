@@ -53,19 +53,14 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 
 	private final SettingsDialog dialog;
 
-	private final GrisuMenu menu;
-
 	private TemplateManager tm;
 
 	public GrisuTemplateApp() {
 		super();
 		dialog = new SettingsDialog(this.getFrame());
 
-		menu = new GrisuMenu(this.getFrame());
-
 		menu.getToolsMenu().add(getSettingsItem());
 
-		getFrame().setJMenuBar(menu);
 	}
 
 	private JobCreationPanel createFixedPanel(String panelClassName) {

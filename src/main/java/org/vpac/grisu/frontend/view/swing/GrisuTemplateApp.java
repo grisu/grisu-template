@@ -8,6 +8,7 @@ import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -101,6 +102,11 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 	@Override
 	public boolean displaySingleJobsCreationPane() {
 		return true;
+	}
+
+	@Override
+	public Set<String> getApplicationsToMonitor() {
+		return null;
 	}
 
 	@Override

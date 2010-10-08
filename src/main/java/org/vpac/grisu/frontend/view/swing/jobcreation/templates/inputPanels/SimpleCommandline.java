@@ -2,8 +2,8 @@ package org.vpac.grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +48,7 @@ public class SimpleCommandline extends AbstractInputPanel {
 			myLogger.debug(e.getLocalizedMessage());
 			return;
 		}
+		System.out.println("Commandline changed: " + commandline);
 
 		String exe;
 		if (commandline == null) {
@@ -61,11 +62,14 @@ public class SimpleCommandline extends AbstractInputPanel {
 			}
 		}
 
-		if ((lastCalculatedExecutable != null)
-				&& lastCalculatedExecutable.equals(exe)) {
-			getTemplateObject().userInput(getPanelName(), commandline);
-			return;
-		}
+		System.out.println("Exe: " + exe);
+
+		// if ((lastCalculatedExecutable != null)
+		// && lastCalculatedExecutable.equals(exe)) {
+		// getTemplateObject().userInput(getPanelName(), commandline);
+		// return;
+		// }
+		setValue("commandline", commandline);
 
 		lastCalculatedExecutable = exe;
 
@@ -89,11 +93,11 @@ public class SimpleCommandline extends AbstractInputPanel {
 			comboBox.setPrototypeDisplayValue("xxxxx");
 			comboBox.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent e) {
+
 					if (ItemEvent.SELECTED == e.getStateChange()) {
 						try {
 							commandlineChanged();
 						} catch (final TemplateException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 					}
@@ -101,15 +105,23 @@ public class SimpleCommandline extends AbstractInputPanel {
 			});
 
 			comboBox.getEditor().getEditorComponent()
-					.addKeyListener(new KeyAdapter() {
-						@Override
+					.addKeyListener(new KeyListener() {
+
+						public void keyPressed(KeyEvent e) {
+							// System.out.println("Key pressed.");
+						}
+
 						public void keyReleased(KeyEvent e) {
+							// System.out.println("Key released.");
 							try {
 								commandlineChanged();
-							} catch (final TemplateException e1) {
-								// TODO Auto-generated catch block
+							} catch (TemplateException e1) {
 								e1.printStackTrace();
 							}
+						}
+
+						public void keyTyped(KeyEvent e) {
+							// System.out.println("Key typed.");
 						}
 					});
 		}

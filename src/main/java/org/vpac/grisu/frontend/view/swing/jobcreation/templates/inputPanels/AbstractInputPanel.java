@@ -274,6 +274,7 @@ public abstract class AbstractInputPanel extends JPanel implements
 	private void applyFilters() {
 
 		String string = getValueAsString();
+		System.out.println("Before filters; " + string);
 		if (string == null) {
 			myLogger.debug("Value is null. Not applying filters...");
 			return;

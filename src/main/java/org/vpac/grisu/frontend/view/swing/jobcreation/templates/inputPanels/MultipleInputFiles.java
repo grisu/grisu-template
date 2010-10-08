@@ -99,9 +99,9 @@ public class MultipleInputFiles extends AbstractInputPanel {
 					final Object[] selFiles = getList_1().getSelectedValues();
 
 					for (final Object file : selFiles) {
+						fileModel.removeElement(file);
 						removeValue("inputFileUrl",
 								((GlazedFile) file).getUrl());
-						fileModel.removeElement(file);
 					}
 
 				}

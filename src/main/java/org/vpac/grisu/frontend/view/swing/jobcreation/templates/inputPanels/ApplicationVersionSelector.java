@@ -83,6 +83,7 @@ public class ApplicationVersionSelector extends AbstractInputPanel implements
 	private JComboBox getComboBox() {
 		if (comboBox == null) {
 			comboBox = new JComboBox(versionModel);
+			comboBox.setPrototypeDisplayValue("xxxxxxxxxxxxxxxxx");
 			comboBox.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent e) {
 

@@ -48,6 +48,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 	private JComboBox getComboBox() {
 		if (comboBox == null) {
 			comboBox = new JComboBox(appModel);
+			comboBox.setPrototypeDisplayValue("xxxxxxxxxxxxxxxxxxxxx");
 			comboBox.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent e) {
 

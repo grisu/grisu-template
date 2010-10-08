@@ -1,5 +1,9 @@
 package org.vpac.grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -22,7 +26,8 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
-public class MultipleInputFiles extends AbstractInputPanel {
+public class MultipleInputFiles extends AbstractInputPanel implements
+		DropTargetListener {
 
 	private JScrollPane scrollPane;
 	private JList list;
@@ -48,6 +53,31 @@ public class MultipleInputFiles extends AbstractInputPanel {
 		add(getScrollPane(), "2, 2, 5, 1, fill, fill");
 		add(getButton_1(), "4, 4, right, default");
 		add(getButton(), "6, 4, right, default");
+	}
+
+	public void dragEnter(DropTargetDragEvent dtde) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void dragExit(DropTargetEvent dte) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void dragOver(DropTargetDragEvent dtde) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void drop(DropTargetDropEvent dtde) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void dropActionChanged(DropTargetDragEvent dtde) {
+		// TODO Auto-generated method stub
+
 	}
 
 	private JButton getButton() {
@@ -124,6 +154,7 @@ public class MultipleInputFiles extends AbstractInputPanel {
 			list = new JList(fileModel);
 			list.setLayoutOrientation(JList.VERTICAL_WRAP);
 			list.setVisibleRowCount(5);
+			list.setDragEnabled(true);
 		}
 		return list;
 	}

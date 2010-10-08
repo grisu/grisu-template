@@ -86,6 +86,67 @@ public class SimpleCommandline extends AbstractInputPanel {
 
 	}
 
+	// public void dragEnter(DropTargetDragEvent dtde) {
+	// // TODO Auto-generated method stub
+	//
+	// }
+	//
+	// public void dragExit(DropTargetEvent dte) {
+	// // TODO Auto-generated method stub
+	//
+	// }
+	//
+	// public void dragOver(DropTargetDragEvent dtde) {
+	// // TODO Auto-generated method stub
+	//
+	// }
+	//
+	// public void drop(DropTargetDropEvent e) {
+	// // try {
+	// // Transferable tr = e.getTransferable();
+	// //
+	// // if (tr.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+	// // e.acceptDrop(DnDConstants.ACTION_COPY);
+	// // String data = (String) tr
+	// // .getTransferData(DataFlavor.stringFlavor);
+	// //
+	// // StringTokenizer tokens = new StringTokenizer(data, "\n");
+	// // StringBuffer temp = new StringBuffer();
+	// // while (tokens.hasMoreTokens()) {
+	// // temp.append(tokens.nextToken());
+	// // }
+	// //
+	// // String text = (String) getJComboBox().getSelectedItem();
+	// // JTextField tf = (JTextField) getJComboBox().getEditor()
+	// // .getEditorComponent();
+	// // int pos = tf.getCaretPosition();
+	// //
+	// // StringBuffer newString = new StringBuffer(text
+	// // .substring(0, pos).trim() + " ");
+	// // newString.append(temp);
+	// // newString.append(text.substring(pos).trim() + " ");
+	// //
+	// // getJComboBox().setSelectedItem(newString.toString());
+	// //
+	// // e.getDropTargetContext().dropComplete(true);
+	// // } else {
+	// //
+	// myLogger.debug("only DataFlavor.stringFlavor is supported, drop rejected");
+	// // e.rejectDrop();
+	// // }
+	// // } catch (IOException ex) {
+	// // } catch (UnsupportedFlavorException ex) {
+	// // System.err.println("UnsupportedFlavorException");
+	// // e.rejectDrop();
+	// // }
+	//
+	// }
+	//
+	// public void dropActionChanged(DropTargetDragEvent dtde) {
+	// // TODO Auto-generated method stub
+	//
+	// }
+
 	private JComboBox getComboBox() {
 		if (comboBox == null) {
 			comboBox = new JComboBox();

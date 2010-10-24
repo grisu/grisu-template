@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>bouncycastle</groupId>
 			<artifactId>bcprov-jdk15</artifactId>
-			<version>140</version>
+			<version>145</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
@@ -98,13 +98,6 @@
 			you don't want to use shibboleth, I reckon you'll get classpath
 			errors
 		-->
-		<dependency>
-			<groupId>au.org.arcs.auth</groupId>
-			<artifactId>arcs-gsi</artifactId>
-			<version>1.2</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
 
 
 		<!--  test dependencies -->

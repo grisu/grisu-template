@@ -1,6 +1,7 @@
 package org.vpac.grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
 import java.awt.Dimension;
+import java.awt.Window;
 import java.beans.Beans;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -18,6 +19,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.JTextComponent;
@@ -92,8 +94,8 @@ public abstract class AbstractInputPanel extends JPanel implements
 
 	private static Map<String, GrisuFileDialog> dialogs = new HashMap<String, GrisuFileDialog>();
 
-	private static void createSingletonFileDialog(ServiceInterface si,
-			String templateName) {
+	private static void createSingletonFileDialog(Window owner,
+			ServiceInterface si, String templateName) {
 
 		if (dialogs.get(templateName) == null) {
 			String startUrl = GrisuRegistryManager
@@ -117,7 +119,8 @@ public abstract class AbstractInputPanel extends JPanel implements
 							.toURI().toString();
 				}
 			}
-			final GrisuFileDialog dialog = new GrisuFileDialog(si, startUrl);
+			final GrisuFileDialog dialog = new GrisuFileDialog(owner, si,
+					startUrl);
 			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			dialogs.put(templateName, dialog);
 		}
@@ -499,6 +502,7 @@ public abstract class AbstractInputPanel extends JPanel implements
 
 	protected GlazedFile popupFileDialogAndAskForFile() {
 
+		getFileDialog().centerOnOwner();
 		getFileDialog().setVisible(true);
 
 		final GlazedFile file = getFileDialog().getSelectedFile();
@@ -592,7 +596,8 @@ public abstract class AbstractInputPanel extends JPanel implements
 
 	public void setServiceInterface(ServiceInterface si) {
 
-		createSingletonFileDialog(si, templateName);
+		createSingletonFileDialog(SwingUtilities.getWindowAncestor(this), si,
+				templateName);
 
 		this.si = si;
 		this.uem = GrisuRegistryManager.getDefault(si)

@@ -95,7 +95,7 @@ public class QueueSelector extends AbstractInputPanel implements
 		if (queueComboBox == null) {
 			queueComboBox = new JComboBox(queueModel);
 			queueComboBox
-					.setPrototypeDisplayValue("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+					.setPrototypeDisplayValue("xxxxxxxxxxxxxxxxxxxxxxxxxx");
 			queueComboBox.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent e) {
 

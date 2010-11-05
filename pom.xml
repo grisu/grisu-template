@@ -5,13 +5,13 @@
 	<parent>
 		<artifactId>grisu-clients</artifactId>
 		<groupId>org.vpac.grisu</groupId>
-		<version>0.3-beta3</version>
+		<version>0.3-beta4-SNAPSHOT</version>
 	</parent>
 
 
 	<artifactId>grisu-template-client</artifactId>
 	<packaging>jar</packaging>
-	<version>0.3-beta3</version>
+	<version>0.3-beta4-SNAPSHOT</version>
 	<name>Grisu template client</name>
 	<description>A grisu swing client which uses templates to render app-specific job creation panels.</description>
 

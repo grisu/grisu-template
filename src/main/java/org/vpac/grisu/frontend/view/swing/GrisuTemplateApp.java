@@ -198,7 +198,7 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 						.getAllApplications();
 			}
 		}.start();
-		menu.setServiceInterface(si);
+
 		dialog.setServiceInterface(si);
 		tm = GrisuRegistryManager.getDefault(si).getTemplateManager();
 		tm.addTemplateManagerListener(this);

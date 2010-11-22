@@ -139,7 +139,7 @@
 				<configuration>
 					<includes>
 						<!-- replace the token in this file -->
-						<include>target/classes/grisu-template-client.version</include>
+						<include>target/classes/this-client.version</include>
 					</includes>
 					<regex>false</regex>
 					<!-- the name of the token to replace -->

@@ -2,6 +2,8 @@ package org.vpac.grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +11,7 @@ import java.util.Map;
 import javax.swing.JComboBox;
 
 import org.apache.commons.lang.StringUtils;
+import org.vpac.grisu.X;
 import org.vpac.grisu.control.exceptions.TemplateException;
 import org.vpac.grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import org.vpac.grisu.model.job.JobSubmissionObjectImpl;
@@ -22,6 +25,8 @@ public class Cpus extends AbstractInputPanel {
 	private JComboBox comboBox;
 
 	private boolean userInput = true;
+
+	private Integer lastCpus = 1;
 
 	public Cpus(String name, PanelConfig config) throws TemplateException {
 
@@ -38,6 +43,44 @@ public class Cpus extends AbstractInputPanel {
 	private JComboBox getComboBox() {
 		if (comboBox == null) {
 			comboBox = new JComboBox();
+			comboBox.setEditable(true);
+
+			comboBox.getEditor().getEditorComponent()
+					.addKeyListener(new KeyAdapter() {
+
+						@Override
+						public void keyReleased(KeyEvent e) {
+
+							try {
+
+								Object o = getComboBox().getEditor().getItem();
+
+								String currentValue = null;
+								if (o instanceof String) {
+									currentValue = (String) o;
+								} else {
+									currentValue = ((Integer) o).toString();
+								}
+
+								if (StringUtils.isBlank(currentValue)) {
+									getComboBox().getEditor().setItem("0");
+									setValue("cpus", 0);
+									lastCpus = 0;
+									return;
+								}
+								X.p("Current value = " + currentValue);
+								Integer cpus = Integer.parseInt(currentValue);
+								X.p("Cpus: " + cpus);
+								lastCpus = cpus;
+
+							} catch (Exception ex) {
+								X.p("XXXX" + ex.getLocalizedMessage());
+								getComboBox().getEditor().setItem(
+										new String(lastCpus.toString()));
+							}
+
+						}
+					});
 			comboBox.addItemListener(new ItemListener() {
 
 				public void itemStateChanged(ItemEvent e) {
@@ -49,15 +92,19 @@ public class Cpus extends AbstractInputPanel {
 					if (!isInitFinished()) {
 						return;
 					}
-
-					if (ItemEvent.SELECTED == e.getStateChange()) {
-						final Integer value = (Integer) getComboBox()
-								.getSelectedItem();
-						try {
-							setValue("cpus", value);
-						} catch (final TemplateException e1) {
-							e1.printStackTrace();
+					try {
+						if (ItemEvent.SELECTED == e.getStateChange()) {
+							final Integer value = (Integer) getComboBox()
+									.getSelectedItem();
+							try {
+								setValue("cpus", value);
+								lastCpus = value;
+							} catch (final TemplateException e1) {
+								e1.printStackTrace();
+							}
 						}
+					} catch (Exception ex) {
+						myLogger.debug(ex);
 					}
 
 				}
@@ -120,6 +167,9 @@ public class Cpus extends AbstractInputPanel {
 						getComboBox().addItem(Integer.parseInt(item));
 					}
 					userInput = true;
+				} else if (IS_EDITABLE.equalsIgnoreCase(key)) {
+					getComboBox().setEditable(
+							Boolean.parseBoolean(panelProperties.get(key)));
 				}
 			} catch (final Exception e) {
 				e.printStackTrace();

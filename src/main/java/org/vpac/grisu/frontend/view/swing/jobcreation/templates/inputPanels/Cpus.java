@@ -11,7 +11,6 @@ import java.util.Map;
 import javax.swing.JComboBox;
 
 import org.apache.commons.lang.StringUtils;
-import org.vpac.grisu.X;
 import org.vpac.grisu.control.exceptions.TemplateException;
 import org.vpac.grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import org.vpac.grisu.model.job.JobSubmissionObjectImpl;
@@ -68,13 +67,10 @@ public class Cpus extends AbstractInputPanel {
 									lastCpus = 0;
 									return;
 								}
-								X.p("Current value = " + currentValue);
 								Integer cpus = Integer.parseInt(currentValue);
-								X.p("Cpus: " + cpus);
 								lastCpus = cpus;
 
 							} catch (Exception ex) {
-								X.p("XXXX" + ex.getLocalizedMessage());
 								getComboBox().getEditor().setItem(
 										new String(lastCpus.toString()));
 							}

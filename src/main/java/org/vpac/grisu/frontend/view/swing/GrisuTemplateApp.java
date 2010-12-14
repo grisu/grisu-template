@@ -36,6 +36,7 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 				try {
 
 					final GrisuApplicationWindow appWindow = new GrisuTemplateApp();
+
 					appWindow.setVisible(true);
 
 				} catch (final Exception e) {
@@ -191,6 +192,8 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 
 		tm = GrisuRegistryManager.getDefault(si).getTemplateManager();
 		tm.addTemplateManagerListener(this);
+
+		addDefaultFileNavigationTaskPane();
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {

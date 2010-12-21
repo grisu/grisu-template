@@ -194,6 +194,7 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 		tm.addTemplateManagerListener(this);
 
 		addDefaultFileNavigationTaskPane();
+		addGroupFileListPanel(null, null);
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {

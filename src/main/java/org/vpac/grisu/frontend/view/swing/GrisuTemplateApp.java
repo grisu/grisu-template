@@ -17,8 +17,10 @@ import org.vpac.grisu.control.TemplateManager;
 import org.vpac.grisu.control.exceptions.NoSuchTemplateException;
 import org.vpac.grisu.frontend.view.swing.jobcreation.JobCreationPanel;
 import org.vpac.grisu.frontend.view.swing.jobcreation.TemplateJobCreationPanel;
+import org.vpac.grisu.frontend.view.swing.settings.AdvancedTemplateClientSettingsPanel;
 import org.vpac.grisu.frontend.view.swing.settings.ApplicationSubscribePanel;
 import org.vpac.grisu.model.GrisuRegistryManager;
+import org.vpac.grisu.settings.ClientPropertiesManager;
 import org.vpac.security.light.Init;
 
 public class GrisuTemplateApp extends GrisuApplicationWindow implements
@@ -52,7 +54,7 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 	private final ApplicationSubscribePanel applicationSubscribePanel = new ApplicationSubscribePanel();
 
 	public GrisuTemplateApp() {
-		super();
+		super(new AdvancedTemplateClientSettingsPanel());
 
 		// String environmentVariable = System
 		// .getProperty("grisu.defaultApplications");
@@ -193,8 +195,13 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
 		tm = GrisuRegistryManager.getDefault(si).getTemplateManager();
 		tm.addTemplateManagerListener(this);
 
-		addDefaultFileNavigationTaskPane();
-		addGroupFileListPanel(null, null);
+		String old = ClientPropertiesManager
+				.getProperty(AdvancedTemplateClientSettingsPanel.USE_OLD_FILE_MANAGEMENT_PANEL_CONFIG_KEY);
+		if (StringUtils.equalsIgnoreCase(old, "true")) {
+			addDefaultFileNavigationTaskPane();
+		} else {
+			addGroupFileListPanel(null, null);
+		}
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {

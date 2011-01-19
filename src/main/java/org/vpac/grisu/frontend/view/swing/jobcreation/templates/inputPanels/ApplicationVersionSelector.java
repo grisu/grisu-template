@@ -241,7 +241,11 @@ public class ApplicationVersionSelector extends AbstractInputPanel implements
 
 	@Override
 	void setInitialValue() throws TemplateException {
-
+		final String defaultValue = getPanelProperty(DEFAULT_VALUE);
+		// X.p("xxx" + defaultValue);
+		if (StringUtils.isNotBlank(defaultValue)) {
+			changeJobApplicationVersion(defaultValue);
+		}
 	}
 
 	private synchronized void setProperApplicationVersion(final String app) {

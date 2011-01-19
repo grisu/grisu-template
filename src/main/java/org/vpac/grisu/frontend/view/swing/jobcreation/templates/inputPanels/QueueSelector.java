@@ -148,7 +148,7 @@ public class QueueSelector extends AbstractInputPanel implements
 			return;
 		}
 
-		System.out.println(e.getPropertyName() + " " + e.getNewValue());
+		// System.out.println(e.getPropertyName() + " " + e.getNewValue());
 
 		final String[] possibleBeans = new String[] { Constants.FORCE_MPI_KEY,
 				Constants.FORCE_SINGLE_KEY, Constants.HOSTCOUNT_KEY,

@@ -20,7 +20,6 @@ public class FileExistsValidator implements Validator {
 
 	public boolean validate(Problems arg0, String arg1, Object arg2) {
 
-		System.out.println(arg2);
 		if (StringUtils.isBlank((String) arg2)) {
 			// arg0.add("No input file specified.");
 			return true;

@@ -48,7 +48,7 @@ public class SimpleCommandline extends AbstractInputPanel {
 			myLogger.debug(e.getLocalizedMessage());
 			return;
 		}
-		System.out.println("Commandline changed: " + commandline);
+		// System.out.println("Commandline changed: " + commandline);
 
 		String exe;
 		if (commandline == null) {
@@ -62,7 +62,7 @@ public class SimpleCommandline extends AbstractInputPanel {
 			}
 		}
 
-		System.out.println("Exe: " + exe);
+		// System.out.println("Exe: " + exe);
 
 		// if ((lastCalculatedExecutable != null)
 		// && lastCalculatedExecutable.equals(exe)) {

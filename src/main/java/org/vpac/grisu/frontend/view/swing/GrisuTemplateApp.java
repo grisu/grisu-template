@@ -1,5 +1,7 @@
 package org.vpac.grisu.frontend.view.swing;
 
+import grith.jgrith.Init;
+
 import java.awt.EventQueue;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -21,7 +23,6 @@ import org.vpac.grisu.frontend.view.swing.settings.AdvancedTemplateClientSetting
 import org.vpac.grisu.frontend.view.swing.settings.ApplicationSubscribePanel;
 import org.vpac.grisu.model.GrisuRegistryManager;
 import org.vpac.grisu.settings.ClientPropertiesManager;
-import org.vpac.security.light.Init;
 
 public class GrisuTemplateApp extends GrisuApplicationWindow implements
 		PropertyChangeListener {

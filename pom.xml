@@ -2,13 +2,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.vpac.grisu</groupId>
 
-	<parent>
-		<artifactId>grisu-clients</artifactId>
-		<groupId>org.vpac.grisu</groupId>
-		<version>0.3-beta4-SNAPSHOT</version>
-	</parent>
-
-
 	<artifactId>grisu-template-client</artifactId>
 	<packaging>jar</packaging>
 	<version>0.3-beta4-SNAPSHOT</version>

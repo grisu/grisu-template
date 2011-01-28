@@ -1,11 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>grisu.frontend</groupId>
 
+	<groupId>grisu.frontend</groupId>
 	<artifactId>grisu-template-client</artifactId>
 	<packaging>jar</packaging>
-	<version>0.3-beta4-SNAPSHOT</version>
+	<version>0.3-beta5-SNAPSHOT</version>
+
 	<name>Grisu template client</name>
 	<description>A grisu swing client which uses templates to render app-specific job creation panels.</description>
 
@@ -22,7 +23,7 @@
 	</repositories>
 
 	<properties>
-		<grisu.dependency.version>0.3-beta4-SNAPSHOT</grisu.dependency.version>
+		<grisu.dependency.version>0.3-beta5-SNAPSHOT</grisu.dependency.version>
 	</properties>
 
 
@@ -40,7 +41,7 @@
 
 		<!-- the main grisu dependency. -->
 		<dependency>
-			<groupId>org.vpac.grisu</groupId>
+			<groupId>grisu.frontend</groupId>
 			<artifactId>grisu-client-swing</artifactId>
 			<version>${grisu.dependency.version}</version>
 			<type>jar</type>
@@ -71,7 +72,7 @@
 		<!-- the grisu-core dependency is needed when you want to connect to a 
 			local backend (which is the only supported backend for grisu 0.3 at the moment -->
 		<dependency>
-			<groupId>org.vpac.grisu</groupId>
+			<groupId>grisu.backend</groupId>
 			<artifactId>grisu-core</artifactId>
 			<version>${grisu.dependency.version}</version>
 			<type>jar</type>
@@ -160,7 +161,7 @@
 							<archive>
 								<index>true</index>
 								<manifest>
-									<mainClass>org.vpac.grisu.frontend.view.swing.GrisuTemplateApp</mainClass>
+									<mainClass>grisu.frontend.view.swing.GrisuTemplateApp</mainClass>
 								</manifest>
 								<manifestEntries>
 									<Class-Path>bcprov.jar bcprov-jdk15-143.jar local-backend.jar

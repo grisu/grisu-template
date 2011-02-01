@@ -158,6 +158,7 @@
 								<descriptor>client.assembly.xml</descriptor>
 							</descriptors>
 							<finalName>grisu-template-client</finalName>
+							
 							<archive>
 								<index>true</index>
 								<manifest>
@@ -173,7 +174,7 @@
 
 						</configuration>
 						<goals>
-							<goal>attached</goal>
+							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>

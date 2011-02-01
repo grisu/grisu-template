@@ -2,6 +2,7 @@ package grisu.frontend.view.swing.settings;
 
 import grisu.control.ServiceInterface;
 import grisu.frontend.view.swing.ServiceInterfacePanel;
+import grisu.jcommons.constants.Constants;
 import grisu.settings.ClientPropertiesManager;
 
 import java.awt.event.ActionEvent;
@@ -17,7 +18,6 @@ import javax.swing.JPanel;
 
 import org.apache.commons.lang.StringUtils;
 
-import au.org.arcs.jcommons.constants.Constants;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;

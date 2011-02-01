@@ -9,6 +9,7 @@ import grisu.control.exceptions.TemplateException;
 import grisu.frontend.control.login.LoginManager;
 import grisu.frontend.view.swing.login.GrisuSwingClient;
 import grisu.frontend.view.swing.login.LoginPanel;
+import grisu.jcommons.interfaces.InformationManager;
 import grisu.settings.ServerPropertiesManager;
 import grisu.utils.SeveralXMLHelpers;
 
@@ -46,7 +47,6 @@ import javax.swing.SwingConstants;
 
 import org.apache.commons.io.FilenameUtils;
 
-import au.org.arcs.jcommons.interfaces.InformationManager;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;

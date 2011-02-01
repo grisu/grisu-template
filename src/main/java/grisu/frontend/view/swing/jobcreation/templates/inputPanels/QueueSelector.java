@@ -3,6 +3,9 @@ package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.frontend.view.swing.jobcreation.templates.inputPanels.helperPanels.HidingQueueInfoPanel;
+import grisu.jcommons.constants.Constants;
+import grisu.jcommons.interfaces.GridResource;
+import grisu.jcommons.utils.SubmissionLocationHelpers;
 import grisu.model.FqanEvent;
 import grisu.model.GrisuRegistryManager;
 import grisu.model.info.ApplicationInformation;
@@ -24,9 +27,6 @@ import javax.swing.SwingUtilities;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.EventSubscriber;
 
-import au.org.arcs.jcommons.constants.Constants;
-import au.org.arcs.jcommons.interfaces.GridResource;
-import au.org.arcs.jcommons.utils.SubmissionLocationHelpers;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;

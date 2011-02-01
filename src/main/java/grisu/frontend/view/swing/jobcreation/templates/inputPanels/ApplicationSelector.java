@@ -2,6 +2,7 @@ package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
+import grisu.jcommons.constants.Constants;
 import grisu.model.GrisuRegistryManager;
 import grisu.model.job.JobSubmissionObjectImpl;
 
@@ -17,7 +18,6 @@ import javax.swing.JComboBox;
 
 import org.apache.commons.lang.StringUtils;
 
-import au.org.arcs.jcommons.constants.Constants;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;

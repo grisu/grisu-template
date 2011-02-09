@@ -5,7 +5,7 @@
 	<groupId>grisu.frontend</groupId>
 	<artifactId>grisu-template-client</artifactId>
 	<packaging>jar</packaging>
-	<version>0.3</version>
+	<version>0.3-SNAPSHOT</version>
 
 	<name>Grisu template client</name>
 	<description>A grisu swing client which uses templates to render app-specific job creation panels.</description>
@@ -48,7 +48,7 @@
 	</repositories>
 
 	<properties>
-		<grisu.dependency.version>0.3-beta5-SNAPSHOT</grisu.dependency.version>
+		<grisu.dependency.version>0.3</grisu.dependency.version>
 	</properties>
 
 	<distributionManagement>
@@ -233,6 +233,7 @@
 							<pushChanges>false</pushChanges>
 							<localCheckout>true</localCheckout>
 							<updateDependencies>true</updateDependencies>
+							<updateWorkingCopyVersions>false</updateWorkingCopyVersions>
 						</configuration>
 					</plugin>
 					<plugin>

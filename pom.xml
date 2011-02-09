@@ -1,54 +1,77 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.vpac.grisu</groupId>
 
-	<parent>
-		<artifactId>grisu-clients</artifactId>
-		<groupId>org.vpac.grisu</groupId>
-		<version>0.3-beta4-SNAPSHOT</version>
-	</parent>
-
-
+	<groupId>grisu.frontend</groupId>
 	<artifactId>grisu-template-client</artifactId>
 	<packaging>jar</packaging>
-	<version>0.3-beta4-SNAPSHOT</version>
+	<version>0.3-SNAPSHOT</version>
+
 	<name>Grisu template client</name>
 	<description>A grisu swing client which uses templates to render app-specific job creation panels.</description>
 
+	<organization>
+		<name>Grisu open source project</name>
+		<url>https://github.com/grisu</url>
+	</organization>
+
 	<repositories>
 		<repository>
-			<id>ARCS</id>
-			<url>http://code.arcs.org.au/nexus/content/groups/public</url>
+			<id>bestgrid.public.release</id>
+			<url>http://dev.ceres.auckland.ac.nz/nexus/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
 		</repository>
 		<repository>
-			<id>ARCS Snapshots</id>
-			<url>http://code.arcs.org.au/nexus/content/groups/public-snapshots
+			<id>bestgrid.public.snapshot</id>
+			<url>http://dev.ceres.auckland.ac.nz/nexus/content/groups/public-snapshots/
 			</url>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
 		</repository>
 	</repositories>
 
-	<!--
-		we can help you publish your artifact into our maven repository if you
-		want. Write an email to markus.binsteiner@arcs.org.au and request a
-		username/password for the ARCS maven repository. Then uncomment this
-		part and edit your $HOME/.m2/settings.xml file with your
-		username/password. Deployment is done via 'mvn clean install deploy'
-		<distributionManagement> <repository> <id>arcs.release</id> <name>ARCS
-		Release Repository</name>
-		<url>http://code.arcs.org.au/nexus/content/repositories/releases
-		</url> <uniqueVersion>false</uniqueVersion> </repository>
-		<snapshotRepository> <id>arcs.snapshot</id> <name>ARCS SNAPSHOT
-		Repository</name>
-		<url>http://code.arcs.org.au/nexus/content/repositories/snapshots
-		</url> <uniqueVersion>false</uniqueVersion> </snapshotRepository>
-		</distributionManagement>
-	-->
+	<properties>
+		<grisu.dependency.version>0.3</grisu.dependency.version>
+	</properties>
+
+	<distributionManagement>
+		<repository>
+			<name>BeSTGRID Releases Repository</name>
+			<id>bestgrid.release</id>
+			<url>http://dev.ceres.auckland.ac.nz/nexus/content/repositories/releases
+			</url>
+		</repository>
+		<snapshotRepository>
+			<id>bestgrid.snapshot</id>
+			<name>BeSTGRID Snapshots Repository</name>
+			<url>http://dev.ceres.auckland.ac.nz/nexus/content/repositories/snapshots
+			</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 
 	<dependencies>
 
 		<!-- the main grisu dependency. -->
 		<dependency>
-			<groupId>org.vpac.grisu</groupId>
+			<groupId>grisu.frontend</groupId>
 			<artifactId>grisu-client-swing</artifactId>
 			<version>${grisu.dependency.version}</version>
 			<type>jar</type>
@@ -61,14 +84,11 @@
 			</exclusions>
 		</dependency>
 
-		<!--
-			we can't include the bouncy castle library in our assembled binary so
-			it has to put in the classpath in some other way. You could either
-			have the bcprov jar in the same directory as your executable jar, or
-			you just do nothing. Grisu will try to download it in the background
-			and put it in the classpath once your application is executed the
-			first time...
-		-->
+		<!-- we can't include the bouncy castle library in our assembled binary 
+			so it has to put in the classpath in some other way. You could either have 
+			the bcprov jar in the same directory as your executable jar, or you just 
+			do nothing. Grisu will try to download it in the background and put it in 
+			the classpath once your application is executed the first time... -->
 		<dependency>
 			<groupId>bouncycastle</groupId>
 			<artifactId>bcprov-jdk15</artifactId>
@@ -77,30 +97,22 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!--
-			further grisu dependencies, incuded by default but can be disabled if
-			not needed and you want a smaller assembly
-		-->
-		<!--
-			the grisu-core dependency is needed when you want to connect to a
-			local backend (which is the only supported backend for grisu 0.3 at
-			the moment
-		-->
+		<!-- further grisu dependencies, incuded by default but can be disabled 
+			if not needed and you want a smaller assembly -->
+		<!-- the grisu-core dependency is needed when you want to connect to a 
+			local backend (which is the only supported backend for grisu 0.3 at the moment -->
 		<dependency>
-			<groupId>org.vpac.grisu</groupId>
+			<groupId>grisu.backend</groupId>
 			<artifactId>grisu-core</artifactId>
 			<version>${grisu.dependency.version}</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-		<!--
-			this is needed for shibboleth login don't disable it for now even if
-			you don't want to use shibboleth, I reckon you'll get classpath
-			errors
-		-->
+		<!-- this is needed for shibboleth login don't disable it for now even 
+			if you don't want to use shibboleth, I reckon you'll get classpath errors -->
 
 
-		<!--  test dependencies -->
+		<!-- test dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -108,6 +120,20 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<issueManagement>
+		<system>Github</system>
+		<url>https://github.com/grisu/grisu-template/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Hudson</system>
+		<url>http://dev.ceres.auckland.ac.nz/hudson/job/Grisu-Template-client-SNAPSHOT/</url>
+	</ciManagement>
+	<scm>
+		<connection>scm:git:git://github.com/grisu/grisu-template.git</connection>
+		<developerConnection>scm:git:git@github.com:grisu/grisu-template.git</developerConnection>
+		<url>https://github.com/grisu/grisu-template/tree/master</url>
+	</scm>
 
 	<build>
 
@@ -120,7 +146,7 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
-			
+
 			<!-- replace version in file -->
 			<plugin>
 				<groupId>com.google.code.maven-replacer-plugin</groupId>
@@ -139,7 +165,7 @@
 				<configuration>
 					<includes>
 						<!-- replace the token in this file -->
-						<include>target/classes/grisu-template-client.version</include>
+						<include>target/classes/this-client.version</include>
 					</includes>
 					<regex>false</regex>
 					<!-- the name of the token to replace -->
@@ -148,13 +174,10 @@
 					<value>${project.version}</value>
 				</configuration>
 			</plugin>
-			
-			
-			<!--
-				you can disable the assembly plugin if you want, your builds will be
-				faster I find it quite handy to have maven build an executable jar,
-				though
-			-->
+
+
+			<!-- you can disable the assembly plugin if you want, your builds will 
+				be faster I find it quite handy to have maven build an executable jar, though -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
@@ -166,13 +189,15 @@
 								<descriptor>client.assembly.xml</descriptor>
 							</descriptors>
 							<finalName>grisu-template-client</finalName>
+
 							<archive>
 								<index>true</index>
 								<manifest>
-									<mainClass>org.vpac.grisu.frontend.view.swing.GrisuTemplateApp</mainClass>
+									<mainClass>grisu.frontend.view.swing.GrisuTemplateApp</mainClass>
 								</manifest>
 								<manifestEntries>
-									<Class-Path>bcprov.jar bcprov-jdk15-143.jar local-backend.jar grisu-client-library.jar
+									<Class-Path>bcprov.jar bcprov-jdk15-143.jar local-backend.jar
+										grisu-client-library.jar
 									</Class-Path>
 									<SplashScreen-Image>splash.png</SplashScreen-Image>
 								</manifestEntries>
@@ -180,13 +205,59 @@
 
 						</configuration>
 						<goals>
-							<goal>attached</goal>
+							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>sign</id>
+			<activation>
+				<property>
+					<name>BUILD_NUMBER</name>
+				</property>
+			</activation>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-release-plugin</artifactId>
+						<version>2.1</version>
+						<configuration>
+<!--							<pushChanges>false</pushChanges>-->
+							<localCheckout>true</localCheckout>
+							<updateDependencies>true</updateDependencies>
+<!--							<updateWorkingCopyVersions>false</updateWorkingCopyVersions>-->
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jarsigner-plugin</artifactId>
+						<version>1.2</version>
+						<executions>
+							<execution>
+								<id>sign</id>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<alias>grisu</alias>
+							<storepass>FxAKs3p6</storepass>
+							<keypass>FxAKs3p6</keypass>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+
+		</profile>
+	</profiles>
 </project>
 

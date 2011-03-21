@@ -47,20 +47,20 @@
 	</repositories>
 
 	<properties>
-		<grisu.dependency.version>0.3.2</grisu.dependency.version>
+		<grisu.dependency.version>0.3.3</grisu.dependency.version>
 	</properties>
 
 	<distributionManagement>
 		<repository>
 			<name>BeSTGRID Releases Repository</name>
-			<id>bestgrid.release</id>
-			<url>http://dev.ceres.auckland.ac.nz/nexus/content/repositories/releases
+			<id>bestgrid.release2</id>
+			<url>http://er77.ceres.auckland.ac.nz/nexus/content/repositories/releases
 			</url>
 		</repository>
 		<snapshotRepository>
-			<id>bestgrid.snapshot</id>
+			<id>bestgrid.snapshot2</id>
 			<name>BeSTGRID Snapshots Repository</name>
-			<url>http://dev.ceres.auckland.ac.nz/nexus/content/repositories/snapshots
+			<url>http://er77.ceres.auckland.ac.nz/nexus/content/repositories/snapshots
 			</url>
 		</snapshotRepository>
 	</distributionManagement>

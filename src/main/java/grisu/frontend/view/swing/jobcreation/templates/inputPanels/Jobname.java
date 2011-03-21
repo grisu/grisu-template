@@ -24,9 +24,6 @@ import com.jgoodies.forms.layout.RowSpec;
 
 public class Jobname extends AbstractInputPanel {
 
-	static final String REPLACEMENT_CHARACTERS = "\\s|;|'|\"|,|\\$|\\?|#";
-
-	public static String JOBNAME_CALC_METHOD_KEY = "jobnameCalcMethod";
 
 	private JTextField jobnameTextField;
 
@@ -54,7 +51,9 @@ public class Jobname extends AbstractInputPanel {
 
 		defaultProperties.put(TITLE, "Jobname");
 		// defaultProperties.put(DEFAULT_VALUE, "gridJob");
-		defaultProperties.put(JOBNAME_CALC_METHOD_KEY, "uniqueNumber");
+		defaultProperties
+				.put(grisu.frontend.view.swing.jobcreation.widgets.Jobname.JOBNAME_CALC_METHOD_KEY,
+						"uniqueNumber");
 
 		return defaultProperties;
 	}
@@ -70,7 +69,10 @@ public class Jobname extends AbstractInputPanel {
 					try {
 						String input = jobnameTextField.getText();
 						final int index = jobnameTextField.getCaretPosition();
-						input = input.replaceAll(REPLACEMENT_CHARACTERS, "_");
+						input = input
+						.replaceAll(
+								grisu.frontend.view.swing.jobcreation.widgets.Jobname.REPLACEMENT_CHARACTERS,
+								"_");
 						jobnameTextField.setText(input.trim());
 						jobnameTextField.setCaretPosition(index);
 

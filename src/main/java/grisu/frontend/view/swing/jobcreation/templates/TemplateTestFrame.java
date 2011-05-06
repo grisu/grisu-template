@@ -47,7 +47,6 @@ import javax.swing.SwingConstants;
 
 import org.apache.commons.io.FilenameUtils;
 
-
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -510,11 +509,13 @@ PropertyChangeListener, ActionListener, GrisuSwingClient {
 			}
 
 			final String gt4rsl = GT4Submitter.createJobSubmissionDescription(
-					informationManager, SeveralXMLHelpers.fromString(jsdl));
+					informationManager, SeveralXMLHelpers.fromString(jsdl),
+					null);
 			getGt4TextArea().setText(gt4rsl);
 
 			final String gt5rsl = GT5Submitter.createJobSubmissionDescription(
-					informationManager, SeveralXMLHelpers.fromString(jsdl));
+					informationManager, SeveralXMLHelpers.fromString(jsdl),
+					null);
 			getGt5TextArea().setText(gt5rsl);
 
 		}

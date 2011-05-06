@@ -41,7 +41,6 @@ import javax.swing.SwingConstants;
 
 import org.apache.commons.io.FilenameUtils;
 
-
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -509,10 +508,10 @@ PropertyChangeListener, ActionListener {
 			if (getInformationManager() == null) {
 				getGt4TextArea()
 				.setText(
-						"Can't calculate rsl because local-backend.jar not in classpath.");
+				"Can't calculate rsl because local-backend.jar not in classpath.");
 				getGt5TextArea()
 				.setText(
-						"Can't calculate rsl because local-backend.jar not in classpath.");
+				"Can't calculate rsl because local-backend.jar not in classpath.");
 				return;
 			}
 
@@ -520,7 +519,7 @@ PropertyChangeListener, ActionListener {
 				final String gt4rsl = GT4Submitter
 				.createJobSubmissionDescription(
 						getInformationManager(),
-						SeveralXMLHelpers.fromString(jsdl));
+								SeveralXMLHelpers.fromString(jsdl), null);
 				getGt4TextArea().setText(gt4rsl);
 			} catch (final Exception e) {
 				// e.printStackTrace();
@@ -530,7 +529,7 @@ PropertyChangeListener, ActionListener {
 				final String gt5rsl = GT5Submitter
 				.createJobSubmissionDescription(
 						getInformationManager(),
-						SeveralXMLHelpers.fromString(jsdl));
+								SeveralXMLHelpers.fromString(jsdl), null);
 				getGt5TextArea().setText(gt5rsl);
 			} catch (final Exception e) {
 				// e.printStackTrace();

@@ -206,7 +206,7 @@
 									<mainClass>grisu.frontend.view.swing.GrisuTemplateApp</mainClass>
 								</manifest>
 								<manifestEntries>
-									<Class-Path>bcprov.jar bcprov-jdk15-143.jar local-backend.jar
+									<Class-Path>bcprov.jar bcprov-jdk15-143.jar local-backend-dev.jar local-backend.jar
 										grisu-client-library.jar
 									</Class-Path>
 									<SplashScreen-Image>splash.png</SplashScreen-Image>

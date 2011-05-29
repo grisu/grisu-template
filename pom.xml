@@ -17,7 +17,7 @@
 	<repositories>
 		<repository>
 			<id>bestgrid.public.release</id>
-			<url>http://dev.ceres.auckland.ac.nz/nexus/content/groups/public/</url>
+			<url>http://code.ceres.auckland.ac.nz/nexus/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
@@ -31,7 +31,7 @@
 		</repository>
 		<repository>
 			<id>bestgrid.public.snapshot</id>
-			<url>http://dev.ceres.auckland.ac.nz/nexus/content/groups/public-snapshots/
+			<url>http://code.ceres.auckland.ac.nz/nexus/content/groups/public-snapshots/
 			</url>
 			<releases>
 				<enabled>false</enabled>
@@ -54,13 +54,13 @@
 		<repository>
 			<name>BeSTGRID Releases Repository</name>
 			<id>bestgrid.release2</id>
-			<url>http://er77.ceres.auckland.ac.nz/nexus/content/repositories/releases
+			<url>http://code.ceres.auckland.ac.nz/nexus/content/repositories/releases
 			</url>
 		</repository>
 		<snapshotRepository>
 			<id>bestgrid.snapshot2</id>
 			<name>BeSTGRID Snapshots Repository</name>
-			<url>http://er77.ceres.auckland.ac.nz/nexus/content/repositories/snapshots
+			<url>http://code.ceres.auckland.ac.nz/nexus/content/repositories/snapshots
 			</url>
 		</snapshotRepository>
 	</distributionManagement>

@@ -62,8 +62,6 @@ public class SimpleCommandline extends AbstractInputPanel {
 			}
 		}
 
-		// System.out.println("Exe: " + exe);
-
 		// if ((lastCalculatedExecutable != null)
 		// && lastCalculatedExecutable.equals(exe)) {
 		// getTemplateObject().userInput(getPanelName(), commandline);

@@ -15,9 +15,9 @@ import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.StringUtils;
-
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -87,6 +87,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 	@Override
 	protected synchronized void jobPropertyChanged(PropertyChangeEvent e) {
 
+
 		if (!isInitFinished()) {
 			return;
 		}
@@ -105,6 +106,30 @@ public class ApplicationSelector extends AbstractInputPanel {
 	protected void preparePanel(Map<String, String> panelProperties)
 	throws TemplateException {
 
+	}
+
+	private synchronized void setApplicationPackage(final String appPackage) {
+
+		if (StringUtils.isBlank(appPackage)
+				|| appPackage.equals(getValueAsString())) {
+			SwingUtilities.invokeLater(new Thread() {
+				@Override
+				public void run() {
+					appModel.setSelectedItem(Constants.GENERIC_APPLICATION_NAME);
+				}
+			});
+		}
+
+		SwingUtilities.invokeLater(new Thread() {
+			@Override
+			public void run() {
+				if (appModel.getIndexOf(appPackage) >= 0) {
+					appModel.setSelectedItem(appPackage);
+				} else {
+					appModel.setSelectedItem(Constants.GENERIC_APPLICATION_NAME);
+				}
+			}
+		});
 	}
 
 	private synchronized void setApplicationPackages(final String[] appPackages) {
@@ -151,10 +176,12 @@ public class ApplicationSelector extends AbstractInputPanel {
 			appModel.addElement(app);
 		}
 
+		lastExe = null;
 	}
 
 	private void setProperApplicationPackage(final String cmdln) {
 		final String exe = JobSubmissionObjectImpl.extractExecutable(cmdln);
+
 		if ((exe != null) && exe.equals(lastExe)) {
 			return;
 		}
@@ -169,7 +196,14 @@ public class ApplicationSelector extends AbstractInputPanel {
 				.getResourceInformation()
 				.getApplicationPackageForExecutable(exe);
 
-				setApplicationPackages(appPackages);
+				// X.p("XXX" + StringUtils.join(appPackages, " - "));
+				if (appPackages.length == 0) {
+					setApplicationPackage(null);
+					return;
+				} else {
+					setApplicationPackage(appPackages[0]);
+				}
+
 			}
 		}.start();
 

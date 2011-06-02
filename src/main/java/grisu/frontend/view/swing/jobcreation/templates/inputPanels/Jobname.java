@@ -52,8 +52,8 @@ public class Jobname extends AbstractInputPanel {
 		defaultProperties.put(TITLE, "Jobname");
 		// defaultProperties.put(DEFAULT_VALUE, "gridJob");
 		defaultProperties
-				.put(grisu.frontend.view.swing.jobcreation.widgets.Jobname.JOBNAME_CALC_METHOD_KEY,
-						"uniqueNumber");
+		.put(grisu.frontend.view.swing.jobcreation.widgets.Jobname.JOBNAME_CALC_METHOD_KEY,
+		"uniqueNumber");
 
 		return defaultProperties;
 	}
@@ -72,7 +72,7 @@ public class Jobname extends AbstractInputPanel {
 						input = input
 						.replaceAll(
 								grisu.frontend.view.swing.jobcreation.widgets.Jobname.REPLACEMENT_CHARACTERS,
-								"_");
+						"_");
 						jobnameTextField.setText(input.trim());
 						jobnameTextField.setCaretPosition(index);
 
@@ -128,7 +128,6 @@ public class Jobname extends AbstractInputPanel {
 
 	@Override
 	protected void templateRefresh(JobSubmissionObjectImpl jobObject) {
-		// TODO Auto-generated method stub
 
 	}
 }

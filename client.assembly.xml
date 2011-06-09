@@ -24,6 +24,7 @@
 					<exclude>**/LICENSE</exclude>
 					<exclude>**/NOTICE</exclude>
 					<exclude>log4j.properties</exclude>
+					<exclude>log4j.xml</exclude>
 					<exclude>certificates.zip</exclude>
 					<exclude>vomses.zip</exclude>
 					<exclude>arcs/__init__.py</exclude>

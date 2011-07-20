@@ -2,8 +2,8 @@ package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
-import grisu.frontend.view.swing.utils.WalltimeUtils;
 import grisu.model.job.JobSubmissionObjectImpl;
+import grisu.utils.WalltimeUtils;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;

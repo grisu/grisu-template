@@ -71,6 +71,13 @@
 		<!-- the main grisu dependency. -->
 		<dependency>
 			<groupId>grisu.frontend</groupId>
+			<artifactId>grisu-client</artifactId>
+			<version>${grisu.dependency.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>grisu.frontend</groupId>
 			<artifactId>grisu-client-swing</artifactId>
 			<version>${grisu.dependency.version}</version>
 			<type>jar</type>

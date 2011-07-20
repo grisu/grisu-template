@@ -49,74 +49,10 @@ import com.jgoodies.forms.layout.RowSpec;
 public class TemplateEditPanel extends JPanel implements
 PropertyChangeListener, ActionListener {
 
-	// // //////////////////////////////////////////////// inner class
-	// OpenAction
-	// class OpenAction extends AbstractAction {
-	// // ============================================= constructor
-	// public OpenAction() {
-	// super("Open...");
-	// putValue(MNEMONIC_KEY, new Integer('O'));
-	// }
-	//
-	// // ========================================= actionPerformed
-	// public void actionPerformed(ActionEvent e) {
-	// int retval = _fileChooser.showOpenDialog(TemplateEditPanel.this);
-	// if (retval == JFileChooser.APPROVE_OPTION) {
-	// File f = _fileChooser.getSelectedFile();
-	// currentFile = f;
-	// try {
-	// FileReader reader = new FileReader(f);
-	// textArea.read(reader, ""); // Use TextComponent read
-	// TemplateEditPanel.this.actionPerformed(null);
-	// } catch (IOException ioex) {
-	// System.out.println(e);
-	// System.exit(1);
-	// }
-	// }
-	// }
-	// }
-
-	// ////////////////////////////////////////////////// inner class SaveAction
-	// class SaveAction extends AbstractAction {
-	// // ============================================= constructor
-	// SaveAction() {
-	// super("Save...");
-	// putValue(MNEMONIC_KEY, new Integer('S'));
-	// }
-	//
-	// // ========================================= actionPerformed
-	// public void actionPerformed(ActionEvent e) {
-	// int retval = _fileChooser.showSaveDialog(TemplateEditPanel.this);
-	// if (retval == JFileChooser.APPROVE_OPTION) {
-	// File f = _fileChooser.getSelectedFile();
-	// try {
-	// FileWriter writer = new FileWriter(f);
-	// textArea.write(writer); // Use TextComponent write
-	//
-	// if (si != null) {
-	// GrisuRegistryManager.getDefault(si)
-	// .getTemplateManager().addLocalTemplate(
-	// currentFile);
-	// }
-	// } catch (IOException ioex) {
-	// JOptionPane.showMessageDialog(TemplateEditPanel.this, ioex);
-	// System.exit(1);
-	// }
-	// }
-	// }
-	// }
 	private static InformationManager informationManager = null;
 
 	private static InformationManager getInformationManager() {
-		if (informationManager == null) {
-			try {
-				informationManager = InformationManagerManager
-				.getInformationManager(ServerPropertiesManager
-						.getInformationManagerConf());
-			} catch (final Exception e) {
-				return null;
-			}
-		}
+
 		return informationManager;
 	}
 
@@ -128,6 +64,23 @@ PropertyChangeListener, ActionListener {
 		stringWritter.flush();
 
 		return stringWritter.toString();
+	}
+
+	{
+		// we load that in the background because it's not that important...
+		new Thread() {
+			@Override
+			public void run() {
+
+				try {
+					informationManager = InformationManagerManager
+					.getInformationManager(ServerPropertiesManager
+							.getInformationManagerConf());
+				} catch (final Exception e) {
+					// do nothing...
+				}
+			}
+		}.start();
 	}
 
 	protected final File currentFile;
@@ -519,7 +472,7 @@ PropertyChangeListener, ActionListener {
 				final String gt4rsl = GT4Submitter
 				.createJobSubmissionDescription(
 						getInformationManager(),
-								SeveralXMLHelpers.fromString(jsdl), null);
+						SeveralXMLHelpers.fromString(jsdl), null);
 				getGt4TextArea().setText(gt4rsl);
 			} catch (final Exception e) {
 				// e.printStackTrace();
@@ -529,7 +482,7 @@ PropertyChangeListener, ActionListener {
 				final String gt5rsl = GT5Submitter
 				.createJobSubmissionDescription(
 						getInformationManager(),
-								SeveralXMLHelpers.fromString(jsdl), null);
+						SeveralXMLHelpers.fromString(jsdl), null);
 				getGt5TextArea().setText(gt5rsl);
 			} catch (final Exception e) {
 				// e.printStackTrace();

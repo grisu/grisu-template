@@ -27,7 +27,6 @@ import javax.swing.SwingUtilities;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.EventSubscriber;
 
-
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -55,7 +54,7 @@ EventSubscriber<FqanEvent> {
 	private String lastSubLoc = null;
 
 	public QueueSelector(String templateName, PanelConfig config)
-	throws TemplateException {
+			throws TemplateException {
 		super(templateName, config);
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
@@ -119,7 +118,7 @@ EventSubscriber<FqanEvent> {
 						return;
 					}
 					final String subLoc = SubmissionLocationHelpers
-					.createSubmissionLocationString(gr);
+							.createSubmissionLocationString(gr);
 
 					if (subLoc.equals(lastSubLoc)) {
 						return;
@@ -129,7 +128,7 @@ EventSubscriber<FqanEvent> {
 					try {
 						setValue("submissionLocation", subLoc);
 					} catch (final TemplateException e1) {
-						e1.printStackTrace();
+						myLogger.error(e1);
 					}
 				}
 			});
@@ -321,7 +320,7 @@ EventSubscriber<FqanEvent> {
 
 	@Override
 	protected void preparePanel(Map<String, String> panelProperties)
-	throws TemplateException {
+			throws TemplateException {
 
 	}
 

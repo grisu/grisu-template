@@ -53,7 +53,7 @@ public class Jobname extends AbstractInputPanel {
 		// defaultProperties.put(DEFAULT_VALUE, "gridJob");
 		defaultProperties
 		.put(grisu.frontend.view.swing.jobcreation.widgets.Jobname.JOBNAME_CALC_METHOD_KEY,
-		"uniqueNumber");
+				"uniqueNumber");
 
 		return defaultProperties;
 	}
@@ -70,16 +70,15 @@ public class Jobname extends AbstractInputPanel {
 						String input = jobnameTextField.getText();
 						final int index = jobnameTextField.getCaretPosition();
 						input = input
-						.replaceAll(
-								grisu.frontend.view.swing.jobcreation.widgets.Jobname.REPLACEMENT_CHARACTERS,
-						"_");
+								.replaceAll(
+										grisu.frontend.view.swing.jobcreation.widgets.Jobname.REPLACEMENT_CHARACTERS,
+										"_");
 						jobnameTextField.setText(input.trim());
 						jobnameTextField.setCaretPosition(index);
 
 						setValue("jobname", jobnameTextField.getText());
 					} catch (final TemplateException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						myLogger.error(e1);
 					}
 				}
 
@@ -110,7 +109,7 @@ public class Jobname extends AbstractInputPanel {
 
 	@Override
 	protected void preparePanel(Map<String, String> panelProperties)
-	throws TemplateException {
+			throws TemplateException {
 
 	}
 
@@ -120,7 +119,7 @@ public class Jobname extends AbstractInputPanel {
 		final String defaultValue = getPanelProperty(DEFAULT_VALUE);
 		if (StringUtils.isNotBlank(defaultValue)) {
 			final String sugJobname = getUserEnvironmentManager()
-			.calculateUniqueJobname(defaultValue);
+					.calculateUniqueJobname(defaultValue);
 			setValue("jobname", sugJobname);
 		}
 

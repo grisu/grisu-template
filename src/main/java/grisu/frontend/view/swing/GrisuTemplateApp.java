@@ -43,7 +43,7 @@ PropertyChangeListener {
 					appWindow.setVisible(true);
 
 				} catch (final Exception e) {
-					e.printStackTrace();
+					myLogger.error(e);
 				}
 			}
 		});
@@ -81,17 +81,17 @@ PropertyChangeListener {
 				panelClass = Class.forName(panelClassName);
 			} else {
 				panelClass = Class
-				.forName("grisu.frontend.view.swing.jobcreation.createJobPanels."
-						+ panelClassName);
+						.forName("grisu.frontend.view.swing.jobcreation.createJobPanels."
+								+ panelClassName);
 			}
 
 			final JobCreationPanel panel = (JobCreationPanel) panelClass
-			.newInstance();
+					.newInstance();
 
 			return panel;
 
 		} catch (final Exception e) {
-			e.printStackTrace();
+			myLogger.error(e);
 			return null;
 		}
 	}
@@ -141,7 +141,7 @@ PropertyChangeListener {
 
 		SortedSet<String> allTemplates = null;
 		final String fixedTemplates = System
-		.getProperty("grisu.defaultApplications");
+				.getProperty("grisu.defaultApplications");
 		if (StringUtils.isNotBlank(fixedTemplates)) {
 			myLogger.debug("Found defaultApplications: " + fixedTemplates);
 			final String[] temp = fixedTemplates.split(",");
@@ -197,7 +197,7 @@ PropertyChangeListener {
 		tm.addTemplateManagerListener(this);
 
 		String old = ClientPropertiesManager
-		.getProperty(AdvancedTemplateClientSettingsPanel.USE_OLD_FILE_MANAGEMENT_PANEL_CONFIG_KEY);
+				.getProperty(AdvancedTemplateClientSettingsPanel.USE_OLD_FILE_MANAGEMENT_PANEL_CONFIG_KEY);
 		if (StringUtils.equalsIgnoreCase(old, "true")) {
 			addDefaultFileNavigationTaskPane();
 		} else {

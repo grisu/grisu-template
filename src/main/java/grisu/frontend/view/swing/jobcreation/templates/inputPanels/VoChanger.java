@@ -23,7 +23,7 @@ public class VoChanger extends AbstractInputPanel {
 	private JLabel label;
 
 	public VoChanger(String templateName, PanelConfig config)
-	throws TemplateException {
+			throws TemplateException {
 		super(templateName, config);
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -49,7 +49,7 @@ public class VoChanger extends AbstractInputPanel {
 			try {
 				fqanChangePanel.setServiceInterface(getServiceInterface());
 			} catch (final InterruptedException e) {
-				e.printStackTrace();
+				myLogger.error(e);
 			}
 		}
 		return fqanChangePanel;
@@ -67,7 +67,7 @@ public class VoChanger extends AbstractInputPanel {
 
 	@Override
 	protected void preparePanel(Map<String, String> panelProperties)
-	throws TemplateException {
+			throws TemplateException {
 
 	}
 

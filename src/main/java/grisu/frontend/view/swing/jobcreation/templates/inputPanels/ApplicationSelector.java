@@ -34,7 +34,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 	private String[] lastAppPackages = null;
 
 	public ApplicationSelector(String templateName, PanelConfig config)
-	throws TemplateException {
+			throws TemplateException {
 		super(templateName, config);
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -66,7 +66,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 								try {
 									setValue("application", app);
 								} catch (TemplateException e1) {
-									e1.printStackTrace();
+									myLogger.error(e1);
 								}
 							}
 						}.start();
@@ -104,7 +104,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 
 	@Override
 	protected void preparePanel(Map<String, String> panelProperties)
-	throws TemplateException {
+			throws TemplateException {
 
 	}
 
@@ -146,8 +146,8 @@ public class ApplicationSelector extends AbstractInputPanel {
 				appModel.removeAllElements();
 				appModel.addElement(Constants.GENERIC_APPLICATION_NAME);
 				final Set<String> allApps = GrisuRegistryManager
-				.getDefault(getServiceInterface())
-				.getResourceInformation().getAllApplications();
+						.getDefault(getServiceInterface())
+						.getResourceInformation().getAllApplications();
 				for (String app : allApps) {
 					appModel.addElement(app);
 				}
@@ -170,8 +170,8 @@ public class ApplicationSelector extends AbstractInputPanel {
 		appModel.removeAllElements();
 		appModel.addElement(Constants.GENERIC_APPLICATION_NAME);
 		final Set<String> allApps = GrisuRegistryManager
-		.getDefault(getServiceInterface()).getResourceInformation()
-		.getAllApplications();
+				.getDefault(getServiceInterface()).getResourceInformation()
+				.getAllApplications();
 		for (String app : allApps) {
 			appModel.addElement(app);
 		}
@@ -192,9 +192,9 @@ public class ApplicationSelector extends AbstractInputPanel {
 			public void run() {
 
 				String[] appPackages = GrisuRegistryManager
-				.getDefault(getServiceInterface())
-				.getResourceInformation()
-				.getApplicationPackageForExecutable(exe);
+						.getDefault(getServiceInterface())
+						.getResourceInformation()
+						.getApplicationPackageForExecutable(exe);
 
 				// X.p("XXX" + StringUtils.join(appPackages, " - "));
 				if (appPackages.length == 0) {

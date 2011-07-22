@@ -13,7 +13,12 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
+import org.apache.log4j.Logger;
+
 public class TemplateCreator {
+
+	static final Logger myLogger = Logger.getLogger(TemplateCreator.class
+			.getName());
 
 	/**
 	 * Launch the application.
@@ -25,7 +30,7 @@ public class TemplateCreator {
 					final TemplateCreator window = new TemplateCreator();
 					window.frame.setVisible(true);
 				} catch (final Exception e) {
-					e.printStackTrace();
+					myLogger.error(e);
 				}
 			}
 		});
@@ -49,7 +54,7 @@ public class TemplateCreator {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (final Exception e) {
-			e.printStackTrace();
+			myLogger.error(e);
 		}
 
 		initialize();

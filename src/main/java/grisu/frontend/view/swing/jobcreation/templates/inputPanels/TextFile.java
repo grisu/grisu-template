@@ -150,15 +150,15 @@ public class TextFile extends AbstractInputPanel {
 
 		try {
 			final GlazedFile file = GrisuRegistryManager
-			.getDefault(getServiceInterface()).getFileManager()
-			.createGlazedFileFromUrl(selectedFile);
+					.getDefault(getServiceInterface()).getFileManager()
+					.createGlazedFileFromUrl(selectedFile);
 			loadFile(file);
 
 			addValue("inputFileUrl", selectedFile);
 
 			addHistoryValue(selectedFile);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			myLogger.error(e);
 		}
 
 	}
@@ -202,14 +202,14 @@ public class TextFile extends AbstractInputPanel {
 					final FileManager fm = GrisuRegistryManager.getDefault(
 							getServiceInterface()).getFileManager();
 					String currentUrl = (String) getComboBox()
-					.getSelectedItem();
+							.getSelectedItem();
 
 					if (StringUtils.isBlank(currentUrl)) {
 
 						// TODO write grid save dialog
 						final JFileChooser fc = new JFileChooser();
 						final int returnVal = fc.showDialog(TextFile.this,
-						"Save as...");
+								"Save as...");
 
 						if (JFileChooser.CANCEL_OPTION == returnVal) {
 							return;
@@ -229,7 +229,7 @@ public class TextFile extends AbstractInputPanel {
 										.getFileFromUriOrPath(currentUrl),
 										getTextArea().getText());
 							} catch (final IOException e1) {
-								e1.printStackTrace();
+								myLogger.error(e1);
 							}
 
 							documentChanged = false;
@@ -257,7 +257,7 @@ public class TextFile extends AbstractInputPanel {
 									.getFileFromUriOrPath(currentUrl),
 									getTextArea().getText());
 						} catch (final IOException e1) {
-							e1.printStackTrace();
+							myLogger.error(e1);
 						}
 					} else {
 
@@ -269,11 +269,9 @@ public class TextFile extends AbstractInputPanel {
 
 							fm.uploadFile(temp, currentUrl, true);
 						} catch (final IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+							myLogger.error(e1);
 						} catch (final FileTransactionException e2) {
-							// TODO Auto-generated catch block
-							e2.printStackTrace();
+							myLogger.error(e2);
 						}
 
 					}
@@ -395,7 +393,7 @@ public class TextFile extends AbstractInputPanel {
 		try {
 			file = fm.downloadFile(gfile.getUrl());
 		} catch (final FileTransactionException e1) {
-			e1.printStackTrace();
+			myLogger.error(e1);
 			return;
 		}
 
@@ -403,7 +401,7 @@ public class TextFile extends AbstractInputPanel {
 		try {
 			text = FileUtils.readFileToString(file);
 		} catch (final IOException e) {
-			e.printStackTrace();
+			myLogger.error(e);
 			return;
 		}
 
@@ -454,13 +452,13 @@ public class TextFile extends AbstractInputPanel {
 		if (fillDefaultValueIntoFieldWhenPreparingPanel()) {
 			try {
 				final GlazedFile file = GrisuRegistryManager
-				.getDefault(getServiceInterface()).getFileManager()
-				.createGlazedFileFromUrl(getDefaultValue());
+						.getDefault(getServiceInterface()).getFileManager()
+						.createGlazedFileFromUrl(getDefaultValue());
 				loadFile(file);
 				getJobSubmissionObject().addInputFileUrl(getDefaultValue());
 				getComboBox().setSelectedItem(getDefaultValue());
 			} catch (final Exception e) {
-				e.printStackTrace();
+				myLogger.error(e);
 			}
 		} else {
 			getComboBox().addItem("");

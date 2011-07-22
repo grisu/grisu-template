@@ -72,7 +72,7 @@ public class TextCombo extends AbstractInputPanel {
 								currentValue = (String) model.getSelectedItem();
 								setValue(bean, currentValue);
 							} catch (final TemplateException e1) {
-								e1.printStackTrace();
+								myLogger.error(e1);
 							}
 						}
 					}
@@ -91,11 +91,10 @@ public class TextCombo extends AbstractInputPanel {
 						// }
 
 						currentValue = (String) getComboBox()
-						.getEditor().getItem();
+								.getEditor().getItem();
 						setValue(bean, currentValue);
 					} catch (final TemplateException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+								myLogger.error(e1);
 					}
 				}
 
@@ -131,7 +130,7 @@ public class TextCombo extends AbstractInputPanel {
 
 	@Override
 	protected void preparePanel(Map<String, String> panelProperties)
-	throws TemplateException {
+			throws TemplateException {
 
 		getComboBox().removeAllItems();
 
@@ -181,7 +180,7 @@ public class TextCombo extends AbstractInputPanel {
 		} catch (final Exception e) {
 			throw new TemplateException(
 					"Can't parse editable value for combobox: "
-					+ e.getLocalizedMessage());
+							+ e.getLocalizedMessage());
 		}
 
 		if (fill || fillDefaultValueIntoFieldWhenPreparingPanel()) {
@@ -191,7 +190,7 @@ public class TextCombo extends AbstractInputPanel {
 				try {
 					value = (String) model.getElementAt(0);
 				} catch (final Exception e) {
-					e.printStackTrace();
+					myLogger.error(e);
 				}
 			}
 

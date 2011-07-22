@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.apache.log4j.Logger;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.netbeans.validation.api.ui.ValidationPanel;
@@ -25,6 +26,9 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 public class TemplateWrapperPanel extends JPanel {
+
+	static final Logger myLogger = Logger.getLogger(TemplateWrapperPanel.class
+			.getName());
 
 	public static final String JOB_CREATE_PANEL = "jobCreatePanel";
 	public static final String SUBMISSION_LOG_PANEL = "logPanel";
@@ -68,11 +72,11 @@ public class TemplateWrapperPanel extends JPanel {
 
 		if (template.getTemplatePanel() != null) {
 			creationPanel.add(template.getTemplatePanel(),
-			"2, 2, 3, 1, fill, fill");
+					"2, 2, 3, 1, fill, fill");
 		}
 		if (template.getValidationPanel() != null) {
 			creationPanel.add(template.getValidationPanel(),
-			"2, 4, 2, 1, fill, fill");
+					"2, 4, 2, 1, fill, fill");
 		}
 
 		creationPanel.add(getDefaultFqanChangePanel(), "2, 6, left, center");
@@ -92,8 +96,7 @@ public class TemplateWrapperPanel extends JPanel {
 				defaultFqanChangePanel.setServiceInterface(template
 						.getServiceInterface());
 			} catch (final InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				myLogger.error(e);
 			}
 		}
 		return defaultFqanChangePanel;
@@ -114,8 +117,8 @@ public class TemplateWrapperPanel extends JPanel {
 
 						ErrorInfo info = new ErrorInfo("Job property error",
 								"Can't submit job:\n\n"
-								+ e.getLocalizedMessage(), null,
-								"Error", e, Level.SEVERE, null);
+										+ e.getLocalizedMessage(), null,
+										"Error", e, Level.SEVERE, null);
 
 						JXErrorPane pane = new JXErrorPane();
 						pane.setErrorInfo(info);

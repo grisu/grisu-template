@@ -77,7 +77,7 @@ public class Email extends AbstractInputPanel {
 							setValue("email_address", "");
 						}
 					} catch (final TemplateException e) {
-						e.printStackTrace();
+						myLogger.error(e);
 					}
 
 				}
@@ -112,8 +112,7 @@ public class Email extends AbstractInputPanel {
 							setValue("email_address", "");
 						}
 					} catch (final TemplateException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						myLogger.error(e);
 					}
 
 				}
@@ -143,7 +142,7 @@ public class Email extends AbstractInputPanel {
 							setValue("email_address", "");
 						}
 					} catch (final TemplateException e1) {
-						e1.printStackTrace();
+						myLogger.error(e1);
 					}
 				}
 
@@ -163,7 +162,7 @@ public class Email extends AbstractInputPanel {
 
 	@Override
 	protected void preparePanel(Map<String, String> panelProperties)
-	throws TemplateException {
+			throws TemplateException {
 
 	}
 

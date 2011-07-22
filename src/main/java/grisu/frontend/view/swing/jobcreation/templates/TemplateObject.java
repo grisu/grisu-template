@@ -25,7 +25,7 @@ public class TemplateObject {
 			.getName());
 
 	public static Map<String, String> parseCommandlineTemplate(String template)
-	throws TemplateException {
+			throws TemplateException {
 
 		final Map<String, String> map = new HashMap<String, String>();
 
@@ -40,7 +40,7 @@ public class TemplateObject {
 			}
 			if (!part.contains("}")) {
 				throw new TemplateException(
-				"Template format wrong: opening { does not have a closing }");
+						"Template format wrong: opening { does not have a closing }");
 			}
 
 			final String variableName = part.substring(1, part.indexOf("}"));
@@ -142,10 +142,9 @@ public class TemplateObject {
 							value = fromMethod.invoke(null, value);
 							break;
 						} catch (final Exception e) {
-							e.printStackTrace();
 							throw new TemplateException(
 									"Can't set fixed key/value pair: " + key
-									+ "/" + value.toString());
+											+ "/" + value.toString(), e);
 						}
 					}
 				}
@@ -170,7 +169,7 @@ public class TemplateObject {
 
 	public void setInputPanels(
 			LinkedHashMap<String, AbstractInputPanel> inputPanels)
-	throws TemplateException {
+					throws TemplateException {
 
 		this.inputPanels = inputPanels;
 

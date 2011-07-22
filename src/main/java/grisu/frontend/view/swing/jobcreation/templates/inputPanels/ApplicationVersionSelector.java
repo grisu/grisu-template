@@ -22,7 +22,6 @@ import org.apache.commons.lang.StringUtils;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.EventSubscriber;
 
-
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -42,7 +41,7 @@ EventSubscriber<FqanEvent> {
 	private Thread appVersionThread = null;
 
 	public ApplicationVersionSelector(String templateName, PanelConfig config)
-	throws TemplateException {
+			throws TemplateException {
 		super(templateName, config);
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -77,7 +76,7 @@ EventSubscriber<FqanEvent> {
 			setValue("applicationVersion", version);
 			lastVersionEmpty = false;
 		} catch (TemplateException e1) {
-			e1.printStackTrace();
+			myLogger.error(e1);
 		}
 	}
 
@@ -94,7 +93,7 @@ EventSubscriber<FqanEvent> {
 
 					if (ItemEvent.SELECTED == e.getStateChange()) {
 						final String version = (String) versionModel
-						.getSelectedItem();
+								.getSelectedItem();
 
 						new Thread() {
 							@Override
@@ -158,7 +157,7 @@ EventSubscriber<FqanEvent> {
 
 	@Override
 	protected void preparePanel(Map<String, String> panelProperties)
-	throws TemplateException {
+			throws TemplateException {
 		// TODO Auto-generated method stub
 
 	}
@@ -198,7 +197,7 @@ EventSubscriber<FqanEvent> {
 				getServiceInterface()).getApplicationInformation(app);
 
 		final Set<String> allVersions = info
-		.getAllAvailableVersionsForFqan(fqan);
+				.getAllAvailableVersionsForFqan(fqan);
 
 		// if (Thread.interrupted()) {
 		// lockUI(false);
@@ -269,8 +268,7 @@ EventSubscriber<FqanEvent> {
 			try {
 				appVersionThread.join();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				myLogger.error(e);
 			}
 		}
 

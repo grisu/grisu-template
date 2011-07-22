@@ -25,6 +25,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -33,6 +34,9 @@ import com.jgoodies.forms.layout.RowSpec;
 
 public class TemplateJobCreationPanel extends JPanel implements
 JobCreationPanel, PropertyChangeListener {
+
+	static final Logger myLogger = Logger
+			.getLogger(TemplateJobCreationPanel.class.getName());
 
 	public static final String LOADING_PANEL = "loading";
 	public static final String TEMPLATE_PANEL = "template";
@@ -69,7 +73,7 @@ JobCreationPanel, PropertyChangeListener {
 		try {
 			this.panelConfigs = TemplateHelpers.parseConfig(lines);
 		} catch (final TemplateException e) {
-			e.printStackTrace();
+			myLogger.error(e);
 		}
 		setLayout(cardLayout);
 		add(getLoadingPanel(), LOADING_PANEL);
@@ -206,7 +210,7 @@ JobCreationPanel, PropertyChangeListener {
 			add(currentTemplatePanel, TEMPLATE_PANEL);
 			cardLayout.show(this, TEMPLATE_PANEL);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			myLogger.error(e);
 			getErrorTextArea().setText(getStackTrace(e));
 			cardLayout.show(this, ERROR_PANEL);
 		}

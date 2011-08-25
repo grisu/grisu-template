@@ -2,7 +2,8 @@ package grisu.frontend.view.swing.jobcreation.templates;
 
 import grisu.backend.info.InformationManagerManager;
 import grisu.backend.model.job.gt4.GT4Submitter;
-import grisu.backend.model.job.gt5.GT5Submitter;
+import grisu.backend.model.job.gt5.RSLCreationException;
+import grisu.backend.model.job.gt5.RSLFactory;
 import grisu.control.ServiceInterface;
 import grisu.control.exceptions.JobPropertiesException;
 import grisu.control.exceptions.TemplateException;
@@ -10,6 +11,7 @@ import grisu.frontend.control.login.LoginManager;
 import grisu.frontend.view.swing.login.GrisuSwingClient;
 import grisu.frontend.view.swing.login.LoginPanel;
 import grisu.jcommons.interfaces.InformationManager;
+import grisu.model.GrisuRegistryManager;
 import grisu.settings.ServerPropertiesManager;
 import grisu.utils.SeveralXMLHelpers;
 
@@ -82,7 +84,7 @@ PropertyChangeListener, ActionListener, GrisuSwingClient {
 		// ========================================= actionPerformed
 		public void actionPerformed(ActionEvent e) {
 			final int retval = _fileChooser
-			.showOpenDialog(TemplateTestFrame.this);
+					.showOpenDialog(TemplateTestFrame.this);
 			if (retval == JFileChooser.APPROVE_OPTION) {
 				final File f = _fileChooser.getSelectedFile();
 				currentFile = f;
@@ -109,7 +111,7 @@ PropertyChangeListener, ActionListener, GrisuSwingClient {
 		// ========================================= actionPerformed
 		public void actionPerformed(ActionEvent e) {
 			final int retval = _fileChooser
-			.showSaveDialog(TemplateTestFrame.this);
+					.showSaveDialog(TemplateTestFrame.this);
 			if (retval == JFileChooser.APPROVE_OPTION) {
 				final File f = _fileChooser.getSelectedFile();
 				try {
@@ -124,8 +126,8 @@ PropertyChangeListener, ActionListener, GrisuSwingClient {
 	}
 
 	public static final InformationManager informationManager = InformationManagerManager
-	.getInformationManager(ServerPropertiesManager
-			.getInformationManagerConf());
+			.getInformationManager(ServerPropertiesManager
+					.getInformationManagerConf());
 
 	public static String getStackTrace(Throwable t) {
 		final StringWriter stringWritter = new StringWriter();
@@ -300,7 +302,7 @@ PropertyChangeListener, ActionListener, GrisuSwingClient {
 					File f = currentFile;
 					if (f == null) {
 						final int retval = _fileChooser
-						.showSaveDialog(TemplateTestFrame.this);
+								.showSaveDialog(TemplateTestFrame.this);
 						if (retval == JFileChooser.APPROVE_OPTION) {
 							f = _fileChooser.getSelectedFile();
 						} else {
@@ -491,13 +493,13 @@ PropertyChangeListener, ActionListener, GrisuSwingClient {
 			String jsdl;
 			try {
 				jsdl = template.getJobSubmissionObject()
-				.getJobDescriptionDocumentAsString();
+						.getJobDescriptionDocumentAsString();
 				getJsdlTextArea().setText(jsdl);
 				getJsdlTextArea().setCaretPosition(0);
 			} catch (final JobPropertiesException e) {
 				final StringBuffer temp = new StringBuffer(
 						"Can't calculate jsdl right now: "
-						+ e.getLocalizedMessage() + "\n\n");
+								+ e.getLocalizedMessage() + "\n\n");
 				temp.append(getStackTrace(e));
 				getJsdlTextArea().setText(temp.toString());
 				getJsdlTextArea().setCaretPosition(0);
@@ -513,9 +515,17 @@ PropertyChangeListener, ActionListener, GrisuSwingClient {
 					null);
 			getGt4TextArea().setText(gt4rsl);
 
-			final String gt5rsl = GT5Submitter.createJobSubmissionDescription(
-					informationManager, SeveralXMLHelpers.fromString(jsdl),
-					null);
+			String fqan = GrisuRegistryManager.getDefault(si)
+					.getUserEnvironmentManager().getCurrentFqan();
+			RSLFactory f = RSLFactory.getRSLFactory();
+			String gt5rsl = "";
+			try {
+				gt5rsl = f.create(SeveralXMLHelpers.fromString(jsdl), fqan)
+						.toString();
+			} catch (RSLCreationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			getGt5TextArea().setText(gt5rsl);
 
 		}

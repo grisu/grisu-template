@@ -24,6 +24,7 @@
 					<exclude>**/LICENSE</exclude>
 					<exclude>**/NOTICE</exclude>
 					<exclude>log4j.properties</exclude>
+					<exclude>log4j.xml</exclude>
 					<exclude>certificates.zip</exclude>
 					<exclude>vomses.zip</exclude>
 					<exclude>arcs/__init__.py</exclude>
@@ -37,7 +38,7 @@
 	<!--to make sure the right log4j.properties file is used -->
 	<files>
 		<file>
-			<source>src/main/resources/log4j.properties</source>
+			<source>src/main/resources/log4j.xml</source>
 			<outputDirectory>/</outputDirectory>
 		</file>
 	</files>

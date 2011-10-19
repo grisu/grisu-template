@@ -80,7 +80,7 @@ public class JobType extends AbstractInputPanel implements ActionListener {
 				setValue("cpus", 1);
 				setValue("force_single", Boolean.TRUE);
 			} catch (final TemplateException e1) {
-				e1.printStackTrace();
+				myLogger.error(e1);
 			}
 		} else if (THREADED.equals(currentActionCommand)) {
 			try {
@@ -90,13 +90,13 @@ public class JobType extends AbstractInputPanel implements ActionListener {
 				setValue("force_single", Boolean.TRUE);
 				setValue("hostCount", 1);
 			} catch (final TemplateException e1) {
-				e1.printStackTrace();
+				myLogger.error(e1);
 			}
 		} else if (MPI.equals(currentActionCommand)) {
 			try {
 				setValue("force_mpi", Boolean.TRUE);
 			} catch (final TemplateException e1) {
-				e1.printStackTrace();
+				myLogger.error(e1);
 			}
 		} else {
 			throw new RuntimeException("Command: " + currentActionCommand
@@ -182,7 +182,7 @@ public class JobType extends AbstractInputPanel implements ActionListener {
 
 	@Override
 	protected void preparePanel(Map<String, String> panelProperties)
-	throws TemplateException {
+			throws TemplateException {
 
 	}
 

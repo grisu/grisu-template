@@ -92,12 +92,12 @@ public class Cpus extends AbstractInputPanel {
 					try {
 						if (ItemEvent.SELECTED == e.getStateChange()) {
 							final Integer value = (Integer) getComboBox()
-							.getSelectedItem();
+									.getSelectedItem();
 							try {
 								setValue("cpus", value);
 								lastCpus = value;
 							} catch (final TemplateException e1) {
-								e1.printStackTrace();
+								myLogger.error(e1);
 							}
 						}
 					} catch (Exception ex) {
@@ -127,7 +127,7 @@ public class Cpus extends AbstractInputPanel {
 
 		try {
 			final String result = ((Integer) (getComboBox().getSelectedItem()))
-			.toString();
+					.toString();
 			return result;
 		} catch (final Exception e) {
 			myLogger.debug("Can't get value for panel " + getPanelName() + ": "
@@ -169,7 +169,7 @@ public class Cpus extends AbstractInputPanel {
 							Boolean.parseBoolean(panelProperties.get(key)));
 				}
 			} catch (final Exception e) {
-				e.printStackTrace();
+				myLogger.error(e);
 			}
 		}
 
@@ -183,7 +183,7 @@ public class Cpus extends AbstractInputPanel {
 			try {
 				setValue("cpus", Integer.parseInt(def));
 			} catch (final Exception e) {
-				e.printStackTrace();
+				myLogger.error(e);
 			}
 		}
 

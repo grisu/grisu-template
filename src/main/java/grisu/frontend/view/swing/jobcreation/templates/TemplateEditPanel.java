@@ -2,7 +2,7 @@ package grisu.frontend.view.swing.jobcreation.templates;
 
 import grisu.backend.info.InformationManagerManager;
 import grisu.backend.model.job.gt4.GT4Submitter;
-import grisu.backend.model.job.gt5.GT5Submitter;
+import grisu.backend.model.job.gt5.RSLFactory;
 import grisu.control.ServiceInterface;
 import grisu.control.exceptions.JobPropertiesException;
 import grisu.control.exceptions.TemplateException;
@@ -41,7 +41,6 @@ import javax.swing.SwingConstants;
 
 import org.apache.commons.io.FilenameUtils;
 
-
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -50,74 +49,10 @@ import com.jgoodies.forms.layout.RowSpec;
 public class TemplateEditPanel extends JPanel implements
 PropertyChangeListener, ActionListener {
 
-	// // //////////////////////////////////////////////// inner class
-	// OpenAction
-	// class OpenAction extends AbstractAction {
-	// // ============================================= constructor
-	// public OpenAction() {
-	// super("Open...");
-	// putValue(MNEMONIC_KEY, new Integer('O'));
-	// }
-	//
-	// // ========================================= actionPerformed
-	// public void actionPerformed(ActionEvent e) {
-	// int retval = _fileChooser.showOpenDialog(TemplateEditPanel.this);
-	// if (retval == JFileChooser.APPROVE_OPTION) {
-	// File f = _fileChooser.getSelectedFile();
-	// currentFile = f;
-	// try {
-	// FileReader reader = new FileReader(f);
-	// textArea.read(reader, ""); // Use TextComponent read
-	// TemplateEditPanel.this.actionPerformed(null);
-	// } catch (IOException ioex) {
-	// System.out.println(e);
-	// System.exit(1);
-	// }
-	// }
-	// }
-	// }
-
-	// ////////////////////////////////////////////////// inner class SaveAction
-	// class SaveAction extends AbstractAction {
-	// // ============================================= constructor
-	// SaveAction() {
-	// super("Save...");
-	// putValue(MNEMONIC_KEY, new Integer('S'));
-	// }
-	//
-	// // ========================================= actionPerformed
-	// public void actionPerformed(ActionEvent e) {
-	// int retval = _fileChooser.showSaveDialog(TemplateEditPanel.this);
-	// if (retval == JFileChooser.APPROVE_OPTION) {
-	// File f = _fileChooser.getSelectedFile();
-	// try {
-	// FileWriter writer = new FileWriter(f);
-	// textArea.write(writer); // Use TextComponent write
-	//
-	// if (si != null) {
-	// GrisuRegistryManager.getDefault(si)
-	// .getTemplateManager().addLocalTemplate(
-	// currentFile);
-	// }
-	// } catch (IOException ioex) {
-	// JOptionPane.showMessageDialog(TemplateEditPanel.this, ioex);
-	// System.exit(1);
-	// }
-	// }
-	// }
-	// }
 	private static InformationManager informationManager = null;
 
 	private static InformationManager getInformationManager() {
-		if (informationManager == null) {
-			try {
-				informationManager = InformationManagerManager
-				.getInformationManager(ServerPropertiesManager
-						.getInformationManagerConf());
-			} catch (final Exception e) {
-				return null;
-			}
-		}
+
 		return informationManager;
 	}
 
@@ -129,6 +64,23 @@ PropertyChangeListener, ActionListener {
 		stringWritter.flush();
 
 		return stringWritter.toString();
+	}
+
+	{
+		// we load that in the background because it's not that important...
+		new Thread() {
+			@Override
+			public void run() {
+
+				try {
+					informationManager = InformationManagerManager
+							.getInformationManager(ServerPropertiesManager
+									.getInformationManagerConf());
+				} catch (final Exception e) {
+					// do nothing...
+				}
+			}
+		}.start();
 	}
 
 	protected final File currentFile;
@@ -164,6 +116,7 @@ PropertyChangeListener, ActionListener {
 	private JScrollPane scrollPane_4;
 	private JTextArea gt5TextArea;
 
+
 	private LoginPanel lp;
 
 	/**
@@ -172,7 +125,7 @@ PropertyChangeListener, ActionListener {
 	 * @throws TemplateException
 	 */
 	public TemplateEditPanel(ServiceInterface si, File currentFile)
-	throws TemplateException {
+			throws TemplateException {
 
 		this.si = si;
 
@@ -287,7 +240,7 @@ PropertyChangeListener, ActionListener {
 					File f = currentFile;
 					if (f == null) {
 						final int retval = _fileChooser
-						.showSaveDialog(TemplateEditPanel.this);
+								.showSaveDialog(TemplateEditPanel.this);
 						if (retval == JFileChooser.APPROVE_OPTION) {
 							f = _fileChooser.getSelectedFile();
 						} else {
@@ -489,13 +442,13 @@ PropertyChangeListener, ActionListener {
 			String jsdl;
 			try {
 				jsdl = template.getJobSubmissionObject()
-				.getJobDescriptionDocumentAsString();
+						.getJobDescriptionDocumentAsString();
 				getJsdlTextArea().setText(jsdl);
 				getJsdlTextArea().setCaretPosition(0);
 			} catch (final JobPropertiesException e) {
 				final StringBuffer temp = new StringBuffer(
 						"Can't calculate jsdl right now: "
-						+ e.getLocalizedMessage() + "\n\n");
+								+ e.getLocalizedMessage() + "\n\n");
 				temp.append(getStackTrace(e));
 				getJsdlTextArea().setText(temp.toString());
 				getJsdlTextArea().setCaretPosition(0);
@@ -518,19 +471,21 @@ PropertyChangeListener, ActionListener {
 
 			try {
 				final String gt4rsl = GT4Submitter
-				.createJobSubmissionDescription(
-						getInformationManager(),
-						SeveralXMLHelpers.fromString(jsdl));
+						.createJobSubmissionDescription(
+								getInformationManager(),
+								SeveralXMLHelpers.fromString(jsdl), null);
 				getGt4TextArea().setText(gt4rsl);
 			} catch (final Exception e) {
 				// e.printStackTrace();
 			}
 
 			try {
-				final String gt5rsl = GT5Submitter
-				.createJobSubmissionDescription(
-						getInformationManager(),
-						SeveralXMLHelpers.fromString(jsdl));
+				String fqan = GrisuRegistryManager.getDefault(si)
+						.getUserEnvironmentManager().getCurrentFqan();
+				RSLFactory f = RSLFactory.getRSLFactory();
+				String gt5rsl = f.create(SeveralXMLHelpers.fromString(jsdl),
+						fqan).toString();
+
 				getGt5TextArea().setText(gt5rsl);
 			} catch (final Exception e) {
 				// e.printStackTrace();

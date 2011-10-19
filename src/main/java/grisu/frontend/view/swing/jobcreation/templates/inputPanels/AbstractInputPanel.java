@@ -100,14 +100,14 @@ PropertyChangeListener {
 
 		if (dialogs.get(templateName) == null) {
 			String startUrl = GrisuRegistryManager
-			.getDefault(si)
-			.getHistoryManager()
-			.getLastEntry(
-					templateName + "_" + FILE_DIALOG_LAST_DIRECTORY_KEY);
+					.getDefault(si)
+					.getHistoryManager()
+					.getLastEntry(
+							templateName + "_" + FILE_DIALOG_LAST_DIRECTORY_KEY);
 
 			if (StringUtils.isBlank(startUrl)) {
 				startUrl = new File(System.getProperty("user.home")).toURI()
-				.toString();
+						.toString();
 			} else if (!FileManager.isLocal(startUrl)) {
 				try {
 					if (!si.isFolder(startUrl)) {
@@ -138,7 +138,7 @@ PropertyChangeListener {
 	private Object oldAddValue = null;
 
 	public AbstractInputPanel(String templateName, PanelConfig config)
-	throws TemplateException {
+			throws TemplateException {
 
 		this.templateName = templateName;
 
@@ -164,7 +164,7 @@ PropertyChangeListener {
 			historyManagerEntryName = templateName;
 		} else {
 			historyManagerEntryName = templateName + "_"
-			+ this.panelProperties.get(NAME);
+					+ this.panelProperties.get(NAME);
 		}
 
 		String title = panelProperties.get(TITLE);
@@ -204,7 +204,7 @@ PropertyChangeListener {
 			setBorder(new TitledBorder(null, title, TitledBorder.LEADING,
 					TitledBorder.TOP, null, null));
 		} catch (final Exception e) {
-			e.printStackTrace();
+			myLogger.error(e);
 		}
 
 		final String size = this.panelProperties.get(SIZE);
@@ -219,7 +219,7 @@ PropertyChangeListener {
 			} catch (final Exception e) {
 				throw new TemplateException(
 						"Can't parse size property for panel "
-						+ this.panelProperties.get(NAME) + ": " + size);
+								+ this.panelProperties.get(NAME) + ": " + size);
 			}
 		}
 
@@ -260,8 +260,7 @@ PropertyChangeListener {
 			method.invoke(jobObject, value);
 			applyFilters();
 		} catch (final Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			myLogger.error(e);
 		}
 	}
 
@@ -403,7 +402,7 @@ PropertyChangeListener {
 	protected String getPanelProperty(String key) {
 		if (panelProperties == null) {
 			throw new IllegalStateException(
-			"Panel properties not initialized yet");
+					"Panel properties not initialized yet");
 		}
 		return panelProperties.get(key);
 	}
@@ -474,7 +473,7 @@ PropertyChangeListener {
 				} catch (final Exception e) {
 					throw new TemplateException(
 							"Can't setup history management for panel "
-							+ getPanelName(), e);
+									+ getPanelName(), e);
 				}
 			}
 		}
@@ -541,14 +540,14 @@ PropertyChangeListener {
 	 * @throws TemplateException
 	 */
 	abstract protected void preparePanel(Map<String, String> panelProperties)
-	throws TemplateException;
+			throws TemplateException;
 
 	public void propertyChange(PropertyChangeEvent arg0) {
 		jobPropertyChanged(arg0);
 	}
 
 	public void refresh(JobSubmissionObjectImpl jobObject)
-	throws TemplateException {
+			throws TemplateException {
 
 		myLogger.debug("Refreshing panel with new job: "
 				+ getTemplateObject().getTemplateName() + "/" + getPanelName());
@@ -588,8 +587,7 @@ PropertyChangeListener {
 			method.invoke(jobObject, value);
 			applyFilters();
 		} catch (final Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			myLogger.error(e);
 		}
 	}
 
@@ -602,7 +600,7 @@ PropertyChangeListener {
 
 		this.si = si;
 		this.uem = GrisuRegistryManager.getDefault(si)
-		.getUserEnvironmentManager();
+				.getUserEnvironmentManager();
 		this.rjm = RunningJobManager.getDefault(si);
 		this.hm = GrisuRegistryManager.getDefault(si).getHistoryManager();
 
@@ -636,10 +634,10 @@ PropertyChangeListener {
 
 					if (oldAddValue != null) {
 						final Method removeMethod = jobObject
-						.getClass()
-						.getMethod(
-								"remove" + StringUtils.capitalize(bean),
-								oldAddValue.getClass());
+								.getClass()
+								.getMethod(
+										"remove" + StringUtils.capitalize(bean),
+										oldAddValue.getClass());
 						removeMethod.invoke(jobObject, oldAddValue);
 					}
 					oldAddValue = value;

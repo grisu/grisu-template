@@ -2,8 +2,8 @@ package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
-import grisu.frontend.view.swing.utils.WalltimeUtils;
 import grisu.model.job.JobSubmissionObjectImpl;
+import grisu.utils.WalltimeUtils;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -67,8 +67,8 @@ public class Walltime extends AbstractInputPanel {
 					int walltimeInSeconds = -1;
 					try {
 						walltimeInSeconds = WalltimeUtils
-						.convertHumanReadableStringIntoSeconds(new String[] {
-								amount, unit });
+								.convertHumanReadableStringIntoSeconds(new String[] {
+										amount, unit });
 					} catch (final Exception e1) {
 						myLogger.debug("Can't parse " + amount + ",  " + unit
 								+ ": " + e1.getLocalizedMessage());
@@ -78,8 +78,7 @@ public class Walltime extends AbstractInputPanel {
 					try {
 						setValue("walltimeInSeconds", walltimeInSeconds);
 					} catch (final TemplateException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						myLogger.error(e1);
 					}
 				}
 			});
@@ -93,7 +92,7 @@ public class Walltime extends AbstractInputPanel {
 		final Map<String, String> defaultProperties = new HashMap<String, String>();
 		defaultProperties.put(TITLE, "Walltime");
 		defaultProperties.put("defaultAmountList",
-		"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,30,45");
+				"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,30,45");
 		defaultProperties.put("defaultAmount", "1");
 		defaultProperties.put("defaultUnitList", "minutes,hours,days,weeks");
 		defaultProperties.put("defaultUnit", "hours");
@@ -111,15 +110,15 @@ public class Walltime extends AbstractInputPanel {
 				public void itemStateChanged(ItemEvent e) {
 
 					final int walltimeInSeconds = WalltimeUtils
-					.convertHumanReadableStringIntoSeconds(new String[] {
-							(String) (getAmountComboBox()
-									.getSelectedItem()),
-									(String) (getUnitComboBox()
-											.getSelectedItem()) });
+							.convertHumanReadableStringIntoSeconds(new String[] {
+									(String) (getAmountComboBox()
+											.getSelectedItem()),
+											(String) (getUnitComboBox()
+													.getSelectedItem()) });
 					try {
 						setValue("walltimeInSeconds", walltimeInSeconds);
 					} catch (final TemplateException e1) {
-						e1.printStackTrace();
+						myLogger.error(e1);
 					}
 				}
 			});
@@ -133,8 +132,8 @@ public class Walltime extends AbstractInputPanel {
 		final String unit = (String) getUnitComboBox().getSelectedItem();
 		try {
 			final Integer secs = WalltimeUtils
-			.convertHumanReadableStringIntoSeconds(new String[] {
-					amount, unit });
+					.convertHumanReadableStringIntoSeconds(new String[] {
+							amount, unit });
 			return secs.toString();
 		} catch (final Exception e) {
 			return null;
@@ -148,8 +147,8 @@ public class Walltime extends AbstractInputPanel {
 		if ("walltimeInSeconds".equals(e.getPropertyName())) {
 
 			final String[] humanReadable = WalltimeUtils
-			.convertSecondsInHumanReadableString((Integer) (e
-					.getNewValue()));
+					.convertSecondsInHumanReadableString((Integer) (e
+							.getNewValue()));
 			amountModel.setSelectedItem(humanReadable[0]);
 			unitModel.setSelectedItem(humanReadable[1]);
 		}
@@ -160,7 +159,7 @@ public class Walltime extends AbstractInputPanel {
 	protected void preparePanel(Map<String, String> panelProperties) {
 
 		final String[] amounts = panelProperties.get("defaultAmountList")
-		.split(",");
+				.split(",");
 		amountModel.removeAllElements();
 		for (final String amount : amounts) {
 			try {
@@ -174,7 +173,7 @@ public class Walltime extends AbstractInputPanel {
 
 		unitModel.removeAllElements();
 		final String[] units = panelProperties.get("defaultUnitList")
-		.split(",");
+				.split(",");
 		for (final String unit : units) {
 			if ("minutes,hours,days,weeks".indexOf(unit) >= 0) {
 				unitModel.addElement(unit);
@@ -196,8 +195,8 @@ public class Walltime extends AbstractInputPanel {
 
 			try {
 				final String[] humanreadable = WalltimeUtils
-				.convertSecondsInHumanReadableString(Integer
-						.parseInt(defValue));
+						.convertSecondsInHumanReadableString(Integer
+								.parseInt(defValue));
 				if ((humanreadable != null) && (humanreadable.length == 2)) {
 					defaultAmount = humanreadable[0];
 					defaultUnit = humanreadable[1];

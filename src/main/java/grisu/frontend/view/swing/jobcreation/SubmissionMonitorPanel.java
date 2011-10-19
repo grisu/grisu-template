@@ -18,6 +18,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import org.apache.log4j.Logger;
+
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -25,6 +27,9 @@ import com.jgoodies.forms.layout.RowSpec;
 
 public class SubmissionMonitorPanel extends JPanel implements
 PropertyChangeListener {
+
+	static final Logger myLogger = Logger
+			.getLogger(SubmissionMonitorPanel.class.getName());
 
 	private JobObject job = null;
 	private final JTextArea textArea = new JTextArea();
@@ -68,7 +73,7 @@ PropertyChangeListener {
 						try {
 							submissionThread.interrupt();
 						} catch (final Exception e) {
-							e.printStackTrace();
+							myLogger.error(e);
 						}
 					}
 
@@ -79,7 +84,7 @@ PropertyChangeListener {
 						try {
 							templateWrapperPanel.resetTemplate();
 						} catch (final TemplateException e) {
-							e.printStackTrace();
+							myLogger.error(e);
 						}
 
 						templateWrapperPanel.switchToJobCreationPanel();
@@ -155,19 +160,19 @@ PropertyChangeListener {
 							"Job submission failed: " + e.getLocalizedMessage());
 					textArea.append("\n" + temp.toString());
 
-					e.printStackTrace();
+					myLogger.error(e);
 				} catch (final JobSubmissionException e) {
 					final StringBuffer temp = new StringBuffer(
 							"Job submission failed: " + e.getLocalizedMessage());
 					textArea.append("\n" + temp.toString());
 
-					e.printStackTrace();
+					myLogger.error(e);
 				} catch (final InterruptedException e) {
 					final StringBuffer temp = new StringBuffer(
 							"Job submission failed: " + e.getLocalizedMessage());
 					textArea.append("\n" + temp.toString());
 
-					e.printStackTrace();
+					myLogger.error(e);
 				} finally {
 					SwingUtilities.invokeLater(new Thread() {
 						@Override

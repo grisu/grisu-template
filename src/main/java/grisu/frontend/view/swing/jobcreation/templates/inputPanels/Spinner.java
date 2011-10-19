@@ -34,7 +34,7 @@ public class Spinner extends AbstractInputPanel {
 	private final SpinnerListModel model = new SpinnerListModel();
 
 	public Spinner(String templateName, PanelConfig config)
-	throws TemplateException {
+			throws TemplateException {
 		super(templateName, config);
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -63,7 +63,7 @@ public class Spinner extends AbstractInputPanel {
 					try {
 						setValue(bean, value);
 					} catch (TemplateException e1) {
-						e1.printStackTrace();
+						myLogger.error(e1);
 					}
 				}
 			});
@@ -83,7 +83,7 @@ public class Spinner extends AbstractInputPanel {
 
 	@Override
 	protected void preparePanel(Map<String, String> panelProperties)
-	throws TemplateException {
+			throws TemplateException {
 
 		Set<String> modelList = null;
 		modelList = new LinkedHashSet<String>();

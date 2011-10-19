@@ -15,9 +15,9 @@ import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.StringUtils;
-
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -34,7 +34,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 	private String[] lastAppPackages = null;
 
 	public ApplicationSelector(String templateName, PanelConfig config)
-	throws TemplateException {
+			throws TemplateException {
 		super(templateName, config);
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -66,7 +66,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 								try {
 									setValue("application", app);
 								} catch (TemplateException e1) {
-									e1.printStackTrace();
+									myLogger.error(e1);
 								}
 							}
 						}.start();
@@ -87,6 +87,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 	@Override
 	protected synchronized void jobPropertyChanged(PropertyChangeEvent e) {
 
+
 		if (!isInitFinished()) {
 			return;
 		}
@@ -103,8 +104,32 @@ public class ApplicationSelector extends AbstractInputPanel {
 
 	@Override
 	protected void preparePanel(Map<String, String> panelProperties)
-	throws TemplateException {
+			throws TemplateException {
 
+	}
+
+	private synchronized void setApplicationPackage(final String appPackage) {
+
+		if (StringUtils.isBlank(appPackage)
+				|| appPackage.equals(getValueAsString())) {
+			SwingUtilities.invokeLater(new Thread() {
+				@Override
+				public void run() {
+					appModel.setSelectedItem(Constants.GENERIC_APPLICATION_NAME);
+				}
+			});
+		}
+
+		SwingUtilities.invokeLater(new Thread() {
+			@Override
+			public void run() {
+				if (appModel.getIndexOf(appPackage) >= 0) {
+					appModel.setSelectedItem(appPackage);
+				} else {
+					appModel.setSelectedItem(Constants.GENERIC_APPLICATION_NAME);
+				}
+			}
+		});
 	}
 
 	private synchronized void setApplicationPackages(final String[] appPackages) {
@@ -121,8 +146,8 @@ public class ApplicationSelector extends AbstractInputPanel {
 				appModel.removeAllElements();
 				appModel.addElement(Constants.GENERIC_APPLICATION_NAME);
 				final Set<String> allApps = GrisuRegistryManager
-				.getDefault(getServiceInterface())
-				.getResourceInformation().getAllApplications();
+						.getDefault(getServiceInterface())
+						.getResourceInformation().getAllApplications();
 				for (String app : allApps) {
 					appModel.addElement(app);
 				}
@@ -145,16 +170,18 @@ public class ApplicationSelector extends AbstractInputPanel {
 		appModel.removeAllElements();
 		appModel.addElement(Constants.GENERIC_APPLICATION_NAME);
 		final Set<String> allApps = GrisuRegistryManager
-		.getDefault(getServiceInterface()).getResourceInformation()
-		.getAllApplications();
+				.getDefault(getServiceInterface()).getResourceInformation()
+				.getAllApplications();
 		for (String app : allApps) {
 			appModel.addElement(app);
 		}
 
+		lastExe = null;
 	}
 
 	private void setProperApplicationPackage(final String cmdln) {
 		final String exe = JobSubmissionObjectImpl.extractExecutable(cmdln);
+
 		if ((exe != null) && exe.equals(lastExe)) {
 			return;
 		}
@@ -165,11 +192,18 @@ public class ApplicationSelector extends AbstractInputPanel {
 			public void run() {
 
 				String[] appPackages = GrisuRegistryManager
-				.getDefault(getServiceInterface())
-				.getResourceInformation()
-				.getApplicationPackageForExecutable(exe);
+						.getDefault(getServiceInterface())
+						.getResourceInformation()
+						.getApplicationPackageForExecutable(exe);
 
-				setApplicationPackages(appPackages);
+				// X.p("XXX" + StringUtils.join(appPackages, " - "));
+				if (appPackages.length == 0) {
+					setApplicationPackage(null);
+					return;
+				} else {
+					setApplicationPackage(appPackages[0]);
+				}
+
 			}
 		}.start();
 

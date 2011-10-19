@@ -25,7 +25,7 @@ public class SimpleCommandline extends AbstractInputPanel {
 	private String lastCalculatedExecutable = null;
 
 	public SimpleCommandline(String name, PanelConfig config)
-	throws TemplateException {
+			throws TemplateException {
 
 		super(name, config);
 		setLayout(new FormLayout(new ColumnSpec[] {
@@ -61,8 +61,6 @@ public class SimpleCommandline extends AbstractInputPanel {
 				exe = commandline.substring(0, firstWhitespace);
 			}
 		}
-
-		// System.out.println("Exe: " + exe);
 
 		// if ((lastCalculatedExecutable != null)
 		// && lastCalculatedExecutable.equals(exe)) {
@@ -159,7 +157,7 @@ public class SimpleCommandline extends AbstractInputPanel {
 						try {
 							commandlineChanged();
 						} catch (final TemplateException e1) {
-							e1.printStackTrace();
+							myLogger.error(e1);
 						}
 					}
 				}
@@ -177,7 +175,7 @@ public class SimpleCommandline extends AbstractInputPanel {
 					try {
 						commandlineChanged();
 					} catch (TemplateException e1) {
-						e1.printStackTrace();
+								myLogger.error(e1);
 					}
 				}
 

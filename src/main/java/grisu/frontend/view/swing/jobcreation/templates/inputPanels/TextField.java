@@ -71,8 +71,7 @@ public class TextField extends AbstractInputPanel {
 
 						setValue(bean, textField.getText());
 					} catch (final TemplateException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						myLogger.error(e1);
 					}
 				}
 
@@ -94,7 +93,7 @@ public class TextField extends AbstractInputPanel {
 
 	@Override
 	protected void preparePanel(Map<String, String> panelProperties)
-	throws TemplateException {
+			throws TemplateException {
 
 		// if ( StringUtils.isBlank(bean) ) {
 		// return;

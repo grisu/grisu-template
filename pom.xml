@@ -1,11 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>grisu.frontend</groupId>
 	<artifactId>grisu-template-client</artifactId>
 	<packaging>jar</packaging>
-	<version>0.3-SNAPSHOT</version>
+	<version>0.5</version>
 
 	<name>Grisu template client</name>
 	<description>A grisu swing client which uses templates to render app-specific job creation panels.</description>
@@ -18,7 +17,7 @@
 	<repositories>
 		<repository>
 			<id>bestgrid.public.release</id>
-			<url>http://dev.ceres.auckland.ac.nz/nexus/content/groups/public/</url>
+			<url>http://code.ceres.auckland.ac.nz/nexus/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
@@ -32,7 +31,7 @@
 		</repository>
 		<repository>
 			<id>bestgrid.public.snapshot</id>
-			<url>http://dev.ceres.auckland.ac.nz/nexus/content/groups/public-snapshots/
+			<url>http://code.ceres.auckland.ac.nz/nexus/content/groups/public-snapshots/
 			</url>
 			<releases>
 				<enabled>false</enabled>
@@ -48,20 +47,20 @@
 	</repositories>
 
 	<properties>
-		<grisu.dependency.version>0.3</grisu.dependency.version>
+		<grisu.dependency.version>0.3.7</grisu.dependency.version>
 	</properties>
 
 	<distributionManagement>
 		<repository>
 			<name>BeSTGRID Releases Repository</name>
 			<id>bestgrid.release</id>
-			<url>http://dev.ceres.auckland.ac.nz/nexus/content/repositories/releases
+			<url>http://code.ceres.auckland.ac.nz/nexus/content/repositories/releases
 			</url>
 		</repository>
 		<snapshotRepository>
 			<id>bestgrid.snapshot</id>
 			<name>BeSTGRID Snapshots Repository</name>
-			<url>http://dev.ceres.auckland.ac.nz/nexus/content/repositories/snapshots
+			<url>http://code.ceres.auckland.ac.nz/nexus/content/repositories/snapshots
 			</url>
 		</snapshotRepository>
 	</distributionManagement>
@@ -70,6 +69,13 @@
 	<dependencies>
 
 		<!-- the main grisu dependency. -->
+		<dependency>
+			<groupId>grisu.frontend</groupId>
+			<artifactId>grisu-client</artifactId>
+			<version>${grisu.dependency.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>grisu.frontend</groupId>
 			<artifactId>grisu-client-swing</artifactId>
@@ -175,6 +181,17 @@
 				</configuration>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<!-- <pushChanges>false</pushChanges> -->
+					<localCheckout>true</localCheckout>
+					<updateDependencies>true</updateDependencies>
+					<!-- <updateWorkingCopyVersions>false</updateWorkingCopyVersions> -->
+				</configuration>
+			</plugin>
 
 			<!-- you can disable the assembly plugin if you want, your builds will 
 				be faster I find it quite handy to have maven build an executable jar, though -->
@@ -196,7 +213,7 @@
 									<mainClass>grisu.frontend.view.swing.GrisuTemplateApp</mainClass>
 								</manifest>
 								<manifestEntries>
-									<Class-Path>bcprov.jar bcprov-jdk15-143.jar local-backend.jar
+									<Class-Path>bcprov.jar bcprov-jdk15-143.jar local-backend-dev.jar local-backend.jar
 										grisu-client-library.jar
 									</Class-Path>
 									<SplashScreen-Image>splash.png</SplashScreen-Image>
@@ -225,17 +242,7 @@
 
 			<build>
 				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-release-plugin</artifactId>
-						<version>2.1</version>
-						<configuration>
-<!--							<pushChanges>false</pushChanges>-->
-							<localCheckout>true</localCheckout>
-							<updateDependencies>true</updateDependencies>
-<!--							<updateWorkingCopyVersions>false</updateWorkingCopyVersions>-->
-						</configuration>
-					</plugin>
+
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-jarsigner-plugin</artifactId>

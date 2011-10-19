@@ -28,7 +28,7 @@ public class CheckBox extends AbstractInputPanel {
 	private JLabel label;
 
 	public CheckBox(String templateName, PanelConfig config)
-	throws TemplateException {
+			throws TemplateException {
 		super(templateName, config);
 		setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
@@ -57,7 +57,7 @@ public class CheckBox extends AbstractInputPanel {
 					try {
 						setValue(bean, getValueAsString());
 					} catch (final TemplateException e) {
-						e.printStackTrace();
+						myLogger.error(e);
 					}
 
 				}
@@ -95,7 +95,7 @@ public class CheckBox extends AbstractInputPanel {
 
 	@Override
 	protected void preparePanel(Map<String, String> panelProperties)
-	throws TemplateException {
+			throws TemplateException {
 
 	}
 

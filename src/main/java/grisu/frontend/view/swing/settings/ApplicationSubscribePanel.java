@@ -44,7 +44,7 @@ import com.jgoodies.forms.layout.RowSpec;
 public class ApplicationSubscribePanel extends JPanel {
 
 	static final Logger myLogger = Logger
-	.getLogger(ApplicationSubscribePanel.class.getName());
+			.getLogger(ApplicationSubscribePanel.class.getName());
 
 	private static void addPopup(JList list, final JPopupMenu popup) {
 		list.addMouseListener(new MouseAdapter() {
@@ -83,7 +83,7 @@ public class ApplicationSubscribePanel extends JPanel {
 				list.add(line);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			myLogger.error(e);
 		} finally {
 			try {
 				if (br != null) {
@@ -93,7 +93,7 @@ public class ApplicationSubscribePanel extends JPanel {
 					is.close();
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				myLogger.error(e);
 			}
 		}
 		return list;
@@ -200,8 +200,7 @@ public class ApplicationSubscribePanel extends JPanel {
 						try {
 							tm.addRemoteTemplate(name);
 						} catch (final NoSuchTemplateException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							myLogger.error(e);
 							return;
 						}
 						myRemoteModel.addElement(name);
@@ -271,7 +270,7 @@ public class ApplicationSubscribePanel extends JPanel {
 
 					final File oldfile = new File(Environment
 							.getTemplateDirectory(), (String) temp[0]
-							                                       + ".template");
+									+ ".template");
 					final File newFile = new File(Environment
 							.getTemplateDirectory(), s + ".template");
 
@@ -344,8 +343,7 @@ public class ApplicationSubscribePanel extends JPanel {
 							localModel.addElement(tempname);
 						}
 					} catch (final TemplateException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						myLogger.error(e1);
 					}
 
 				}
@@ -384,8 +382,7 @@ public class ApplicationSubscribePanel extends JPanel {
 									si, templateFile);
 							dialog.setVisible(true);
 						} catch (final TemplateException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+							myLogger.error(e1);
 						}
 					}
 
@@ -480,8 +477,7 @@ public class ApplicationSubscribePanel extends JPanel {
 							localModel.addElement(s);
 						}
 					} catch (final TemplateException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						myLogger.error(e1);
 					}
 
 				}
@@ -533,7 +529,7 @@ public class ApplicationSubscribePanel extends JPanel {
 
 					final File oldfile = new File(Environment
 							.getTemplateDirectory(), (String) temp[0]
-							                                       + ".template");
+									+ ".template");
 					final File newFile = new File(Environment
 							.getTemplateDirectory(), s + ".template");
 

@@ -47,7 +47,7 @@
 	</repositories>
 
 	<properties>
-		<grisu.dependency.version>0.3.6</grisu.dependency.version>
+		<grisu.dependency.version>0.3.7</grisu.dependency.version>
 	</properties>
 
 	<distributionManagement>

@@ -3,13 +3,14 @@ package grisu.frontend.view.swing;
 import grisu.control.ServiceInterface;
 import grisu.control.TemplateManager;
 import grisu.control.exceptions.NoSuchTemplateException;
+import grisu.frontend.control.login.LoginManager;
 import grisu.frontend.view.swing.jobcreation.JobCreationPanel;
 import grisu.frontend.view.swing.jobcreation.TemplateJobCreationPanel;
 import grisu.frontend.view.swing.settings.AdvancedTemplateClientSettingsPanel;
 import grisu.frontend.view.swing.settings.ApplicationSubscribePanel;
+import grisu.jcommons.utils.EnvironmentVariableHelpers;
 import grisu.model.GrisuRegistryManager;
 import grisu.settings.ClientPropertiesManager;
-import grith.jgrith.Init;
 
 import java.awt.EventQueue;
 import java.beans.PropertyChangeEvent;
@@ -32,7 +33,16 @@ PropertyChangeListener {
 
 	public static void main(String[] args) {
 
-		Init.initBouncyCastle();
+		Thread.currentThread().setName("main");
+
+		LoginManager.setClientName("grisu-template");
+
+		LoginManager.setClientVersion(grisu.jcommons.utils.Version
+				.get("this-client"));
+
+		EnvironmentVariableHelpers.loadEnvironmentVariablesToSystemProperties();
+
+		LoginManager.initEnvironment();
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

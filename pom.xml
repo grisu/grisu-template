@@ -4,7 +4,7 @@
 	<groupId>grisu.frontend</groupId>
 	<artifactId>grisu-template-client</artifactId>
 	<packaging>jar</packaging>
-	<version>0.6</version>
+	<version>0.7-SNAPSHOT</version>
 
 	<name>Grisu template client</name>
 	<description>A grisu swing client which uses templates to render app-specific job creation panels.</description>

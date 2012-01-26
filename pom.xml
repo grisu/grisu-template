@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>grisu.frontend</groupId>
@@ -29,41 +30,7 @@
 				<checksumPolicy>fail</checksumPolicy>
 			</snapshots>
 		</repository>
-		<repository>
-			<id>bestgrid.public.snapshot</id>
-			<url>http://code.ceres.auckland.ac.nz/nexus/content/groups/public-snapshots/
-			</url>
-			<releases>
-				<enabled>false</enabled>
-				<updatePolicy>never</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</snapshots>
-		</repository>
 	</repositories>
-
-	<properties>
-		<grisu.dependency.version>0.4-rc13</grisu.dependency.version>
-	</properties>
-
-	<distributionManagement>
-		<repository>
-			<name>BeSTGRID Releases Repository</name>
-			<id>bestgrid.release</id>
-			<url>http://code.ceres.auckland.ac.nz/nexus/content/repositories/releases
-			</url>
-		</repository>
-		<snapshotRepository>
-			<id>bestgrid.snapshot</id>
-			<name>BeSTGRID Snapshots Repository</name>
-			<url>http://code.ceres.auckland.ac.nz/nexus/content/repositories/snapshots
-			</url>
-		</snapshotRepository>
-	</distributionManagement>
 
 
 	<dependencies>
@@ -72,16 +39,12 @@
 		<dependency>
 			<groupId>grisu.frontend</groupId>
 			<artifactId>grisu-client</artifactId>
-			<version>${grisu.dependency.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
+			<version>${grisu.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>grisu.frontend</groupId>
 			<artifactId>grisu-client-swing</artifactId>
-			<version>${grisu.dependency.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
+			<version>${grisu.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>java-getopt</artifactId>
@@ -110,8 +73,7 @@
 		<dependency>
 			<groupId>grisu.backend</groupId>
 			<artifactId>grisu-core</artifactId>
-			<version>${grisu.dependency.version}</version>
-			<type>jar</type>
+			<version>${grisu.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- this is needed for shibboleth login don't disable it for now even 
@@ -144,14 +106,6 @@
 	<build>
 
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
 
 			<!-- replace version in file -->
 			<plugin>
@@ -178,20 +132,6 @@
 					<token>VERSION_TOKEN</token>
 					<!-- replace it with the maven project version -->
 					<value>${project.version}</value>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.2.2</version>
-				<configuration>
-					<pushChanges>true</pushChanges>
-					<localCheckout>true</localCheckout>
-					<tagNameFormat>@{project.version}</tagNameFormat>
-					<releaseProfiles>deb,rpm</releaseProfiles>
-<!-- 					<updateDependencies>true</updateDependencies> -->
-					<!-- <updateWorkingCopyVersions>false</updateWorkingCopyVersions> -->
 				</configuration>
 			</plugin>
 
@@ -234,40 +174,6 @@
 	</build>
 
 	<profiles>
-		<profile>
-			<id>sign</id>
-			<activation>
-				<property>
-					<name>BUILD_NUMBER</name>
-				</property>
-			</activation>
-
-			<build>
-				<plugins>
-
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-jarsigner-plugin</artifactId>
-						<version>1.2</version>
-						<executions>
-							<execution>
-								<id>sign</id>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<alias>grisu</alias>
-							<storepass>FxAKs3p6</storepass>
-							<keypass>FxAKs3p6</keypass>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-
-		</profile>
-		
 		<profile>
 			<id>deb</id>
 			<!-- <activation> -->
@@ -481,5 +387,10 @@
 
 		
 	</profiles>
+	<parent>
+		<groupId>nz.org.nesi</groupId>
+		<artifactId>nesi</artifactId>
+		<version>0.3</version>
+	</parent>
 </project>
 

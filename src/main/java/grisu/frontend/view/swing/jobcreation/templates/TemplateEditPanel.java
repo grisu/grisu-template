@@ -459,20 +459,9 @@ PropertyChangeListener, ActionListener {
 				return;
 			}
 
-			if (getInformationManager() == null) {
-				getGt4TextArea()
-				.setText(
-						"Can't calculate rsl because local-backend.jar not in classpath.");
-				getGt5TextArea()
-				.setText(
-						"Can't calculate rsl because local-backend.jar not in classpath.");
-				return;
-			}
-
 			try {
 				final String gt4rsl = GT4Submitter
 						.createJobSubmissionDescription(
-								getInformationManager(),
 								SeveralXMLHelpers.fromString(jsdl), null);
 				getGt4TextArea().setText(gt4rsl);
 			} catch (final Exception e) {

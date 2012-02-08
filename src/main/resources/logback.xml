@@ -15,12 +15,12 @@
   </appender>
 
 
-<!--  <appender name="STDOUT"
+ <appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>%-30(%d{HH:mm:ss.SSS} [%level] [%thread]) [%logger{0}] csid=[%X{session}] user=[%X{user}] cmdid=[%X{cmdid}] - %msg%n</pattern>
     </encoder>
-  </appender> -->
+ </appender> 
   
 <!--  <appender name="SYSLOG" class="grisu.control.util.SyslogAppender">
     <syslogHost>localhost</syslogHost>
@@ -67,6 +67,6 @@
 <!--     <appender-ref ref="SYSLOG" />  -->
 <!--     <appender-ref ref="GRAYLOG" />  -->
 <!--     <appender-ref ref="SIFT" />  -->
-<!--    <appender-ref ref="STDOUT" />-->
+   <appender-ref ref="STDOUT" />
   </root>
 </configuration>

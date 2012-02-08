@@ -511,7 +511,7 @@ PropertyChangeListener, ActionListener, GrisuSwingClient {
 			}
 
 			final String gt4rsl = GT4Submitter.createJobSubmissionDescription(
-					informationManager, SeveralXMLHelpers.fromString(jsdl),
+					SeveralXMLHelpers.fromString(jsdl),
 					null);
 			getGt4TextArea().setText(gt4rsl);
 

@@ -4,8 +4,6 @@ import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.frontend.view.swing.jobcreation.templates.inputPanels.helperPanels.HidingQueueInfoPanel;
 import grisu.jcommons.constants.Constants;
-import grisu.jcommons.interfaces.GridResource;
-import grisu.jcommons.utils.SubmissionLocationHelpers;
 import grisu.model.FqanEvent;
 import grisu.model.GrisuRegistryManager;
 import grisu.model.info.ApplicationInformation;
@@ -41,7 +39,7 @@ EventSubscriber<FqanEvent> {
 
 	private final DefaultComboBoxModel queueModel = new DefaultComboBoxModel();
 
-	private SortedSet<GridResource> currentQueues = null;
+	private SortedSet<String> currentQueues = null;
 
 	private String lastApplication = Constants.GENERIC_APPLICATION_NAME;
 	private String lastVersion = Constants.NO_VERSION_INDICATOR_STRING;
@@ -108,17 +106,16 @@ EventSubscriber<FqanEvent> {
 						return;
 					}
 
-					GridResource gr;
+					String gr;
 					try {
-						gr = (GridResource) (queueModel.getSelectedItem());
+						gr = (String) (queueModel.getSelectedItem());
 						if (gr == null) {
 							return;
 						}
 					} catch (final Exception ex) {
 						return;
 					}
-					final String subLoc = SubmissionLocationHelpers
-							.createSubmissionLocationString(gr);
+					final String subLoc = gr.toString();
 
 					if (subLoc.equals(lastSubLoc)) {
 						return;
@@ -240,9 +237,9 @@ EventSubscriber<FqanEvent> {
 	private void loadQueuesIntoComboBox() {
 
 		interrupted = false;
-		GridResource oldSubLoc = null;
+		String oldSubLoc = null;
 		try {
-			oldSubLoc = (GridResource) queueModel.getSelectedItem();
+			oldSubLoc = (String) queueModel.getSelectedItem();
 		} catch (Exception e) {
 
 		}
@@ -268,7 +265,8 @@ EventSubscriber<FqanEvent> {
 			return;
 		}
 
-		currentQueues = ai.getAllSubmissionLocationsAsGridResources(
+
+		currentQueues = ai.getAllSubmissionLocations(
 				getJobSubmissionObject().getJobSubmissionPropertyMap(),
 				GrisuRegistryManager.getDefault(getServiceInterface())
 				.getUserEnvironmentManager().getCurrentFqan());
@@ -293,18 +291,18 @@ EventSubscriber<FqanEvent> {
 			return;
 		}
 
-		final GridResource oldSubLocT = oldSubLoc;
+		final String oldSubLocT = oldSubLoc;
 
 		queueModel.removeAllElements();
 		boolean containsOld = false;
-		for (final GridResource gr : currentQueues) {
+		for (final String gr : currentQueues) {
 			if (gr.equals(oldSubLocT)) {
 				containsOld = true;
 			}
 			queueModel.addElement(gr);
 		}
 		if (containsOld) {
-			final GridResource temp = oldSubLocT;
+			final String temp = oldSubLocT;
 			queueModel.setSelectedItem(temp);
 		}
 

@@ -191,18 +191,20 @@ public class ApplicationSelector extends AbstractInputPanel {
 			@Override
 			public void run() {
 
-				String[] appPackages = GrisuRegistryManager
-						.getDefault(getServiceInterface())
-						.getResourceInformation()
-						.getApplicationPackageForExecutable(exe);
+				myLogger.debug("TODO: set proper app package.");
 
-				// X.p("XXX" + StringUtils.join(appPackages, " - "));
-				if (appPackages.length == 0) {
-					setApplicationPackage(null);
-					return;
-				} else {
-					setApplicationPackage(appPackages[0]);
-				}
+				// String[] appPackages = GrisuRegistryManager
+				// .getDefault(getServiceInterface())
+				// .getResourceInformation()
+				// .getApplicationPackageForExecutable(exe);
+				//
+				// // X.p("XXX" + StringUtils.join(appPackages, " - "));
+				// if (appPackages.length == 0) {
+				// setApplicationPackage(null);
+				// return;
+				// } else {
+				// setApplicationPackage(appPackages[0]);
+				// }
 
 			}
 		}.start();

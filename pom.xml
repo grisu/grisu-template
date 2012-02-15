@@ -4,7 +4,7 @@
 	<groupId>grisu.frontend</groupId>
 	<artifactId>grisu-template-client</artifactId>
 	<packaging>jar</packaging>
-	<version>0.7-rc3-SNAPSHOT</version>
+	<version>0.8-SNAPSHOT</version>
 
 	<name>Grisu template client</name>
 	<description>A grisu swing client which uses templates to render app-specific job creation panels.</description>
@@ -35,11 +35,6 @@
 	<dependencies>
 
 		<!-- the main grisu dependency. -->
-		<dependency>
-			<groupId>grisu.frontend</groupId>
-			<artifactId>grisu-client</artifactId>
-			<version>${grisu.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>grisu.frontend</groupId>
 			<artifactId>grisu-client-swing</artifactId>
@@ -154,9 +149,7 @@
 									<mainClass>grisu.frontend.view.swing.GrisuTemplateApp</mainClass>
 								</manifest>
 								<manifestEntries>
-									<Class-Path>bcprov.jar bcprov-jdk15-143.jar local-backend-dev.jar local-backend.jar
-										grisu-client-library.jar
-									</Class-Path>
+									<Class-Path>bcprov.jar bcprov-jdk15-145.jar local-backend.jar</Class-Path>
 									<SplashScreen-Image>splash.png</SplashScreen-Image>
 								</manifestEntries>
 							</archive>
@@ -171,8 +164,8 @@
 
 		</plugins>
 	</build>
-
 	<profiles>
+
 		<profile>
 			<id>deb</id>
 			<!-- <activation> -->
@@ -273,30 +266,6 @@
 												<filemode>755</filemode>
 											</mapper>
 										</data>
-										
-										<data>
-											<src>${project.basedir}/src/deb/data/nesi-repo.key.dpkg-new3</src>
-											<type>file</type>
-											<mapper>
-												<type>perm</type>
-												<prefix>/usr/share/keyrings/</prefix>
-												<user>root</user>
-												<group>root</group>
-												<filemode>755</filemode>
-											</mapper>
-										</data>
-										
-										<data>
-											<src>${project.basedir}/src/deb/data/nesi-repo.list.dpkg-new3</src>
-											<type>file</type>
-											<mapper>
-												<type>perm</type>
-												<prefix>/etc/apt/sources.list.d/</prefix>
-												<user>root</user>
-												<group>root</group>
-												<filemode>755</filemode>
-											</mapper>
-										</data>																		
 
 									</dataSet>
 
@@ -304,6 +273,7 @@
 							</execution>
 						</executions>
 					</plugin>
+					
 				</plugins>
 			</build>
 
@@ -346,9 +316,6 @@
 										<source>
 											<location>target/grisu-template-client-binary.jar</location>
 										</source>
-										<source>
-											<location>src/deb/data/bcprov.jar</location>
-										</source>
 									</sources>
 								</mapping>
 								<mapping>
@@ -367,7 +334,7 @@
 							</mappings>
 							<requires>
 								<require>java-1.6.0-openjdk</require>
-<!-- 								<require>bouncycastle</require> -->
+								<require>nesi</require>
 							</requires>
 							<preinstallScriptlet>
 								<script>echo "Installing Grisu Template client..."</script>
@@ -382,14 +349,15 @@
 			</build>
 
 
-		</profile>		
+		</profile>
+
 
 		
 	</profiles>
 	<parent>
 		<groupId>nz.org.nesi</groupId>
 		<artifactId>nesi</artifactId>
-		<version>0.7</version>
+		<version>0.9</version>
 	</parent>
 	<properties>
 		<grisu.version>0.5-SNAPSHOT</grisu.version>

@@ -359,5 +359,8 @@
 		<artifactId>nesi</artifactId>
 		<version>0.9</version>
 	</parent>
+	<properties>
+		<grisu.version>0.5-SNAPSHOT</grisu.version>
+	</properties>
 </project>
 

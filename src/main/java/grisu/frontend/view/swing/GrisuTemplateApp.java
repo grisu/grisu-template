@@ -11,19 +11,28 @@ import grisu.frontend.view.swing.settings.ApplicationSubscribePanel;
 import grisu.jcommons.utils.EnvironmentVariableHelpers;
 import grisu.model.GrisuRegistryManager;
 import grisu.settings.ClientPropertiesManager;
+import grisu.settings.Environment;
 
 import java.awt.EventQueue;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class GrisuTemplateApp extends GrisuApplicationWindow implements
 PropertyChangeListener {
@@ -31,7 +40,41 @@ PropertyChangeListener {
 	static final Logger myLogger = Logger.getLogger(GrisuTemplateApp.class
 			.getName());
 
+	private static void configLogging() {
+		// stop javaxws logging
+		java.util.logging.LogManager.getLogManager().reset();
+		java.util.logging.Logger.getLogger("root").setLevel(Level.ALL);
+
+		String logback = "/etc/gricli/grisu-template.log.conf.xml";
+
+		if (!new File(logback).exists() || (new File(logback).length() == 0)) {
+			logback = Environment.getGrisuClientDirectory() + File.separator
+					+ "grisu-template.log.conf.xml";
+		}
+		if (new File(logback).exists() && (new File(logback).length() > 0)) {
+
+			LoggerContext lc = (LoggerContext) LoggerFactory
+					.getILoggerFactory();
+
+			try {
+				JoranConfigurator configurator = new JoranConfigurator();
+				configurator.setContext(lc);
+				// the context was probably already configured by default
+				// configuration
+				// rules
+				lc.reset();
+				configurator.doConfigure(logback);
+			} catch (JoranException je) {
+				je.printStackTrace();
+			}
+			StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+
+		}
+	}
+
 	public static void main(String[] args) {
+
+		configLogging();
 
 		Thread.currentThread().setName("main");
 
@@ -41,6 +84,8 @@ PropertyChangeListener {
 				.get("this-client"));
 
 		EnvironmentVariableHelpers.loadEnvironmentVariablesToSystemProperties();
+
+		Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler());
 
 		LoginManager.initEnvironment();
 

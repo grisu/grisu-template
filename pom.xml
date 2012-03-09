@@ -72,7 +72,26 @@
 		</dependency>
 		<!-- this is needed for shibboleth login don't disable it for now even 
 			if you don't want to use shibboleth, I reckon you'll get classpath errors -->
+		
+		
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+			<scope>provided</scope>
+		</dependency>
 
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.6.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>me.moocar</groupId>
+			<artifactId>logback-gelf</artifactId>
+			<version>nz.0.9.7</version>
+		</dependency>
 
 		<!-- test dependencies -->
 		<dependency>

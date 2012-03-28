@@ -149,7 +149,9 @@ public class ApplicationSelector extends AbstractInputPanel {
 						.getDefault(getServiceInterface())
 						.getResourceInformation().getAllApplications();
 				for (String app : allApps) {
-					appModel.addElement(app);
+					if (appModel.getIndexOf(app) < 0) {
+						appModel.addElement(app);
+					}
 				}
 			}
 			lastAppEmpty = true;
@@ -157,7 +159,9 @@ public class ApplicationSelector extends AbstractInputPanel {
 		} else {
 			appModel.removeAllElements();
 			for (String app : appPackages) {
-				appModel.addElement(app);
+				if (appModel.getIndexOf(app) < 0) {
+					appModel.addElement(app);
+				}
 			}
 			lastAppEmpty = false;
 		}
@@ -173,7 +177,9 @@ public class ApplicationSelector extends AbstractInputPanel {
 				.getDefault(getServiceInterface()).getResourceInformation()
 				.getAllApplications();
 		for (String app : allApps) {
-			appModel.addElement(app);
+			if (appModel.getIndexOf(app) < 0) {
+				appModel.addElement(app);
+			}
 		}
 
 		lastExe = null;

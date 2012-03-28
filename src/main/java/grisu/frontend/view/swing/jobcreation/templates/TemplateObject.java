@@ -1,5 +1,6 @@
 package grisu.frontend.view.swing.jobcreation.templates;
 
+import grisu.X;
 import grisu.control.ServiceInterface;
 import grisu.control.exceptions.JobPropertiesException;
 import grisu.control.exceptions.JobSubmissionException;
@@ -144,7 +145,7 @@ public class TemplateObject {
 						} catch (final Exception e) {
 							throw new TemplateException(
 									"Can't set fixed key/value pair: " + key
-											+ "/" + value.toString(), e);
+									+ "/" + value.toString(), e);
 						}
 					}
 				}
@@ -206,6 +207,8 @@ public class TemplateObject {
 
 		job.createJob("/ACC");
 
+		X.p("SUBMIT...");
+
 		job.submitJob();
 
 	}
@@ -215,6 +218,11 @@ public class TemplateObject {
 		if (newValue == null) {
 			newValue = "";
 		}
+
+		X.p("NEW VALUE: " + panelName + " VALUE: " + newValue);
+
+		X.p("Force single: " + jobObject.isForce_single());
+		X.p("Force mpi: " + jobObject.isForce_mpi());
 
 		if ((panelName != null) && (changedValues.get(panelName) == null)) {
 			myLogger.debug("Commandline doesn't require value from panel "
@@ -230,6 +238,8 @@ public class TemplateObject {
 			newCommandline = newCommandline.replace("${" + key + "}",
 					changedValues.get(key));
 		}
+
+		X.p("Commandline: " + newCommandline);
 
 		jobObject.setCommandline(newCommandline);
 	}

@@ -1,5 +1,6 @@
 package grisu.frontend.view.swing.jobcreation;
 
+import grisu.X;
 import grisu.control.exceptions.JobPropertiesException;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.model.job.JobObject;
@@ -112,6 +113,10 @@ public class TemplateWrapperPanel extends JPanel {
 						final JobObject job = JobObject.createJobObject(
 								template.getServiceInterface(),
 								template.getJobSubmissionObject());
+
+						X.p("SUBMISSION2 single: " + job.isForce_single());
+						X.p("SUBMISSION2 mpi: " + job.isForce_mpi());
+
 						monitorPanel.startJobSubmission(job);
 					} catch (final JobPropertiesException e) {
 

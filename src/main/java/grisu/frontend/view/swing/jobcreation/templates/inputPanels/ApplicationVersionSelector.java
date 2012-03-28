@@ -220,7 +220,9 @@ EventSubscriber<FqanEvent> {
 						.addElement(Constants.NO_VERSION_INDICATOR_STRING);
 					}
 					for (String version : allVersions) {
-						versionModel.addElement(version);
+						if (versionModel.getIndexOf(version) < 0) {
+							versionModel.addElement(version);
+						}
 					}
 				}
 

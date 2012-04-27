@@ -4,6 +4,7 @@ import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.jcommons.constants.Constants;
 import grisu.model.GrisuRegistryManager;
+import grisu.model.info.dto.Application;
 import grisu.model.job.JobSubmissionObjectImpl;
 
 import java.awt.event.ItemEvent;
@@ -11,7 +12,6 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -58,13 +58,14 @@ public class ApplicationSelector extends AbstractInputPanel {
 					}
 
 					if (ItemEvent.SELECTED == e.getStateChange()) {
-						final String app = (String) appModel.getSelectedItem();
+						final Application app = (Application) appModel
+								.getSelectedItem();
 						new Thread() {
 							@Override
 							public void run() {
 
 								try {
-									setValue("application", app);
+									setValue("application", app.getName());
 								} catch (TemplateException e1) {
 									myLogger.error(e1);
 								}
@@ -115,7 +116,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 			SwingUtilities.invokeLater(new Thread() {
 				@Override
 				public void run() {
-					appModel.setSelectedItem(Constants.GENERIC_APPLICATION_NAME);
+					appModel.setSelectedItem(Application.GENERIC_APPLICATION);
 				}
 			});
 		}
@@ -126,7 +127,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 				if (appModel.getIndexOf(appPackage) >= 0) {
 					appModel.setSelectedItem(appPackage);
 				} else {
-					appModel.setSelectedItem(Constants.GENERIC_APPLICATION_NAME);
+					appModel.setSelectedItem(Application.GENERIC_APPLICATION);
 				}
 			}
 		});
@@ -144,11 +145,11 @@ public class ApplicationSelector extends AbstractInputPanel {
 			if (!lastAppEmpty) {
 
 				appModel.removeAllElements();
-				appModel.addElement(Constants.GENERIC_APPLICATION_NAME);
-				final Set<String> allApps = GrisuRegistryManager
+				appModel.addElement(Application.GENERIC_APPLICATION);
+				final Application[] allApps = GrisuRegistryManager
 						.getDefault(getServiceInterface())
 						.getResourceInformation().getAllApplications();
-				for (String app : allApps) {
+				for (Application app : allApps) {
 					if (appModel.getIndexOf(app) < 0) {
 						appModel.addElement(app);
 					}
@@ -172,11 +173,11 @@ public class ApplicationSelector extends AbstractInputPanel {
 	void setInitialValue() throws TemplateException {
 
 		appModel.removeAllElements();
-		appModel.addElement(Constants.GENERIC_APPLICATION_NAME);
-		final Set<String> allApps = GrisuRegistryManager
+		appModel.addElement(Application.GENERIC_APPLICATION);
+		final Application[] allApps = GrisuRegistryManager
 				.getDefault(getServiceInterface()).getResourceInformation()
 				.getAllApplications();
-		for (String app : allApps) {
+		for (Application app : allApps) {
 			if (appModel.getIndexOf(app) < 0) {
 				appModel.addElement(app);
 			}

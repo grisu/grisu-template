@@ -7,14 +7,15 @@ import grisu.jcommons.constants.Constants;
 import grisu.model.FqanEvent;
 import grisu.model.GrisuRegistryManager;
 import grisu.model.info.ApplicationInformation;
+import grisu.model.info.dto.Queue;
 import grisu.model.job.JobSubmissionObjectImpl;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -39,7 +40,7 @@ EventSubscriber<FqanEvent> {
 
 	private final DefaultComboBoxModel queueModel = new DefaultComboBoxModel();
 
-	private SortedSet<String> currentQueues = null;
+	private List<Queue> currentQueues = null;
 
 	private String lastApplication = Constants.GENERIC_APPLICATION_NAME;
 	private String lastVersion = Constants.NO_VERSION_INDICATOR_STRING;
@@ -266,7 +267,7 @@ EventSubscriber<FqanEvent> {
 		}
 
 
-		currentQueues = ai.getAllSubmissionLocations(
+		currentQueues = ai.getQueues(
 				getJobSubmissionObject().getJobSubmissionPropertyMap(),
 				GrisuRegistryManager.getDefault(getServiceInterface())
 				.getUserEnvironmentManager().getCurrentFqan());
@@ -295,7 +296,7 @@ EventSubscriber<FqanEvent> {
 
 		queueModel.removeAllElements();
 		boolean containsOld = false;
-		for (final String gr : currentQueues) {
+		for (final Queue gr : currentQueues) {
 			if (gr.equals(oldSubLocT)) {
 				containsOld = true;
 			}

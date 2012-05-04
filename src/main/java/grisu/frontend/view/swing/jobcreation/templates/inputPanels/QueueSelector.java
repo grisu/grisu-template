@@ -98,6 +98,7 @@ EventSubscriber<FqanEvent> {
 			queueComboBox.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent e) {
 
+
 					if ((ItemEvent.DESELECTED == e.getStateChange())
 							|| "Searching...".equals(e.getItem())) {
 						return;
@@ -107,15 +108,16 @@ EventSubscriber<FqanEvent> {
 						return;
 					}
 
-					String gr;
+					Queue gr;
 					try {
-						gr = (String) (queueModel.getSelectedItem());
+						gr = (Queue) (queueModel.getSelectedItem());
 						if (gr == null) {
 							return;
 						}
 					} catch (final Exception ex) {
 						return;
 					}
+
 					final String subLoc = gr.toString();
 
 					if (subLoc.equals(lastSubLoc)) {
@@ -238,9 +240,9 @@ EventSubscriber<FqanEvent> {
 	private void loadQueuesIntoComboBox() {
 
 		interrupted = false;
-		String oldSubLoc = null;
+		Queue oldSubLoc = null;
 		try {
-			oldSubLoc = (String) queueModel.getSelectedItem();
+			oldSubLoc = (Queue) queueModel.getSelectedItem();
 		} catch (Exception e) {
 
 		}
@@ -292,7 +294,7 @@ EventSubscriber<FqanEvent> {
 			return;
 		}
 
-		final String oldSubLocT = oldSubLoc;
+		final Queue oldSubLocT = oldSubLoc;
 
 		queueModel.removeAllElements();
 		boolean containsOld = false;
@@ -303,7 +305,7 @@ EventSubscriber<FqanEvent> {
 			queueModel.addElement(gr);
 		}
 		if (containsOld) {
-			final String temp = oldSubLocT;
+			final Queue temp = oldSubLocT;
 			queueModel.setSelectedItem(temp);
 		}
 

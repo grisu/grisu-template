@@ -82,7 +82,12 @@ public class ApplicationSelector extends AbstractInputPanel {
 
 	@Override
 	protected String getValueAsString() {
-		return (String) getComboBox().getSelectedItem();
+		Application a = (Application) getComboBox().getSelectedItem();
+		if (a == null) {
+			return "";
+		} else {
+			return a.getName();
+		}
 	}
 
 	@Override

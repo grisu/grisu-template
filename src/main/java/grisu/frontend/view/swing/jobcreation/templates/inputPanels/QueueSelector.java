@@ -138,7 +138,12 @@ EventSubscriber<FqanEvent> {
 
 	@Override
 	protected String getValueAsString() {
-		return null;
+		Object o = getQueueComboBox().getSelectedItem();
+		if (o instanceof Queue) {
+			return ((Queue) o).toString();
+		}
+		return "";
+
 	}
 
 	@Override
@@ -187,7 +192,7 @@ EventSubscriber<FqanEvent> {
 		loadQueues(force);
 	}
 
-	private synchronized void loadQueues(boolean force) {
+	private void loadQueues(boolean force) {
 
 		String tempApp = getJobSubmissionObject().getApplication();
 		String tempVers = getJobSubmissionObject().getApplicationVersion();

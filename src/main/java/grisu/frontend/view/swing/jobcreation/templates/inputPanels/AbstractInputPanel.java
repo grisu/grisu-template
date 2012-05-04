@@ -647,6 +647,7 @@ PropertyChangeListener {
 			}
 			applyFilters();
 		} catch (final Exception e) {
+			e.printStackTrace();
 			throw new TemplateException("Can't set value for property " + bean
 					+ ": " + e.getLocalizedMessage(), e);
 		}

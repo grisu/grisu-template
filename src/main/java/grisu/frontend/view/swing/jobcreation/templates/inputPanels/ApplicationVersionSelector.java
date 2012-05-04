@@ -68,8 +68,7 @@ EventSubscriber<FqanEvent> {
 					return;
 				}
 
-				setValue("applicationVersion",
-						Constants.NO_VERSION_INDICATOR_STRING);
+				setValue("applicationVersion", Version.ANY_VERSION.getVersion());
 				lastVersionEmpty = true;
 			}
 
@@ -112,7 +111,12 @@ EventSubscriber<FqanEvent> {
 
 	@Override
 	protected String getValueAsString() {
-		return (String) getComboBox().getSelectedItem();
+		Version temp = (Version) getComboBox().getSelectedItem();
+		if (temp == null) {
+			return "";
+		} else {
+			return temp.getVersion();
+		}
 	}
 
 	@Override
@@ -211,12 +215,10 @@ EventSubscriber<FqanEvent> {
 				versionModel.removeAllElements();
 
 				if (allVersions.size() == 0) {
-					versionModel
-					.addElement(Constants.NO_VERSION_INDICATOR_STRING);
+					versionModel.addElement(Version.ANY_VERSION);
 				} else {
 					if (allVersions.size() > 1) {
-						versionModel
-						.addElement(Constants.NO_VERSION_INDICATOR_STRING);
+						versionModel.addElement(Version.ANY_VERSION);
 					}
 					for (Version version : allVersions) {
 						if (versionModel.getIndexOf(version) < 0) {

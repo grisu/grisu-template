@@ -70,10 +70,10 @@ EventSubscriber<FqanEvent> {
 
 				setValue("applicationVersion", Version.ANY_VERSION.getVersion());
 				lastVersionEmpty = true;
+			} else {
+				setValue("applicationVersion", version.getVersion());
+				lastVersionEmpty = false;
 			}
-
-			setValue("applicationVersion", version.getVersion());
-			lastVersionEmpty = false;
 		} catch (TemplateException e1) {
 			myLogger.error(e1);
 		}
@@ -215,8 +215,23 @@ EventSubscriber<FqanEvent> {
 				versionModel.removeAllElements();
 
 				if (allVersions.size() == 0) {
+					System.out.println("ZERO");
 					versionModel.addElement(Version.ANY_VERSION);
+				} else if (allVersions.size() == 1) {
+					System.out.println("ONE");
+					versionModel.addElement(allVersions.iterator().next());
+				} else if ((allVersions.size() == 2)
+						&& allVersions.contains(Version.ANY_VERSION)) {
+					java.util.Iterator<Version> it = allVersions.iterator();
+					while (it.hasNext()) {
+						Version v = it.next();
+						if (!Version.ANY_VERSION.equals(v)) {
+							versionModel.addElement(v);
+							break;
+						}
+					}
 				} else {
+					System.out.println("MORE");
 					if (allVersions.size() > 1) {
 						versionModel.addElement(Version.ANY_VERSION);
 					}

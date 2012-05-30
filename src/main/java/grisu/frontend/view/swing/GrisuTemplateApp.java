@@ -3,7 +3,7 @@ package grisu.frontend.view.swing;
 import grisu.control.ServiceInterface;
 import grisu.control.TemplateManager;
 import grisu.control.exceptions.NoSuchTemplateException;
-import grisu.frontend.control.login.LoginManager;
+import grisu.frontend.control.login.LoginManagerNew;
 import grisu.frontend.view.swing.jobcreation.JobCreationPanel;
 import grisu.frontend.view.swing.jobcreation.TemplateJobCreationPanel;
 import grisu.frontend.view.swing.settings.AdvancedTemplateClientSettingsPanel;
@@ -73,36 +73,8 @@ PropertyChangeListener {
 	}
 
 	public static void main(String[] args) {
-
-		configLogging();
-
-		Thread.currentThread().setName("main");
-
-		LoginManager.setClientName("grisu-template");
-
-		LoginManager.setClientVersion(grisu.jcommons.utils.Version
-				.get("this-client"));
-
-		EnvironmentVariableHelpers.loadEnvironmentVariablesToSystemProperties();
-
-		Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler());
-
-		LoginManager.initEnvironment();
-
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-
-					final GrisuApplicationWindow appWindow = new GrisuTemplateApp();
-
-					appWindow.setVisible(true);
-
-				} catch (final Exception e) {
-					myLogger.error(e);
-				}
-			}
-		});
-
+		GrisuTemplateApp app = new GrisuTemplateApp();
+		execute(app);
 	}
 
 	private TemplateManager tm;
@@ -268,6 +240,41 @@ PropertyChangeListener {
 		}
 
 		refreshJobCreationPanels();
+
+	}
+
+	@Override
+	public void run() {
+
+		configLogging();
+
+		Thread.currentThread().setName("main");
+
+		LoginManagerNew.setClientName("grisu-template");
+
+		LoginManagerNew.setClientVersion(grisu.jcommons.utils.Version
+				.get("this-client"));
+
+		EnvironmentVariableHelpers.loadEnvironmentVariablesToSystemProperties();
+
+		Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler());
+
+		LoginManagerNew.initEnvironment();
+
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+
+					// final GrisuApplicationWindow appWindow = new
+					// GrisuTemplateApp();
+
+					setVisible(true);
+
+				} catch (final Exception e) {
+					myLogger.error(e);
+				}
+			}
+		});
 
 	}
 

@@ -74,7 +74,7 @@ PropertyChangeListener {
 
 	public static void main(String[] args) {
 		GrisuTemplateApp app = new GrisuTemplateApp();
-		execute(app);
+		execute(app, false);
 	}
 
 	private TemplateManager tm;

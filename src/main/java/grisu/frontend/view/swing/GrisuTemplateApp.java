@@ -8,6 +8,7 @@ import grisu.frontend.view.swing.jobcreation.JobCreationPanel;
 import grisu.frontend.view.swing.jobcreation.TemplateJobCreationPanel;
 import grisu.frontend.view.swing.settings.AdvancedTemplateClientSettingsPanel;
 import grisu.frontend.view.swing.settings.ApplicationSubscribePanel;
+import grisu.frontend.view.swing.utils.DefaultExceptionHandler;
 import grisu.jcommons.utils.EnvironmentVariableHelpers;
 import grisu.model.GrisuRegistryManager;
 import grisu.settings.ClientPropertiesManager;
@@ -72,17 +73,18 @@ PropertyChangeListener {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		GrisuTemplateApp app = new GrisuTemplateApp();
-		execute(app, false);
+		app.run();
 	}
 
 	private TemplateManager tm;
 
 	private final ApplicationSubscribePanel applicationSubscribePanel = new ApplicationSubscribePanel();
 
-	public GrisuTemplateApp() {
+	public GrisuTemplateApp() throws Exception {
 		super(new AdvancedTemplateClientSettingsPanel());
+
 
 		// String environmentVariable = System
 		// .getProperty("grisu.defaultApplications");
@@ -243,7 +245,6 @@ PropertyChangeListener {
 
 	}
 
-	@Override
 	public void run() {
 
 		configLogging();

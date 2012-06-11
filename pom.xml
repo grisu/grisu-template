@@ -76,6 +76,7 @@
 			<artifactId>grisu-core</artifactId>
 			<version>${grisu.version}</version>
 			<scope>provided</scope>
+
 		</dependency>
 	</dependencies>
 

@@ -3,7 +3,7 @@ package grisu.frontend.view.swing;
 import grisu.control.ServiceInterface;
 import grisu.control.TemplateManager;
 import grisu.control.exceptions.NoSuchTemplateException;
-import grisu.frontend.control.login.LoginManagerNew;
+import grisu.frontend.control.login.LoginManager;
 import grisu.frontend.view.swing.jobcreation.JobCreationPanel;
 import grisu.frontend.view.swing.jobcreation.TemplateJobCreationPanel;
 import grisu.frontend.view.swing.settings.AdvancedTemplateClientSettingsPanel;
@@ -251,16 +251,16 @@ PropertyChangeListener {
 
 		Thread.currentThread().setName("main");
 
-		LoginManagerNew.setClientName("grisu-template");
+		LoginManager.setClientName("grisu-template");
 
-		LoginManagerNew.setClientVersion(grisu.jcommons.utils.Version
+		LoginManager.setClientVersion(grisu.jcommons.utils.Version
 				.get("this-client"));
 
 		EnvironmentVariableHelpers.loadEnvironmentVariablesToSystemProperties();
 
 		Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler());
 
-		LoginManagerNew.initEnvironment();
+		LoginManager.initEnvironment();
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

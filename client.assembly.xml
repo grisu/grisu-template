@@ -26,8 +26,8 @@
 					<exclude>log4j.properties</exclude>
 					<exclude>log4j.xml</exclude>
 					<exclude>logback.xml</exclude>
-					<exclude>certificates.zip</exclude>
-					<exclude>vomses.zip</exclude>
+<!-- 					<exclude>certificates.zip</exclude> -->
+<!-- 					<exclude>vomses.zip</exclude> -->
 					<exclude>arcs/__init__.py</exclude>
 					<exclude>gluev12r2-ext-class-map.properties</exclude>
 					<exclude>rebel.xml</exclude>

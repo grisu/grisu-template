@@ -573,9 +573,7 @@ PropertyChangeListener {
 		}
 
 		this.jobObject = jobObject;
-		if (this.getClass().getSimpleName().equals("MonitorCommandlinePanel")) {
-			System.out.println("P: " + this.getClass().getSimpleName());
-		}
+
 		this.jobObject.addPropertyChangeListener(this);
 
 		myLogger.debug("Refreshing template: "

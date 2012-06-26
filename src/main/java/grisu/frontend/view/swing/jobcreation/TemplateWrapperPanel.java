@@ -20,6 +20,7 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.netbeans.validation.api.ui.ValidationPanel;
 
+import com.google.common.base.Joiner;
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -113,6 +114,11 @@ public class TemplateWrapperPanel extends JPanel {
 								template.getServiceInterface(),
 								template.getJobSubmissionObject());
 
+						System.out
+								.println("ENV"
+										+ Joiner.on(" - ").join(
+												job.getEnvironmentVariables()
+														.keySet()));
 
 						monitorPanel.startJobSubmission(job);
 					} catch (final JobPropertiesException e) {

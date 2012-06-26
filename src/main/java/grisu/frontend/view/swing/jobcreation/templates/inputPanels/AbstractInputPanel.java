@@ -69,6 +69,7 @@ PropertyChangeListener {
 	public static final String TEMPLATENAME = "templatename";
 
 	private static final String HELP = "help";
+	public final UUID id;
 
 	private TemplateObject template;
 	private final LinkedList<Filter> filters;
@@ -139,6 +140,8 @@ PropertyChangeListener {
 
 	public AbstractInputPanel(String templateName, PanelConfig config)
 			throws TemplateException {
+
+		id = UUID.randomUUID();
 
 		this.templateName = templateName;
 
@@ -237,6 +240,7 @@ PropertyChangeListener {
 		addHistoryValue(null, value);
 	}
 
+
 	protected void addHistoryValue(String optionalKey, String value) {
 
 		if (StringUtils.isBlank(optionalKey)) {
@@ -293,6 +297,16 @@ PropertyChangeListener {
 		return displayHelpLabel;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (!( o instanceof AbstractInputPanel) ) {
+			return false;
+		}
+
+		AbstractInputPanel other = (AbstractInputPanel)o;
+		return id.equals(other.id);
+	}
+
 	protected boolean fillDefaultValueIntoFieldWhenPreparingPanel() {
 
 		try {
@@ -311,9 +325,9 @@ PropertyChangeListener {
 	/**
 	 * Returns a set of default values if no configuration is specified in the
 	 * template.
-	 * 
+	 *
 	 * Good to have as a reference which values are available for this panel.
-	 * 
+	 *
 	 * @return the properties
 	 */
 	protected Map<String, String> getDefaultPanelProperties() {
@@ -494,7 +508,7 @@ PropertyChangeListener {
 	/**
 	 * Must be implemented if a change in a job property would possibly change
 	 * the value of one of the job properties this panel is responsible for.
-	 * 
+	 *
 	 * @param e
 	 *            the property change event
 	 */
@@ -534,7 +548,7 @@ PropertyChangeListener {
 	/**
 	 * Implement this if the panel needs to be prepared with values from the
 	 * template.
-	 * 
+	 *
 	 * @param panelProperties
 	 *            the properties for the initial state of the panel
 	 * @throws TemplateException
@@ -559,6 +573,9 @@ PropertyChangeListener {
 		}
 
 		this.jobObject = jobObject;
+		if (this.getClass().getSimpleName().equals("MonitorCommandlinePanel")) {
+			System.out.println("P: " + this.getClass().getSimpleName());
+		}
 		this.jobObject.addPropertyChangeListener(this);
 
 		myLogger.debug("Refreshing template: "
@@ -623,25 +640,41 @@ PropertyChangeListener {
 					valueClass = String.class;
 				} else {
 					valueClass = value.getClass();
+					System.out.println("valueClass" + valueClass);
 				}
 				try {
 					method = jobObject.getClass().getMethod(
 							"set" + StringUtils.capitalize(bean), valueClass);
 				} catch (final Exception e) {
-					// try add method
-					method = jobObject.getClass().getMethod(
-							"add" + StringUtils.capitalize(bean), valueClass);
+					// try interfaces
+					myLogger.debug("Trying interfaces for set method...");
+					for (Class i : valueClass.getInterfaces()) {
+						myLogger.debug("Interface: " + i.getSimpleName());
+						try {
+							method = jobObject.getClass().getMethod(
+									"set" + StringUtils.capitalize(bean), i);
 
-					if (oldAddValue != null) {
-						final Method removeMethod = jobObject
-								.getClass()
-								.getMethod(
-										"remove" + StringUtils.capitalize(bean),
-										oldAddValue.getClass());
-						removeMethod.invoke(jobObject, oldAddValue);
+						} catch (Exception me) {
+							myLogger.debug("No set class for bean " + bean
+									+ " and interface " + i.getSimpleName());
+						}
 					}
-					oldAddValue = value;
 
+					if (method == null) {
+						// try add method
+						method = jobObject.getClass().getMethod(
+								"add" + StringUtils.capitalize(bean), valueClass);
+
+						if (oldAddValue != null) {
+							final Method removeMethod = jobObject
+									.getClass()
+									.getMethod(
+											"remove" + StringUtils.capitalize(bean),
+											oldAddValue.getClass());
+							removeMethod.invoke(jobObject, oldAddValue);
+						}
+						oldAddValue = value;
+					}
 				}
 				method.invoke(jobObject, value);
 			}

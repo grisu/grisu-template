@@ -169,12 +169,37 @@ public class Email extends AbstractInputPanel {
 	@Override
 	void setInitialValue() {
 
-		// TODO
+		try {
+			setValue("email_on_job_finish", chckbxfinishes.isSelected());
+		} catch (TemplateException e1) {
+			myLogger.error("Can't set email_on_job_finish value", e1);
+		}
+
+		try {
+			setValue("email_on_job_start", startsCheckBox.isSelected());
+		} catch (TemplateException e1) {
+			myLogger.error("Can't set email_on_job_start value", e1);
+		}
+
+		if (getChckbxfinishes().isSelected()
+				|| getStartsCheckBox().isSelected()) {
+			try {
+				setValue("email_address", textField.getText());
+			} catch (TemplateException e) {
+				myLogger.error("Can't set email_address value", e);
+			}
+		} else {
+			try {
+				setValue("email_address", "");
+			} catch (TemplateException e) {
+				myLogger.error("Can't set email_address value", e);
+			}
+		}
 
 	}
 
 	@Override
 	protected void templateRefresh(JobSubmissionObjectImpl jobObject) {
-
+		System.out.println("TEMPLATE REFRESH");
 	}
 }

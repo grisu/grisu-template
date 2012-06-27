@@ -224,7 +224,7 @@ PropertyChangeListener {
 		tm = GrisuRegistryManager.getDefault(si).getTemplateManager();
 		tm.addTemplateManagerListener(this);
 
-			addGroupFileListPanel(null, null);
+		addGroupFileListPanel(null, null);
 	}
 
 	@Override

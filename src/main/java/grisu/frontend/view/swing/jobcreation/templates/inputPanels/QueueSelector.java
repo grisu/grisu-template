@@ -23,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang.StringUtils;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.EventSubscriber;
 
@@ -72,7 +73,8 @@ EventSubscriber<FqanEvent> {
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 		final Map<String, String> defaultProperties = new HashMap<String, String>();
-
+		defaultProperties.put(USE_HISTORY, "true");
+		defaultProperties.put(HISTORY_ITEMS, "1");
 		return defaultProperties;
 	}
 
@@ -300,19 +302,33 @@ EventSubscriber<FqanEvent> {
 			return;
 		}
 
+		String historyQueue = null;
+
+		if (oldSubLoc == null) {
+
+			if (useHistory()) {
+				historyQueue = getLastValue();
+			}
+		}
+
 		final Queue oldSubLocT = oldSubLoc;
 
 		queueModel.removeAllElements();
-		boolean containsOld = false;
+		Queue containsOld = null;
 		for (final Queue gr : currentQueues) {
-			if (gr.equals(oldSubLocT)) {
-				containsOld = true;
+			if (oldSubLocT != null) {
+				if (gr.equals(oldSubLocT)) {
+					containsOld = gr;
+				}
+			} else if (StringUtils.isNotBlank(historyQueue)) {
+				if (historyQueue.equals(gr.toString())) {
+					containsOld = gr;
+				}
 			}
 			queueModel.addElement(gr);
 		}
-		if (containsOld) {
-			final Queue temp = oldSubLocT;
-			queueModel.setSelectedItem(temp);
+		if (containsOld != null) {
+			queueModel.setSelectedItem(containsOld);
 		}
 
 		setLoading(false);
@@ -329,6 +345,7 @@ EventSubscriber<FqanEvent> {
 	@Override
 	protected void preparePanel(Map<String, String> panelProperties)
 			throws TemplateException {
+
 
 	}
 

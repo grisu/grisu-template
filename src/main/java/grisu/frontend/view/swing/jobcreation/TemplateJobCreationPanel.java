@@ -80,10 +80,12 @@ JobCreationPanel, PropertyChangeListener {
 		add(getErrorPanel(), ERROR_PANEL);
 	}
 
+	@Override
 	public boolean createsBatchJob() {
 		return false;
 	}
 
+	@Override
 	public boolean createsSingleJob() {
 		return true;
 	}
@@ -131,10 +133,12 @@ JobCreationPanel, PropertyChangeListener {
 		return loadingPanel;
 	}
 
+	@Override
 	public JPanel getPanel() {
 		return this;
 	}
 
+	@Override
 	public String getPanelName() {
 
 		if (template == null) {
@@ -161,6 +165,7 @@ JobCreationPanel, PropertyChangeListener {
 		return scrollPane;
 	}
 
+	@Override
 	public String getSupportedApplication() {
 
 		for (final PanelConfig config : panelConfigs.values()) {
@@ -179,6 +184,7 @@ JobCreationPanel, PropertyChangeListener {
 		return "generic";
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
 
 		// if (si != null) {
@@ -192,28 +198,28 @@ JobCreationPanel, PropertyChangeListener {
 		// }
 	}
 
-	public void setServiceInterface(ServiceInterface si) {
+	@Override
+	public synchronized void setServiceInterface(ServiceInterface si) {
 
-		this.si = si;
+			this.si = si;
 
-		try {
-			if (currentTemplatePanel != null) {
-				remove(currentTemplatePanel);
+			try {
+				if (currentTemplatePanel != null) {
+					remove(currentTemplatePanel);
+				}
+
+				GrisuRegistryManager.getDefault(si).getTemplateManager()
+				.addTemplateManagerListener(this);
+
+				template = TemplateHelpers.parseAndCreateTemplatePanel(si,
+						templateFileName, lines);
+				currentTemplatePanel = new TemplateWrapperPanel(template);
+				add(currentTemplatePanel, TEMPLATE_PANEL);
+				cardLayout.show(this, TEMPLATE_PANEL);
+			} catch (final Exception e) {
+				myLogger.error(e);
+				getErrorTextArea().setText(getStackTrace(e));
+				cardLayout.show(this, ERROR_PANEL);
 			}
-
-			GrisuRegistryManager.getDefault(si).getTemplateManager()
-			.addTemplateManagerListener(this);
-
-			template = TemplateHelpers.parseAndCreateTemplatePanel(si,
-					templateFileName, lines);
-			currentTemplatePanel = new TemplateWrapperPanel(template);
-			add(currentTemplatePanel, TEMPLATE_PANEL);
-			cardLayout.show(this, TEMPLATE_PANEL);
-		} catch (final Exception e) {
-			myLogger.error(e);
-			getErrorTextArea().setText(getStackTrace(e));
-			cardLayout.show(this, ERROR_PANEL);
-		}
-
 	}
 }

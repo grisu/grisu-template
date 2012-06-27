@@ -4,14 +4,14 @@ import grisu.control.ServiceInterface;
 import grisu.control.exceptions.RemoteFileSystemException;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.control.jobMonitoring.RunningJobManager;
-import grisu.frontend.view.swing.files.GrisuFileDialog;
+import grisu.frontend.view.swing.files.GridFileSelectionDialog;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.frontend.view.swing.jobcreation.templates.TemplateObject;
 import grisu.frontend.view.swing.jobcreation.templates.filters.Filter;
 import grisu.model.FileManager;
 import grisu.model.GrisuRegistryManager;
 import grisu.model.UserEnvironmentManager;
-import grisu.model.files.GlazedFile;
+import grisu.model.dto.GridFile;
 import grisu.model.job.JobSubmissionObjectImpl;
 
 import java.awt.Dimension;
@@ -33,6 +33,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
@@ -41,6 +42,8 @@ import javax.swing.text.JTextComponent;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.vpac.historyRepeater.HistoryManager;
+
+import com.google.common.collect.Maps;
 
 public abstract class AbstractInputPanel extends JPanel implements
 PropertyChangeListener {
@@ -94,7 +97,8 @@ PropertyChangeListener {
 
 	private boolean initFinished = false;
 
-	private static Map<String, GrisuFileDialog> dialogs = new HashMap<String, GrisuFileDialog>();
+	private static Map<String, GridFileSelectionDialog> dialogs = Maps
+			.newHashMap();
 
 	private static void createSingletonFileDialog(Window owner,
 			ServiceInterface si, String templateName) {
@@ -121,14 +125,15 @@ PropertyChangeListener {
 					.toURI().toString();
 				}
 			}
-			final GrisuFileDialog dialog = new GrisuFileDialog(owner, si,
-					startUrl);
+			final GridFileSelectionDialog dialog = new GridFileSelectionDialog(
+					owner, si);
+
 			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			dialogs.put(templateName, dialog);
 		}
 	}
 
-	public static GrisuFileDialog getFileDialog(String templateName) {
+	public static GridFileSelectionDialog getFileDialog(String templateName) {
 
 		if (dialogs.get(templateName) == null) {
 			throw new IllegalStateException("File dialog not initialized yet.");
@@ -356,7 +361,7 @@ PropertyChangeListener {
 		return last;
 	}
 
-	public GrisuFileDialog getFileDialog() {
+	public GridFileSelectionDialog getFileDialog() {
 		return getFileDialog(templateName);
 	}
 
@@ -514,33 +519,41 @@ PropertyChangeListener {
 	 */
 	abstract protected void jobPropertyChanged(PropertyChangeEvent e);
 
-	protected GlazedFile popupFileDialogAndAskForFile() {
+	protected GridFile popupFileDialogAndAskForFile() {
 
+		getFileDialog().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		getFileDialog().centerOnOwner();
 		getFileDialog().setVisible(true);
 
-		final GlazedFile file = getFileDialog().getSelectedFile();
-		getFileDialog().clearSelection();
+		final GridFile file = getFileDialog().getSelectedFile();
 
-		final GlazedFile currentDir = getFileDialog().getCurrentDirectory();
-
-		hm.addHistoryEntry(templateName + "_" + FILE_DIALOG_LAST_DIRECTORY_KEY,
-				currentDir.getUrl());
+		// final Set<GridFile> currentDirs =
+		// getFileDialog().getCurrentDirectories();
+		// if (currentDirs != null) {
+		//
+		// hm.addHistoryEntry(templateName + "_" +
+		// FILE_DIALOG_LAST_DIRECTORY_KEY,
+		// currentDir.getUrl());
+		// }
 
 		return file;
 	}
 
-	protected Set<GlazedFile> popupFileDialogAndAskForFiles() {
+	protected Set<GridFile> popupFileDialogAndAskForFiles() {
 
+		getFileDialog().setSelectionMode(
+				ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		getFileDialog().centerOnOwner();
 		getFileDialog().setVisible(true);
 
-		final Set<GlazedFile> files = getFileDialog().getSelectedFiles();
-		getFileDialog().clearSelection();
+		final Set<GridFile> files = getFileDialog().getSelectedFiles();
 
-		final GlazedFile currentDir = getFileDialog().getCurrentDirectory();
-
-		hm.addHistoryEntry(templateName + "_" + FILE_DIALOG_LAST_DIRECTORY_KEY,
-				currentDir.getUrl());
+		// final Set<GridFile> currentDir =
+		// getFileDialog().getCurrentDirectory();
+		//
+		// hm.addHistoryEntry(templateName + "_" +
+		// FILE_DIALOG_LAST_DIRECTORY_KEY,
+		// currentDir.getUrl());
 
 		return files;
 	}
@@ -556,6 +569,7 @@ PropertyChangeListener {
 	abstract protected void preparePanel(Map<String, String> panelProperties)
 			throws TemplateException;
 
+	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
 		jobPropertyChanged(arg0);
 	}

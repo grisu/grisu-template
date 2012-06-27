@@ -11,7 +11,6 @@ import grisu.frontend.view.swing.settings.ApplicationSubscribePanel;
 import grisu.frontend.view.swing.utils.DefaultExceptionHandler;
 import grisu.jcommons.utils.EnvironmentVariableHelpers;
 import grisu.model.GrisuRegistryManager;
-import grisu.settings.ClientPropertiesManager;
 import grisu.settings.Environment;
 
 import java.awt.EventQueue;
@@ -225,15 +224,10 @@ PropertyChangeListener {
 		tm = GrisuRegistryManager.getDefault(si).getTemplateManager();
 		tm.addTemplateManagerListener(this);
 
-		String old = ClientPropertiesManager
-				.getProperty(AdvancedTemplateClientSettingsPanel.USE_OLD_FILE_MANAGEMENT_PANEL_CONFIG_KEY);
-		if (StringUtils.equalsIgnoreCase(old, "true")) {
-			addDefaultFileNavigationTaskPane();
-		} else {
 			addGroupFileListPanel(null, null);
-		}
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 
 		if (getServiceInterface() == null) {
@@ -263,6 +257,7 @@ PropertyChangeListener {
 		LoginManager.initEnvironment();
 
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 

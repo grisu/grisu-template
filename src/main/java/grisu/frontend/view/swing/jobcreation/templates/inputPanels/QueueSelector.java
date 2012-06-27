@@ -96,6 +96,7 @@ EventSubscriber<FqanEvent> {
 			queueComboBox
 			.setPrototypeDisplayValue("xxxxxxxxxxxxxxxxxxxxxxxxxx");
 			queueComboBox.addItemListener(new ItemListener() {
+				@Override
 				public void itemStateChanged(ItemEvent e) {
 
 
@@ -318,6 +319,7 @@ EventSubscriber<FqanEvent> {
 		interrupted = false;
 	}
 
+	@Override
 	public void onEvent(FqanEvent arg0) {
 
 		loadQueues(false);
@@ -333,7 +335,14 @@ EventSubscriber<FqanEvent> {
 	@Override
 	void setInitialValue() throws TemplateException {
 
-		// loadQueues(false);
+		try {
+			Queue q = (Queue) queueModel.getSelectedItem();
+			if (q != null) {
+				setValue("submissionLocation", q.toString());
+			}
+		} catch (Exception e) {
+			myLogger.error("Can't set initial value.");
+		}
 
 	}
 

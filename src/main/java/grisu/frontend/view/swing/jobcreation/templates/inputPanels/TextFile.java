@@ -3,11 +3,11 @@ package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 import grisu.control.ServiceInterface;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.control.clientexceptions.FileTransactionException;
-import grisu.frontend.view.swing.files.GrisuFileDialog;
+import grisu.frontend.view.swing.files.GridFileSelectionDialog;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.model.FileManager;
 import grisu.model.GrisuRegistryManager;
-import grisu.model.files.GlazedFile;
+import grisu.model.dto.GridFile;
 import grisu.model.job.JobSubmissionObjectImpl;
 
 import java.awt.event.ActionEvent;
@@ -51,6 +51,7 @@ public class TextFile extends AbstractInputPanel {
 			this.si = si;
 		}
 
+		@Override
 		public boolean validate(Problems arg0, String arg1, Object arg2) {
 
 			if (documentChanged) {
@@ -63,7 +64,7 @@ public class TextFile extends AbstractInputPanel {
 
 	private JComboBox comboBox;
 	private JButton button;
-	private GrisuFileDialog dialog;
+	private GridFileSelectionDialog dialog;
 
 	private String selectedFile = null;
 
@@ -149,9 +150,10 @@ public class TextFile extends AbstractInputPanel {
 		}
 
 		try {
-			final GlazedFile file = GrisuRegistryManager
+			final GridFile file = GrisuRegistryManager
 					.getDefault(getServiceInterface()).getFileManager()
-					.createGlazedFileFromUrl(selectedFile);
+					.ls(selectedFile);
+
 			loadFile(file);
 
 			addValue("inputFileUrl", selectedFile);
@@ -168,6 +170,7 @@ public class TextFile extends AbstractInputPanel {
 			button = new JButton("Open");
 			button.addActionListener(new ActionListener() {
 
+				@Override
 				public void actionPerformed(ActionEvent e) {
 
 					if (getServiceInterface() == null) {
@@ -175,7 +178,7 @@ public class TextFile extends AbstractInputPanel {
 						return;
 					}
 
-					final GlazedFile file = popupFileDialogAndAskForFile();
+					final GridFile file = popupFileDialogAndAskForFile();
 
 					if (file == null) {
 						return;
@@ -197,6 +200,7 @@ public class TextFile extends AbstractInputPanel {
 			button_1 = new JButton("Save");
 			button_1.addActionListener(new ActionListener() {
 
+				@Override
 				public void actionPerformed(ActionEvent e) {
 
 					final FileManager fm = GrisuRegistryManager.getDefault(
@@ -291,6 +295,7 @@ public class TextFile extends AbstractInputPanel {
 			comboBox.setPrototypeDisplayValue("xxxxx");
 			comboBox.setEditable(false);
 			comboBox.addItemListener(new ItemListener() {
+				@Override
 				public void itemStateChanged(ItemEvent e) {
 					if (ItemEvent.SELECTED == e.getStateChange()) {
 
@@ -384,7 +389,7 @@ public class TextFile extends AbstractInputPanel {
 
 	}
 
-	public void loadFile(GlazedFile gfile) {
+	public void loadFile(GridFile gfile) {
 
 		final FileManager fm = GrisuRegistryManager.getDefault(
 				getServiceInterface()).getFileManager();
@@ -451,12 +456,15 @@ public class TextFile extends AbstractInputPanel {
 
 		if (fillDefaultValueIntoFieldWhenPreparingPanel()) {
 			try {
-				final GlazedFile file = GrisuRegistryManager
-						.getDefault(getServiceInterface()).getFileManager()
-						.createGlazedFileFromUrl(getDefaultValue());
-				loadFile(file);
-				getJobSubmissionObject().addInputFileUrl(getDefaultValue());
-				getComboBox().setSelectedItem(getDefaultValue());
+				if (StringUtils.isNotBlank(getDefaultValue())) {
+					final GridFile file = GrisuRegistryManager
+							.getDefault(getServiceInterface()).getFileManager()
+							.ls(getDefaultValue());
+
+					loadFile(file);
+					getJobSubmissionObject().addInputFileUrl(getDefaultValue());
+					getComboBox().setSelectedItem(getDefaultValue());
+				}
 			} catch (final Exception e) {
 				myLogger.error(e);
 			}

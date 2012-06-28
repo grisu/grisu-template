@@ -1,0 +1,11 @@
+# The URL from which the client is downloaded
+appbase = http://code.ceres.auckland.ac.nz/snapshot-downloads/
+
+# UI Configuration
+ui.name = Griselda
+
+# Application jar files
+code = grisu-template-client-binary.jar
+
+# The main entry point for the application
+class = grisu.frontend.view.swing.GrisuTemplateApp

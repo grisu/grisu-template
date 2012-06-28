@@ -5,7 +5,7 @@ appbase = http://code.ceres.auckland.ac.nz/snapshot-downloads/
 ui.name = Grisu-Template
 
 # Application jar files
-code = grisu-template-binary.jar
+code = grisu-template-client-binary.jar
 
 # The main entry point for the application
 class = grisu.frontend.view.swing.GrisuTemplateApp

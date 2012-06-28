@@ -243,6 +243,8 @@ PropertyChangeListener {
 
 		configLogging();
 
+		myLogger.debug("Starting template client.");
+
 		Thread.currentThread().setName("main");
 
 		LoginManager.setClientName("grisu-template");

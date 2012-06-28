@@ -2,10 +2,10 @@
 appbase = http://code.ceres.auckland.ac.nz/snapshot-downloads/
 
 # UI Configuration
-ui.name = Griselda
+ui.name = Grisu-Template
 
 # Application jar files
-code = grisu-template-client-binary.jar
+code = grisu-template-dev.jar
 
 # The main entry point for the application
 class = grisu.frontend.view.swing.GrisuTemplateApp

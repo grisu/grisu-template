@@ -295,7 +295,28 @@
 												<filemode>755</filemode>
 											</mapper>
 										</data>
-
+										<data>
+											<src>${project.basedir}/src/deb/data/grisu-template.png</src>
+											<type>file</type>
+											<mapper>
+												<type>perm</type>
+												<prefix>/usr/local/lib/grisu/icons/</prefix>
+												<user>root</user>
+												<group>root</group>
+												<filemode>755</filemode>
+											</mapper>
+										</data>
+										<data>
+											<src>${project.basedir}/src/deb/data/grisu-template-client.desktop</src>
+											<type>file</type>
+											<mapper>
+												<type>perm</type>
+												<prefix>/usr/share/applications</prefix>
+												<user>root</user>
+												<group>root</group>
+												<filemode>755</filemode>
+											</mapper>
+										</data>
 									</dataSet>
 
 								</configuration>
@@ -413,7 +434,7 @@
 					<plugin>
 						<groupId>org.bitbucket.joxley</groupId>
 						<artifactId>getdown-maven-plugin</artifactId>
-						<version>0.0.1</version>
+						<version>nesi-0.0.1</version>
 						<configuration>
 							<appdir>target</appdir> <!-- Defaults to target -->
 						</configuration>

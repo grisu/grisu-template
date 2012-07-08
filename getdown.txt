@@ -1,5 +1,5 @@
 # The URL from which the client is downloaded
-appbase = http://code.ceres.auckland.ac.nz/snapshot-downloads/grisu-template
+appbase = http://code.ceres.auckland.ac.nz/snapshot-downloads/grisu-template-client
 #appbase = http://localhost:8000/
 
 # version = VERSION_TOKEN

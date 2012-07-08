@@ -1,11 +1,30 @@
 # The URL from which the client is downloaded
 appbase = http://code.ceres.auckland.ac.nz/snapshot-downloads/
+#appbase = http://localhost:8000/
+
+# version = VERSION_TOKEN
+
+allow_offline = true
 
 # UI Configuration
-ui.name = Grisu-Template
+ui.name = Grisu Template client
+
+ui.background = splash.png
+ui.progress = 52, 145, 236, 15
+ui.progress_text = 747474
+ui.progress_bar = CCCCCC
+
+ui.status = 52, 178, 247, 15
+ui.status_text = 747474
 
 # Application jar files
 code = grisu-template-client-binary.jar
 
 # The main entry point for the application
 class = grisu.frontend.view.swing.GrisuTemplateApp
+
+#jvmarg = -DX509_USER_PROXY=~/.grid/grid.proxy
+#jvmarg = -Xmx256M
+#jvmarg = -Djava.library.path=%APPDIR%/native
+#jvmarg = -Dappdir=%APPDIR%
+#jvmarg = -Dversion=%VERSION%

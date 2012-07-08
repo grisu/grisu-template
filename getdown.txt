@@ -18,7 +18,7 @@ ui.status = 52, 178, 247, 15
 ui.status_text = 747474
 
 # Application jar files
-code = grisu-template-client-binary.jar
+code = grisu-template/grisu-template-client-binary.jar
 
 # The main entry point for the application
 class = grisu.frontend.view.swing.GrisuTemplateApp

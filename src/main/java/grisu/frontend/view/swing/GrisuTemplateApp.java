@@ -34,6 +34,12 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 
+/**
+ * The main entry class for the template client.
+ * 
+ * @author markus
+ * 
+ */
 public class GrisuTemplateApp extends GrisuApplicationWindow implements
 PropertyChangeListener {
 
@@ -73,6 +79,7 @@ PropertyChangeListener {
 	}
 
 	public static void main(String[] args) throws Exception {
+		myLogger.debug("Grisu template client. Starting...");
 		GrisuTemplateApp app = new GrisuTemplateApp();
 		app.run();
 	}

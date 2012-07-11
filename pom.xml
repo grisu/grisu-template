@@ -482,7 +482,7 @@
 		<version>0.17</version>
 	</parent>
 	<properties>
-		<grisu.version>0.5-rc2-SNAPSHOT</grisu.version>
+		<grisu.version>0.5-SNAPSHOT</grisu.version>
 	</properties>
 </project>
 

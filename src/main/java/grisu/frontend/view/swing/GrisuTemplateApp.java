@@ -3,8 +3,8 @@ package grisu.frontend.view.swing;
 import grisu.control.ServiceInterface;
 import grisu.control.TemplateManager;
 import grisu.control.exceptions.NoSuchTemplateException;
-import grisu.control.exceptions.RemoteFileSystemException;
 import grisu.frontend.control.login.LoginManager;
+import grisu.frontend.view.swing.files.virtual.GridFileTreePanel;
 import grisu.frontend.view.swing.jobcreation.JobCreationPanel;
 import grisu.frontend.view.swing.jobcreation.TemplateJobCreationPanel;
 import grisu.frontend.view.swing.settings.AdvancedTemplateClientSettingsPanel;
@@ -12,7 +12,6 @@ import grisu.frontend.view.swing.settings.ApplicationSubscribePanel;
 import grisu.frontend.view.swing.utils.DefaultExceptionHandler;
 import grisu.jcommons.utils.EnvironmentVariableHelpers;
 import grisu.model.GrisuRegistryManager;
-import grisu.model.dto.GridFile;
 import grisu.settings.Environment;
 
 import java.awt.EventQueue;
@@ -233,32 +232,13 @@ PropertyChangeListener {
 		tm = GrisuRegistryManager.getDefault(si).getTemplateManager();
 		tm.addTemplateManagerListener(this);
 
-		GridFile df = null;
-		try {
-			df = GrisuRegistryManager.getDefault(si).getFileManager()
-					.createGridFile("grid://groups/nz/nesi//");
-			df.setName("Data Fabric");
-		} catch (final RemoteFileSystemException e) {
-			myLogger.error(e.getLocalizedMessage(), e);
-			// p = new GridFile(
-			// "grid://groups/ARCS/BeSTGRID/Drug_discovery/Local//");
-			// p.setIsVirtual(false);
-			// p.setName("Personal remote files");
-			// p.setPath("grid://groups/ARCS/BeSTGRID/Drug_discovery/Local//");
-		}
-
-		final GridFile gridRoot = GrisuRegistryManager.getDefault(si)
-				.getFileManager().getGridRoot();
-		final GridFile localRoot = GrisuRegistryManager.getDefault(si)
-				.getFileManager().getLocalRoot();
-		List<GridFile> roots = new LinkedList<GridFile>();
-		if (df != null) {
-			roots.add(df);
-		}
-		roots.add(gridRoot);
-		roots.add(localRoot);
-
-		addGroupFileListPanel(roots, roots);
+		GridFileTreePanel.defaultRoots.clear();
+		GridFileTreePanel.defaultRoots.put("Data Fabric",
+				"grid://groups/nz/nesi//");
+		GridFileTreePanel.defaultRoots
+				.put(GridFileTreePanel.REMOTE_ALIAS, null);
+		GridFileTreePanel.defaultRoots.put(GridFileTreePanel.LOCAL_ALIAS, null);
+		addGroupFileListPanel(null, null);
 	}
 
 	@Override

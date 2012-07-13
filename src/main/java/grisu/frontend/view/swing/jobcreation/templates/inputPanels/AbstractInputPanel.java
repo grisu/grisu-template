@@ -98,9 +98,9 @@ PropertyChangeListener {
 	private boolean initFinished = false;
 
 	private static Map<String, GridFileSelectionDialog> dialogs = Maps
-			.newHashMap();
+			.newConcurrentMap();
 
-	private static void createSingletonFileDialog(Window owner,
+	private synchronized static void createSingletonFileDialog(Window owner,
 			ServiceInterface si, String templateName) {
 
 		if (dialogs.get(templateName) == null) {
@@ -131,14 +131,6 @@ PropertyChangeListener {
 			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			dialogs.put(templateName, dialog);
 		}
-	}
-
-	public static GridFileSelectionDialog getFileDialog(String templateName) {
-
-		if (dialogs.get(templateName) == null) {
-			throw new IllegalStateException("File dialog not initialized yet.");
-		}
-		return dialogs.get(templateName);
 	}
 
 	private Object oldAddValue = null;
@@ -245,7 +237,6 @@ PropertyChangeListener {
 		addHistoryValue(null, value);
 	}
 
-
 	protected void addHistoryValue(String optionalKey, String value) {
 
 		if (StringUtils.isBlank(optionalKey)) {
@@ -256,6 +247,7 @@ PropertyChangeListener {
 		}
 
 	}
+
 
 	protected void addValue(String bean, Object value) {
 
@@ -363,6 +355,19 @@ PropertyChangeListener {
 
 	public GridFileSelectionDialog getFileDialog() {
 		return getFileDialog(templateName);
+	}
+
+	public GridFileSelectionDialog getFileDialog(String templateName) {
+
+		if (dialogs.get(templateName) == null) {
+			if (si == null) {
+				throw new IllegalStateException(
+						"File dialog not initialized yet.");
+			}
+			createSingletonFileDialog(SwingUtilities.getWindowAncestor(this),
+					si, templateName);
+		}
+		return dialogs.get(templateName);
 	}
 
 	protected JButton getHelpLabel() {
@@ -624,8 +629,8 @@ PropertyChangeListener {
 
 	public void setServiceInterface(ServiceInterface si) {
 
-		createSingletonFileDialog(SwingUtilities.getWindowAncestor(this), si,
-				templateName);
+		// createSingletonFileDialog(SwingUtilities.getWindowAncestor(this), si,
+		// templateName);
 
 		this.si = si;
 		this.uem = GrisuRegistryManager.getDefault(si)

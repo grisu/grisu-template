@@ -13,6 +13,7 @@ import grisu.model.job.JobSubmissionObjectImpl;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -315,6 +316,8 @@ EventSubscriber<FqanEvent> {
 
 		queueModel.removeAllElements();
 		Queue containsOld = null;
+
+		Collections.sort(currentQueues);
 		for (final Queue gr : currentQueues) {
 			if (oldSubLocT != null) {
 				if (gr.equals(oldSubLocT)) {

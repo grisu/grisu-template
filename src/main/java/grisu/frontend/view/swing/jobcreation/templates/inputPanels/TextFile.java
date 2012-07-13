@@ -88,36 +88,32 @@ public class TextFile extends AbstractInputPanel {
 					ColumnSpec.decode("center:max(13dlu;default)"),
 					FormFactory.RELATED_GAP_COLSPEC,
 					ColumnSpec.decode("center:max(35dlu;default):grow"),
-					FormFactory.RELATED_GAP_COLSPEC,
-					FormFactory.DEFAULT_COLSPEC,
-					FormFactory.RELATED_GAP_COLSPEC,
-					FormFactory.DEFAULT_COLSPEC,
+					FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
+					FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
 					FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
 					FormFactory.RELATED_GAP_ROWSPEC,
-					RowSpec.decode("max(58dlu;default):grow"),
-					FormFactory.RELATED_GAP_ROWSPEC,
-					FormFactory.DEFAULT_ROWSPEC,
+					RowSpec.decode("max(40dlu;default):grow"),
+					FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 					FormFactory.RELATED_GAP_ROWSPEC, }));
 
 			add(getTextArea(), "2, 2, 7, 1, fill, fill");
-			add(getComboBox(), "2,2,2,1, fill, default");
+			add(getComboBox(), "2, 4, 3, 1, fill, default");
 			add(getButton(), "6, 4");
 			add(getButton_1(), "8, 4");
+
+
 		} else {
 			setLayout(new FormLayout(new ColumnSpec[] {
 					FormFactory.RELATED_GAP_COLSPEC,
 					ColumnSpec.decode("center:max(13dlu;default)"),
 					FormFactory.RELATED_GAP_COLSPEC,
 					ColumnSpec.decode("center:max(35dlu;default):grow"),
-					FormFactory.RELATED_GAP_COLSPEC,
-					FormFactory.DEFAULT_COLSPEC,
-					FormFactory.RELATED_GAP_COLSPEC,
-					FormFactory.DEFAULT_COLSPEC,
+					FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
+					FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
 					FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
 					FormFactory.RELATED_GAP_ROWSPEC,
-					RowSpec.decode("max(58dlu;default):grow"),
-					FormFactory.RELATED_GAP_ROWSPEC,
-					FormFactory.DEFAULT_ROWSPEC,
+					RowSpec.decode("max(40dlu;default):grow"),
+					FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 					FormFactory.RELATED_GAP_ROWSPEC, }));
 
 			add(getTextArea(), "2, 2, 7, 1, fill, fill");

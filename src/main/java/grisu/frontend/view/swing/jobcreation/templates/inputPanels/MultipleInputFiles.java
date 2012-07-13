@@ -47,8 +47,9 @@ DropTargetListener {
 				FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
 				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
 				FormFactory.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("max(79dlu;default)"),
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				RowSpec.decode("max(32dlu;default):grow"),
+				FormFactory.RELATED_GAP_ROWSPEC,
+ FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC, }));
 		add(getScrollPane(), "2, 2, 5, 1, fill, fill");
 		add(getButton_1(), "4, 4, right, default");

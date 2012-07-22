@@ -7,7 +7,6 @@ import grisu.frontend.control.login.LoginManager;
 import grisu.frontend.view.swing.files.virtual.GridFileTreePanel;
 import grisu.frontend.view.swing.jobcreation.JobCreationPanel;
 import grisu.frontend.view.swing.jobcreation.TemplateJobCreationPanel;
-import grisu.frontend.view.swing.settings.AdvancedTemplateClientSettingsPanel;
 import grisu.frontend.view.swing.settings.ApplicationSubscribePanel;
 import grisu.frontend.view.swing.utils.DefaultExceptionHandler;
 import grisu.jcommons.utils.EnvironmentVariableHelpers;
@@ -80,6 +79,12 @@ PropertyChangeListener {
 	}
 
 	public static void main(String[] args) throws Exception {
+
+		LoginManager.setClientName("grisu-template");
+
+		LoginManager.setClientVersion(grisu.jcommons.utils.Version
+				.get("grisu-template"));
+
 		myLogger.debug("Grisu template client. Starting...");
 		GrisuTemplateApp app = new GrisuTemplateApp();
 		app.run();
@@ -90,7 +95,7 @@ PropertyChangeListener {
 	private final ApplicationSubscribePanel applicationSubscribePanel = new ApplicationSubscribePanel();
 
 	public GrisuTemplateApp() throws Exception {
-		super(new AdvancedTemplateClientSettingsPanel());
+		super();
 
 
 		// String environmentVariable = System
@@ -236,7 +241,7 @@ PropertyChangeListener {
 		GridFileTreePanel.defaultRoots.put("Data Fabric",
 				"grid://groups/nz/nesi//");
 		GridFileTreePanel.defaultRoots
-				.put(GridFileTreePanel.REMOTE_ALIAS, null);
+		.put(GridFileTreePanel.REMOTE_ALIAS, null);
 		GridFileTreePanel.defaultRoots.put(GridFileTreePanel.LOCAL_ALIAS, null);
 		addGroupFileListPanel(null, null);
 	}
@@ -260,11 +265,6 @@ PropertyChangeListener {
 		myLogger.debug("Starting template client.");
 
 		Thread.currentThread().setName("main");
-
-		LoginManager.setClientName("grisu-template");
-
-		LoginManager.setClientVersion(grisu.jcommons.utils.Version
-				.get("this-client"));
 
 		EnvironmentVariableHelpers.loadEnvironmentVariablesToSystemProperties();
 

@@ -117,7 +117,7 @@
 				<configuration>
 					<includes>
 						<!-- replace the token in this file -->
-						<include>target/classes/this-client.version</include>
+						<include>target/classes/grisu-template.version</include>
 					</includes>
 					<regex>false</regex>
 					<!-- the name of the token to replace -->
@@ -245,7 +245,7 @@
 						</executions>
 						<configuration>
 							<includes>
-								<include>target/classes/this-client.version</include>
+								<include>target/classes/grisu-template.version</include>
 								<include>target/deb/control/control</include>
 							</includes>
 							<ignoreMissingFile>false</ignoreMissingFile>
@@ -253,7 +253,7 @@
 							<replacements>
 								<replacement>
 									<token>VERSION_TOKEN</token>
-									<value>${project.version}</value>
+									<value>${project.version} (${maven.build.timestamp})</value>
 								</replacement>
 							</replacements>
 						</configuration>

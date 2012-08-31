@@ -80,6 +80,7 @@ public class Memory extends AbstractInputPanel {
 			});
 			comboBox.addItemListener(new ItemListener() {
 
+				@Override
 				public void itemStateChanged(ItemEvent e) {
 
 					if (!userInput) {
@@ -125,7 +126,7 @@ public class Memory extends AbstractInputPanel {
 
 		final Map<String, String> defaultProperties = new HashMap<String, String>();
 
-		defaultProperties.put(TITLE, "Memory (in MB)");
+		defaultProperties.put(TITLE, "Memory per core (in MB)");
 		defaultProperties.put(DEFAULT_VALUE, "1024");
 		defaultProperties.put(PREFILLS, "1024,2048,4096,8192,16384");
 

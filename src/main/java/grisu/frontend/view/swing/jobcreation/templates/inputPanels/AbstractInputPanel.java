@@ -391,7 +391,7 @@ PropertyChangeListener {
 		return getHistoryValues(null);
 	}
 
-	public List<String> getHistoryValues(String optionalKey) {
+	public synchronized List<String> getHistoryValues(String optionalKey) {
 		if (StringUtils.isBlank(optionalKey)) {
 			return hm.getEntries(historyManagerEntryName);
 		} else {

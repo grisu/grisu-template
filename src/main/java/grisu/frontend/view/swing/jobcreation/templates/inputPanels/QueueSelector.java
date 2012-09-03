@@ -196,7 +196,11 @@ EventSubscriber<FqanEvent> {
 		loadQueues(force);
 	}
 
-	private void loadQueues(boolean force) {
+	private synchronized void loadQueues(boolean force) {
+		
+		if ( getJobSubmissionObject() == null ) {
+			return;
+		}
 
 		String tempApp = getJobSubmissionObject().getApplication();
 		String tempVers = getJobSubmissionObject().getApplicationVersion();

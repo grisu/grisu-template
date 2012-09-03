@@ -14,6 +14,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -68,6 +70,8 @@ public class TemplateObject {
 
 	private final Map<String, String> fixedValues;
 
+	private JScrollPane scrollPane;
+
 	public TemplateObject(ServiceInterface si, String commandlineTemplate,
 			Map<String, String> fixedValues) throws TemplateException {
 		this.si = si;
@@ -79,13 +83,13 @@ public class TemplateObject {
 
 	}
 
-	public LinkedHashMap<String, AbstractInputPanel> getInputPanels() {
-		return this.inputPanels;
-	}
-
 	// public void registerInputPanel(AbstractInputPanel panel) {
 	// panels.put(panel.getName(), panel);
 	// }
+
+	public LinkedHashMap<String, AbstractInputPanel> getInputPanels() {
+		return this.inputPanels;
+	}
 
 	public JobSubmissionObjectImpl getJobSubmissionObject() {
 		return this.jobObject;
@@ -100,11 +104,23 @@ public class TemplateObject {
 	}
 
 	public JPanel getTemplatePanel() {
+
 		return this.templatePanel;
 	}
 
 	public ValidationPanel getValidationPanel() {
 		return validationPanel;
+	}
+
+	public JScrollPane getWrapperScrollPane() {
+		if ( scrollPane == null ) {
+			scrollPane = new JScrollPane();
+			scrollPane.setViewportView(getTemplatePanel());
+			scrollPane
+			.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		}
+		return scrollPane;
+
 	}
 
 	public void reset() throws TemplateException {
@@ -190,6 +206,7 @@ public class TemplateObject {
 	}
 
 	public void setTemplatePanel(JPanel templatePanel) {
+
 		this.templatePanel = templatePanel;
 	}
 

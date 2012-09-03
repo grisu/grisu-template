@@ -155,6 +155,10 @@ EventSubscriber<FqanEvent> {
 	}
 
 	public synchronized void onEvent(FqanEvent arg0) {
+		
+		if ( getJobSubmissionObject() == null ) {
+			return;
+		}
 
 		setProperApplicationVersion(getJobSubmissionObject().getApplication());
 	}

@@ -588,7 +588,7 @@ public class TemplateHelpers {
 
 		for (final AbstractInputPanel panel : inputPanels.values()) {
 			panel.setServiceInterface(si);
-			panel.initPanel(template, template.getJobSubmissionObject());
+//			panel.initPanel(template, template.getJobSubmissionObject());
 		}
 
 		JPanel mainPanel = null;

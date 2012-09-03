@@ -200,26 +200,35 @@ JobCreationPanel, PropertyChangeListener {
 
 	@Override
 	public synchronized void setServiceInterface(ServiceInterface si) {
+		
+		if ( this.si == si ) {
+			
+			return;
+			
+		}
 
-			this.si = si;
+		this.si = si;
 
-			try {
-				if (currentTemplatePanel != null) {
-					remove(currentTemplatePanel);
-				}
-
-				GrisuRegistryManager.getDefault(si).getTemplateManager()
-				.addTemplateManagerListener(this);
-
-				template = TemplateHelpers.parseAndCreateTemplatePanel(si,
-						templateFileName, lines);
-				currentTemplatePanel = new TemplateWrapperPanel(template);
-				add(currentTemplatePanel, TEMPLATE_PANEL);
-				cardLayout.show(this, TEMPLATE_PANEL);
-			} catch (final Exception e) {
-				myLogger.error(e);
-				getErrorTextArea().setText(getStackTrace(e));
-				cardLayout.show(this, ERROR_PANEL);
+		try {
+			if (currentTemplatePanel != null) {
+				remove(currentTemplatePanel);
 			}
+
+			GrisuRegistryManager.getDefault(si).getTemplateManager()
+			.addTemplateManagerListener(this);
+
+			template = TemplateHelpers.parseAndCreateTemplatePanel(si,
+					templateFileName, lines);
+			currentTemplatePanel = new TemplateWrapperPanel(template);
+
+
+			add(currentTemplatePanel, TEMPLATE_PANEL);
+			// add(currentTemplatePanel, TEMPLATE_PANEL);
+			cardLayout.show(this, TEMPLATE_PANEL);
+		} catch (final Exception e) {
+			myLogger.error(e);
+			getErrorTextArea().setText(getStackTrace(e));
+			cardLayout.show(this, ERROR_PANEL);
+		}
 	}
 }

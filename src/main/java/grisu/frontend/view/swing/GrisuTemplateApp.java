@@ -18,11 +18,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
@@ -164,7 +166,8 @@ PropertyChangeListener {
 			return new JobCreationPanel[] {};
 		}
 
-		final List<JobCreationPanel> panels = new LinkedList<JobCreationPanel>();
+		final List<JobCreationPanel> panels = Collections
+				.synchronizedList(new LinkedList<JobCreationPanel>());
 
 		final String fixedPanels = System.getProperty("grisu.createJobPanels");
 		if (StringUtils.isNotBlank(fixedPanels)) {
@@ -192,20 +195,40 @@ PropertyChangeListener {
 			allTemplates = tm.getAllTemplateNames();
 		}
 
+		// creating the templates in parallel
+		final CountDownLatch stopLatch = new CountDownLatch(allTemplates.size());
+
 		for (final String name : allTemplates) {
-			try {
-				final JobCreationPanel panel = new TemplateJobCreationPanel(
-						name, tm.getTemplate(name));
-				if (panel == null) {
-					myLogger.warn("Can't find template " + name);
-					continue;
+
+			Thread t = new Thread() {
+
+				@Override
+				public void run() {
+
+					try {
+						final JobCreationPanel panel = new TemplateJobCreationPanel(
+								name, tm.getTemplate(name));
+						if (panel == null) {
+							myLogger.warn("Can't find template " + name);
+						}
+						panel.setServiceInterface(getServiceInterface());
+						panels.add(panel);
+					} catch (final NoSuchTemplateException e) {
+						myLogger.warn("Can't find template " + name);
+					} finally {
+						stopLatch.countDown();
+					}
 				}
-				panel.setServiceInterface(getServiceInterface());
-				panels.add(panel);
-			} catch (final NoSuchTemplateException e) {
-				myLogger.warn("Can't find template " + name);
-				continue;
-			}
+
+			};
+			t.setName("template-create-" + name);
+			t.start();
+		}
+
+		try {
+			stopLatch.await();
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
 		}
 
 		return panels.toArray(new JobCreationPanel[] {});

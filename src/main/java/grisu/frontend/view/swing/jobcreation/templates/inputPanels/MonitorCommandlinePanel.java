@@ -20,7 +20,7 @@ public class MonitorCommandlinePanel extends AbstractInputPanel {
 	private JTextField textField;
 
 	public MonitorCommandlinePanel(String name, PanelConfig config)
-	throws TemplateException {
+			throws TemplateException {
 
 		super(name, config);
 		setLayout(new FormLayout(new ColumnSpec[] {
@@ -61,6 +61,7 @@ public class MonitorCommandlinePanel extends AbstractInputPanel {
 	protected String getValueAsString() {
 		return null;
 	}
+
 
 	@Override
 	protected void jobPropertyChanged(PropertyChangeEvent e) {

@@ -2,7 +2,7 @@ package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
-import grisu.model.files.GlazedFile;
+import grisu.model.dto.GridFile;
 import grisu.model.job.JobSubmissionObjectImpl;
 
 import java.awt.dnd.DropTargetDragEvent;
@@ -37,7 +37,7 @@ DropTargetListener {
 	private JButton button_1;
 
 	public MultipleInputFiles(String name, PanelConfig config)
-	throws TemplateException {
+			throws TemplateException {
 
 		super(name, config);
 		setLayout(new FormLayout(new ColumnSpec[] {
@@ -47,34 +47,40 @@ DropTargetListener {
 				FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
 				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
 				FormFactory.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("max(79dlu;default)"),
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
+				RowSpec.decode("max(32dlu;default):grow"),
+				FormFactory.RELATED_GAP_ROWSPEC,
+ FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC, }));
 		add(getScrollPane(), "2, 2, 5, 1, fill, fill");
 		add(getButton_1(), "4, 4, right, default");
 		add(getButton(), "6, 4, right, default");
 	}
 
+	@Override
 	public void dragEnter(DropTargetDragEvent dtde) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void dragExit(DropTargetEvent dte) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void dragOver(DropTargetDragEvent dtde) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void drop(DropTargetDropEvent dtde) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void dropActionChanged(DropTargetDragEvent dtde) {
 		// TODO Auto-generated method stub
 
@@ -85,6 +91,7 @@ DropTargetListener {
 			button = new JButton("Add");
 			button.addActionListener(new ActionListener() {
 
+				@Override
 				public void actionPerformed(ActionEvent e) {
 
 					if (getServiceInterface() == null) {
@@ -92,18 +99,18 @@ DropTargetListener {
 						return;
 					}
 
-					final Set<GlazedFile> files = popupFileDialogAndAskForFiles();
+					final Set<GridFile> files = popupFileDialogAndAskForFiles();
 
 					if (files == null) {
 						return;
 					}
 
-					for (final GlazedFile file : files) {
+					for (final GridFile file : files) {
 
 						final String filename = file.getName();
 						for (int i = 0; i < fileModel.getSize(); i++) {
-							final GlazedFile existingFile = (GlazedFile) fileModel
-							.getElementAt(i);
+							final GridFile existingFile = (GridFile) fileModel
+									.getElementAt(i);
 							if (existingFile.getName().equals(filename)) {
 								fileModel.removeElement(existingFile);
 							}
@@ -124,14 +131,14 @@ DropTargetListener {
 			button_1 = new JButton("Remove");
 			button_1.addActionListener(new ActionListener() {
 
+				@Override
 				public void actionPerformed(ActionEvent e) {
 
 					final Object[] selFiles = getList_1().getSelectedValues();
 
 					for (final Object file : selFiles) {
 						fileModel.removeElement(file);
-						removeValue("inputFileUrl",
-								((GlazedFile) file).getUrl());
+						removeValue("inputFileUrl", ((GridFile) file).getUrl());
 					}
 
 				}
@@ -172,8 +179,8 @@ DropTargetListener {
 		final StringBuffer temp = new StringBuffer();
 
 		for (int i = 0; i < fileModel.getSize(); i++) {
-			final GlazedFile existingFile = (GlazedFile) fileModel
-			.getElementAt(i);
+			final GridFile existingFile = (GridFile) fileModel
+					.getElementAt(i);
 			temp.append(existingFile.getUrl() + ",");
 		}
 

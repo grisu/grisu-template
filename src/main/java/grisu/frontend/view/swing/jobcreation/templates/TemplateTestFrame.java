@@ -7,7 +7,6 @@ import grisu.backend.model.job.gt5.RSLFactory;
 import grisu.control.ServiceInterface;
 import grisu.control.exceptions.JobPropertiesException;
 import grisu.control.exceptions.TemplateException;
-import grisu.frontend.control.login.LoginManager;
 import grisu.frontend.view.swing.login.GrisuSwingClient;
 import grisu.frontend.view.swing.login.LoginPanel;
 import grisu.jcommons.interfaces.InformationManager;
@@ -17,7 +16,6 @@ import grisu.utils.SeveralXMLHelpers;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -139,25 +137,26 @@ PropertyChangeListener, ActionListener, GrisuSwingClient {
 		return stringWritter.toString();
 	}
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-
-					final ServiceInterface si = LoginManager.loginCommandline();
-
-					final TemplateTestFrame frame = new TemplateTestFrame();
-					frame.setServiceInterface(si);
-					frame.setVisible(true);
-				} catch (final Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	// /**
+	// * Launch the application.
+	// */
+	// public static void main(String[] args) {
+	// EventQueue.invokeLater(new Runnable() {
+	// public void run() {
+	// try {
+	//
+	// final ServiceInterface si = LoginManagerNew
+	// .loginCommandline();
+	//
+	// final TemplateTestFrame frame = new TemplateTestFrame();
+	// frame.setServiceInterface(si);
+	// frame.setVisible(true);
+	// } catch (final Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// });
+	// }
 
 	protected File currentFile;
 
@@ -511,7 +510,7 @@ PropertyChangeListener, ActionListener, GrisuSwingClient {
 			}
 
 			final String gt4rsl = GT4Submitter.createJobSubmissionDescription(
-					informationManager, SeveralXMLHelpers.fromString(jsdl),
+					SeveralXMLHelpers.fromString(jsdl),
 					null);
 			getGt4TextArea().setText(gt4rsl);
 

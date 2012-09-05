@@ -1,9 +1,9 @@
 package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
 import grisu.control.exceptions.TemplateException;
-import grisu.frontend.view.swing.files.GrisuFileDialog;
+import grisu.frontend.view.swing.files.GridFileSelectionDialog;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
-import grisu.model.files.GlazedFile;
+import grisu.model.dto.GridFile;
 import grisu.model.job.JobSubmissionObjectImpl;
 
 import java.awt.event.ActionEvent;
@@ -31,7 +31,7 @@ import com.jgoodies.forms.layout.RowSpec;
 public class SingleInputFile extends AbstractInputPanel {
 	private JComboBox comboBox;
 	private JButton button;
-	private GrisuFileDialog dialog;
+	private GridFileSelectionDialog dialog;
 
 	private String selectedFile = null;
 
@@ -39,7 +39,7 @@ public class SingleInputFile extends AbstractInputPanel {
 	private JLabel label;
 
 	public SingleInputFile(String name, PanelConfig config)
-	throws TemplateException {
+			throws TemplateException {
 
 		super(name, config);
 
@@ -97,6 +97,7 @@ public class SingleInputFile extends AbstractInputPanel {
 			button = new JButton("Browse");
 			button.addActionListener(new ActionListener() {
 
+				@Override
 				public void actionPerformed(ActionEvent e) {
 
 					if (getServiceInterface() == null) {
@@ -104,7 +105,7 @@ public class SingleInputFile extends AbstractInputPanel {
 						return;
 					}
 
-					final GlazedFile file = popupFileDialogAndAskForFile();
+					final GridFile file = popupFileDialogAndAskForFile();
 
 					if (file == null) {
 						return;
@@ -125,6 +126,7 @@ public class SingleInputFile extends AbstractInputPanel {
 			comboBox.setPrototypeDisplayValue("xxxxx");
 			comboBox.setEditable(true);
 			comboBox.addItemListener(new ItemListener() {
+				@Override
 				public void itemStateChanged(ItemEvent e) {
 					if (ItemEvent.SELECTED == e.getStateChange()) {
 

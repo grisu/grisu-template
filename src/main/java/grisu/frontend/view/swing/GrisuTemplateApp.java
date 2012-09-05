@@ -3,59 +3,102 @@ package grisu.frontend.view.swing;
 import grisu.control.ServiceInterface;
 import grisu.control.TemplateManager;
 import grisu.control.exceptions.NoSuchTemplateException;
+import grisu.frontend.control.login.LoginManager;
+import grisu.frontend.view.swing.files.virtual.GridFileTreePanel;
 import grisu.frontend.view.swing.jobcreation.JobCreationPanel;
 import grisu.frontend.view.swing.jobcreation.TemplateJobCreationPanel;
-import grisu.frontend.view.swing.settings.AdvancedTemplateClientSettingsPanel;
 import grisu.frontend.view.swing.settings.ApplicationSubscribePanel;
+import grisu.frontend.view.swing.utils.DefaultExceptionHandler;
+import grisu.jcommons.utils.EnvironmentVariableHelpers;
 import grisu.model.GrisuRegistryManager;
-import grisu.settings.ClientPropertiesManager;
-import grith.jgrith.Init;
+import grisu.settings.Environment;
 
 import java.awt.EventQueue;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
+
+/**
+ * The main entry class for the template client.
+ * 
+ * @author markus
+ * 
+ */
 public class GrisuTemplateApp extends GrisuApplicationWindow implements
 PropertyChangeListener {
 
 	static final Logger myLogger = Logger.getLogger(GrisuTemplateApp.class
 			.getName());
 
-	public static void main(String[] args) {
+	private static void configLogging() {
+		// stop javaxws logging
+		java.util.logging.LogManager.getLogManager().reset();
+		java.util.logging.Logger.getLogger("root").setLevel(Level.ALL);
 
-		Init.initBouncyCastle();
+		String logback = "/etc/gricli/grisu-template.log.conf.xml";
 
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
+		if (!new File(logback).exists() || (new File(logback).length() == 0)) {
+			logback = Environment.getGrisuClientDirectory() + File.separator
+					+ "grisu-template.log.conf.xml";
+		}
+		if (new File(logback).exists() && (new File(logback).length() > 0)) {
 
-					final GrisuApplicationWindow appWindow = new GrisuTemplateApp();
+			LoggerContext lc = (LoggerContext) LoggerFactory
+					.getILoggerFactory();
 
-					appWindow.setVisible(true);
-
-				} catch (final Exception e) {
-					myLogger.error(e);
-				}
+			try {
+				JoranConfigurator configurator = new JoranConfigurator();
+				configurator.setContext(lc);
+				// the context was probably already configured by default
+				// configuration
+				// rules
+				lc.reset();
+				configurator.doConfigure(logback);
+			} catch (JoranException je) {
+				je.printStackTrace();
 			}
-		});
+			StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
 
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+
+		LoginManager.setClientName("grisu-template");
+
+		LoginManager.setClientVersion(grisu.jcommons.utils.Version
+				.get("grisu-template"));
+
+		myLogger.debug("Grisu template client. Starting...");
+		GrisuTemplateApp app = new GrisuTemplateApp();
+		app.run();
 	}
 
 	private TemplateManager tm;
 
 	private final ApplicationSubscribePanel applicationSubscribePanel = new ApplicationSubscribePanel();
 
-	public GrisuTemplateApp() {
-		super(new AdvancedTemplateClientSettingsPanel());
+	public GrisuTemplateApp() throws Exception {
+		super();
+
 
 		// String environmentVariable = System
 		// .getProperty("grisu.defaultApplications");
@@ -123,7 +166,8 @@ PropertyChangeListener {
 			return new JobCreationPanel[] {};
 		}
 
-		final List<JobCreationPanel> panels = new LinkedList<JobCreationPanel>();
+		final List<JobCreationPanel> panels = Collections
+				.synchronizedList(new LinkedList<JobCreationPanel>());
 
 		final String fixedPanels = System.getProperty("grisu.createJobPanels");
 		if (StringUtils.isNotBlank(fixedPanels)) {
@@ -151,20 +195,40 @@ PropertyChangeListener {
 			allTemplates = tm.getAllTemplateNames();
 		}
 
+		// creating the templates in parallel
+		final CountDownLatch stopLatch = new CountDownLatch(allTemplates.size());
+
 		for (final String name : allTemplates) {
-			try {
-				final JobCreationPanel panel = new TemplateJobCreationPanel(
-						name, tm.getTemplate(name));
-				if (panel == null) {
-					myLogger.warn("Can't find template " + name);
-					continue;
+
+			Thread t = new Thread() {
+
+				@Override
+				public void run() {
+
+					try {
+						final JobCreationPanel panel = new TemplateJobCreationPanel(
+								name, tm.getTemplate(name));
+						if (panel == null) {
+							myLogger.warn("Can't find template " + name);
+						}
+						panel.setServiceInterface(getServiceInterface());
+						panels.add(panel);
+					} catch (final NoSuchTemplateException e) {
+						myLogger.warn("Can't find template " + name);
+					} finally {
+						stopLatch.countDown();
+					}
 				}
-				panel.setServiceInterface(getServiceInterface());
-				panels.add(panel);
-			} catch (final NoSuchTemplateException e) {
-				myLogger.warn("Can't find template " + name);
-				continue;
-			}
+
+			};
+			t.setName("template-create-" + name);
+			t.start();
+		}
+
+		try {
+			stopLatch.await();
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
 		}
 
 		return panels.toArray(new JobCreationPanel[] {});
@@ -196,15 +260,16 @@ PropertyChangeListener {
 		tm = GrisuRegistryManager.getDefault(si).getTemplateManager();
 		tm.addTemplateManagerListener(this);
 
-		String old = ClientPropertiesManager
-				.getProperty(AdvancedTemplateClientSettingsPanel.USE_OLD_FILE_MANAGEMENT_PANEL_CONFIG_KEY);
-		if (StringUtils.equalsIgnoreCase(old, "true")) {
-			addDefaultFileNavigationTaskPane();
-		} else {
-			addGroupFileListPanel(null, null);
-		}
+		GridFileTreePanel.defaultRoots.clear();
+		GridFileTreePanel.defaultRoots.put("Data Fabric",
+				"grid://groups/nz/nesi//");
+		GridFileTreePanel.defaultRoots
+		.put(GridFileTreePanel.REMOTE_ALIAS, null);
+		GridFileTreePanel.defaultRoots.put(GridFileTreePanel.LOCAL_ALIAS, null);
+		addGroupFileListPanel(null, null);
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 
 		if (getServiceInterface() == null) {
@@ -213,6 +278,38 @@ PropertyChangeListener {
 		}
 
 		refreshJobCreationPanels();
+
+	}
+
+	public void run() {
+
+		configLogging();
+
+		myLogger.debug("Starting template client.");
+
+		Thread.currentThread().setName("main");
+
+		EnvironmentVariableHelpers.loadEnvironmentVariablesToSystemProperties();
+
+		Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler());
+
+		LoginManager.initEnvironment();
+
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				try {
+
+					// final GrisuApplicationWindow appWindow = new
+					// GrisuTemplateApp();
+
+					setVisible(true);
+
+				} catch (final Exception e) {
+					myLogger.error(e);
+				}
+			}
+		});
 
 	}
 

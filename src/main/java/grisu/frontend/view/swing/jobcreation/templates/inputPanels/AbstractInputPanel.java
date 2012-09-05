@@ -4,14 +4,14 @@ import grisu.control.ServiceInterface;
 import grisu.control.exceptions.RemoteFileSystemException;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.control.jobMonitoring.RunningJobManager;
-import grisu.frontend.view.swing.files.GrisuFileDialog;
+import grisu.frontend.view.swing.files.GridFileSelectionDialog;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.frontend.view.swing.jobcreation.templates.TemplateObject;
 import grisu.frontend.view.swing.jobcreation.templates.filters.Filter;
 import grisu.model.FileManager;
 import grisu.model.GrisuRegistryManager;
 import grisu.model.UserEnvironmentManager;
-import grisu.model.files.GlazedFile;
+import grisu.model.dto.GridFile;
 import grisu.model.job.JobSubmissionObjectImpl;
 
 import java.awt.Dimension;
@@ -33,6 +33,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
@@ -41,6 +42,8 @@ import javax.swing.text.JTextComponent;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.vpac.historyRepeater.HistoryManager;
+
+import com.google.common.collect.Maps;
 
 public abstract class AbstractInputPanel extends JPanel implements
 PropertyChangeListener {
@@ -69,6 +72,7 @@ PropertyChangeListener {
 	public static final String TEMPLATENAME = "templatename";
 
 	private static final String HELP = "help";
+	public final UUID id;
 
 	private TemplateObject template;
 	private final LinkedList<Filter> filters;
@@ -93,9 +97,10 @@ PropertyChangeListener {
 
 	private boolean initFinished = false;
 
-	private static Map<String, GrisuFileDialog> dialogs = new HashMap<String, GrisuFileDialog>();
+	private static Map<String, GridFileSelectionDialog> dialogs = Maps
+			.newConcurrentMap();
 
-	private static void createSingletonFileDialog(Window owner,
+	private synchronized static void createSingletonFileDialog(Window owner,
 			ServiceInterface si, String templateName) {
 
 		if (dialogs.get(templateName) == null) {
@@ -120,25 +125,20 @@ PropertyChangeListener {
 					.toURI().toString();
 				}
 			}
-			final GrisuFileDialog dialog = new GrisuFileDialog(owner, si,
-					startUrl);
+			final GridFileSelectionDialog dialog = new GridFileSelectionDialog(
+					owner, si);
+
 			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			dialogs.put(templateName, dialog);
 		}
-	}
-
-	public static GrisuFileDialog getFileDialog(String templateName) {
-
-		if (dialogs.get(templateName) == null) {
-			throw new IllegalStateException("File dialog not initialized yet.");
-		}
-		return dialogs.get(templateName);
 	}
 
 	private Object oldAddValue = null;
 
 	public AbstractInputPanel(String templateName, PanelConfig config)
 			throws TemplateException {
+
+		id = UUID.randomUUID();
 
 		this.templateName = templateName;
 
@@ -248,6 +248,7 @@ PropertyChangeListener {
 
 	}
 
+
 	protected void addValue(String bean, Object value) {
 
 		if (!isInitFinished()) {
@@ -293,6 +294,16 @@ PropertyChangeListener {
 		return displayHelpLabel;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (!( o instanceof AbstractInputPanel) ) {
+			return false;
+		}
+
+		AbstractInputPanel other = (AbstractInputPanel)o;
+		return id.equals(other.id);
+	}
+
 	protected boolean fillDefaultValueIntoFieldWhenPreparingPanel() {
 
 		try {
@@ -311,9 +322,9 @@ PropertyChangeListener {
 	/**
 	 * Returns a set of default values if no configuration is specified in the
 	 * template.
-	 * 
+	 *
 	 * Good to have as a reference which values are available for this panel.
-	 * 
+	 *
 	 * @return the properties
 	 */
 	protected Map<String, String> getDefaultPanelProperties() {
@@ -342,8 +353,21 @@ PropertyChangeListener {
 		return last;
 	}
 
-	public GrisuFileDialog getFileDialog() {
+	public GridFileSelectionDialog getFileDialog() {
 		return getFileDialog(templateName);
+	}
+
+	public GridFileSelectionDialog getFileDialog(String templateName) {
+
+		if (dialogs.get(templateName) == null) {
+			if (si == null) {
+				throw new IllegalStateException(
+						"File dialog not initialized yet.");
+			}
+			createSingletonFileDialog(SwingUtilities.getWindowAncestor(this),
+					si, templateName);
+		}
+		return dialogs.get(templateName);
 	}
 
 	protected JButton getHelpLabel() {
@@ -367,7 +391,7 @@ PropertyChangeListener {
 		return getHistoryValues(null);
 	}
 
-	public List<String> getHistoryValues(String optionalKey) {
+	public synchronized List<String> getHistoryValues(String optionalKey) {
 		if (StringUtils.isBlank(optionalKey)) {
 			return hm.getEntries(historyManagerEntryName);
 		} else {
@@ -494,39 +518,47 @@ PropertyChangeListener {
 	/**
 	 * Must be implemented if a change in a job property would possibly change
 	 * the value of one of the job properties this panel is responsible for.
-	 * 
+	 *
 	 * @param e
 	 *            the property change event
 	 */
 	abstract protected void jobPropertyChanged(PropertyChangeEvent e);
 
-	protected GlazedFile popupFileDialogAndAskForFile() {
+	protected GridFile popupFileDialogAndAskForFile() {
 
+		getFileDialog().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		getFileDialog().centerOnOwner();
 		getFileDialog().setVisible(true);
 
-		final GlazedFile file = getFileDialog().getSelectedFile();
-		getFileDialog().clearSelection();
+		final GridFile file = getFileDialog().getSelectedFile();
 
-		final GlazedFile currentDir = getFileDialog().getCurrentDirectory();
-
-		hm.addHistoryEntry(templateName + "_" + FILE_DIALOG_LAST_DIRECTORY_KEY,
-				currentDir.getUrl());
+		// final Set<GridFile> currentDirs =
+		// getFileDialog().getCurrentDirectories();
+		// if (currentDirs != null) {
+		//
+		// hm.addHistoryEntry(templateName + "_" +
+		// FILE_DIALOG_LAST_DIRECTORY_KEY,
+		// currentDir.getUrl());
+		// }
 
 		return file;
 	}
 
-	protected Set<GlazedFile> popupFileDialogAndAskForFiles() {
+	protected Set<GridFile> popupFileDialogAndAskForFiles() {
 
+		getFileDialog().setSelectionMode(
+				ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		getFileDialog().centerOnOwner();
 		getFileDialog().setVisible(true);
 
-		final Set<GlazedFile> files = getFileDialog().getSelectedFiles();
-		getFileDialog().clearSelection();
+		final Set<GridFile> files = getFileDialog().getSelectedFiles();
 
-		final GlazedFile currentDir = getFileDialog().getCurrentDirectory();
-
-		hm.addHistoryEntry(templateName + "_" + FILE_DIALOG_LAST_DIRECTORY_KEY,
-				currentDir.getUrl());
+		// final Set<GridFile> currentDir =
+		// getFileDialog().getCurrentDirectory();
+		//
+		// hm.addHistoryEntry(templateName + "_" +
+		// FILE_DIALOG_LAST_DIRECTORY_KEY,
+		// currentDir.getUrl());
 
 		return files;
 	}
@@ -534,7 +566,7 @@ PropertyChangeListener {
 	/**
 	 * Implement this if the panel needs to be prepared with values from the
 	 * template.
-	 * 
+	 *
 	 * @param panelProperties
 	 *            the properties for the initial state of the panel
 	 * @throws TemplateException
@@ -542,6 +574,7 @@ PropertyChangeListener {
 	abstract protected void preparePanel(Map<String, String> panelProperties)
 			throws TemplateException;
 
+	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
 		jobPropertyChanged(arg0);
 	}
@@ -559,6 +592,7 @@ PropertyChangeListener {
 		}
 
 		this.jobObject = jobObject;
+
 		this.jobObject.addPropertyChangeListener(this);
 
 		myLogger.debug("Refreshing template: "
@@ -595,8 +629,8 @@ PropertyChangeListener {
 
 	public void setServiceInterface(ServiceInterface si) {
 
-		createSingletonFileDialog(SwingUtilities.getWindowAncestor(this), si,
-				templateName);
+		// createSingletonFileDialog(SwingUtilities.getWindowAncestor(this), si,
+		// templateName);
 
 		this.si = si;
 		this.uem = GrisuRegistryManager.getDefault(si)
@@ -623,30 +657,47 @@ PropertyChangeListener {
 					valueClass = String.class;
 				} else {
 					valueClass = value.getClass();
+					System.out.println("valueClass" + valueClass);
 				}
 				try {
 					method = jobObject.getClass().getMethod(
 							"set" + StringUtils.capitalize(bean), valueClass);
 				} catch (final Exception e) {
-					// try add method
-					method = jobObject.getClass().getMethod(
-							"add" + StringUtils.capitalize(bean), valueClass);
+					// try interfaces
+					myLogger.debug("Trying interfaces for set method...");
+					for (Class i : valueClass.getInterfaces()) {
+						myLogger.debug("Interface: " + i.getSimpleName());
+						try {
+							method = jobObject.getClass().getMethod(
+									"set" + StringUtils.capitalize(bean), i);
 
-					if (oldAddValue != null) {
-						final Method removeMethod = jobObject
-								.getClass()
-								.getMethod(
-										"remove" + StringUtils.capitalize(bean),
-										oldAddValue.getClass());
-						removeMethod.invoke(jobObject, oldAddValue);
+						} catch (Exception me) {
+							myLogger.debug("No set class for bean " + bean
+									+ " and interface " + i.getSimpleName());
+						}
 					}
-					oldAddValue = value;
 
+					if (method == null) {
+						// try add method
+						method = jobObject.getClass().getMethod(
+								"add" + StringUtils.capitalize(bean), valueClass);
+
+						if (oldAddValue != null) {
+							final Method removeMethod = jobObject
+									.getClass()
+									.getMethod(
+											"remove" + StringUtils.capitalize(bean),
+											oldAddValue.getClass());
+							removeMethod.invoke(jobObject, oldAddValue);
+						}
+						oldAddValue = value;
+					}
 				}
 				method.invoke(jobObject, value);
 			}
 			applyFilters();
 		} catch (final Exception e) {
+			e.printStackTrace();
 			throw new TemplateException("Can't set value for property " + bean
 					+ ": " + e.getLocalizedMessage(), e);
 		}

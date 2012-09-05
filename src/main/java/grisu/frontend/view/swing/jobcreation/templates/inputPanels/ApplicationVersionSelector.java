@@ -6,6 +6,7 @@ import grisu.jcommons.constants.Constants;
 import grisu.model.FqanEvent;
 import grisu.model.GrisuRegistryManager;
 import grisu.model.info.ApplicationInformation;
+import grisu.model.info.dto.Version;
 import grisu.model.job.JobSubmissionObjectImpl;
 
 import java.awt.event.ItemEvent;
@@ -55,26 +56,24 @@ EventSubscriber<FqanEvent> {
 
 	}
 
-	private synchronized void changeJobApplicationVersion(String version) {
+	private synchronized void changeJobApplicationVersion(Version version) {
 
 		if (lockVersion) {
 			return;
 		}
 		try {
-			if (StringUtils.isBlank(version)
-					|| Constants.NO_VERSION_INDICATOR_STRING.equals(version)) {
+			if ((version == null) || version.equals(Version.ANY_VERSION)) {
 
 				if (lastVersionEmpty) {
 					return;
 				}
 
-				setValue("applicationVersion",
-						Constants.NO_VERSION_INDICATOR_STRING);
+				setValue("applicationVersion", Version.ANY_VERSION.getVersion());
 				lastVersionEmpty = true;
+			} else {
+				setValue("applicationVersion", version.getVersion());
+				lastVersionEmpty = false;
 			}
-
-			setValue("applicationVersion", version);
-			lastVersionEmpty = false;
 		} catch (TemplateException e1) {
 			myLogger.error(e1);
 		}
@@ -92,7 +91,7 @@ EventSubscriber<FqanEvent> {
 					}
 
 					if (ItemEvent.SELECTED == e.getStateChange()) {
-						final String version = (String) versionModel
+						final Version version = (Version) versionModel
 								.getSelectedItem();
 
 						new Thread() {
@@ -112,7 +111,12 @@ EventSubscriber<FqanEvent> {
 
 	@Override
 	protected String getValueAsString() {
-		return (String) getComboBox().getSelectedItem();
+		Version temp = (Version) getComboBox().getSelectedItem();
+		if (temp == null) {
+			return "";
+		} else {
+			return temp.getVersion();
+		}
 	}
 
 	@Override
@@ -151,6 +155,10 @@ EventSubscriber<FqanEvent> {
 	}
 
 	public synchronized void onEvent(FqanEvent arg0) {
+		
+		if ( getJobSubmissionObject() == null ) {
+			return;
+		}
 
 		setProperApplicationVersion(getJobSubmissionObject().getApplication());
 	}
@@ -167,7 +175,7 @@ EventSubscriber<FqanEvent> {
 
 		lockVersion = true;
 
-		final String lastVersion = (String) versionModel.getSelectedItem();
+		final Version lastVersion = (Version) versionModel.getSelectedItem();
 		lockUI(true);
 
 		if (StringUtils.isBlank(app)
@@ -177,13 +185,12 @@ EventSubscriber<FqanEvent> {
 				@Override
 				public void run() {
 					versionModel.removeAllElements();
-					versionModel
-					.addElement(Constants.NO_VERSION_INDICATOR_STRING);
+					versionModel.addElement(Version.ANY_VERSION);
 				}
 			});
 			lockVersion = false;
 			lockUI(false);
-			changeJobApplicationVersion(Constants.NO_VERSION_INDICATOR_STRING);
+			changeJobApplicationVersion(Version.ANY_VERSION);
 			return;
 		}
 
@@ -196,7 +203,7 @@ EventSubscriber<FqanEvent> {
 		ApplicationInformation info = GrisuRegistryManager.getDefault(
 				getServiceInterface()).getApplicationInformation(app);
 
-		final Set<String> allVersions = info
+		final Set<Version> allVersions = info
 				.getAllAvailableVersionsForFqan(fqan);
 
 		// if (Thread.interrupted()) {
@@ -212,19 +219,34 @@ EventSubscriber<FqanEvent> {
 				versionModel.removeAllElements();
 
 				if (allVersions.size() == 0) {
-					versionModel
-					.addElement(Constants.NO_VERSION_INDICATOR_STRING);
-				} else {
-					if (allVersions.size() > 1) {
-						versionModel
-						.addElement(Constants.NO_VERSION_INDICATOR_STRING);
+					System.out.println("ZERO");
+					versionModel.addElement(Version.ANY_VERSION);
+				} else if (allVersions.size() == 1) {
+					System.out.println("ONE");
+					versionModel.addElement(allVersions.iterator().next());
+				} else if ((allVersions.size() == 2)
+						&& allVersions.contains(Version.ANY_VERSION)) {
+					java.util.Iterator<Version> it = allVersions.iterator();
+					while (it.hasNext()) {
+						Version v = it.next();
+						if (!Version.ANY_VERSION.equals(v)) {
+							versionModel.addElement(v);
+							break;
+						}
 					}
-					for (String version : allVersions) {
-						versionModel.addElement(version);
+				} else {
+					System.out.println("MORE");
+					if (allVersions.size() > 1) {
+						versionModel.addElement(Version.ANY_VERSION);
+					}
+					for (Version version : allVersions) {
+						if (versionModel.getIndexOf(version) < 0) {
+							versionModel.addElement(version);
+						}
 					}
 				}
 
-				if (StringUtils.isNotBlank(lastVersion)
+				if ((lastVersion != null)
 						&& (versionModel.getIndexOf(lastVersion) >= 0)) {
 					versionModel.setSelectedItem(lastVersion);
 				} else {
@@ -236,7 +258,7 @@ EventSubscriber<FqanEvent> {
 
 		lockUI(false);
 		lockVersion = false;
-		changeJobApplicationVersion((String) versionModel.getSelectedItem());
+		changeJobApplicationVersion((Version) versionModel.getSelectedItem());
 	}
 
 	@Override
@@ -244,7 +266,7 @@ EventSubscriber<FqanEvent> {
 		final String defaultValue = getPanelProperty(DEFAULT_VALUE);
 		// X.p("xxx" + defaultValue);
 		if (StringUtils.isNotBlank(defaultValue)) {
-			changeJobApplicationVersion(defaultValue);
+			changeJobApplicationVersion(new Version(defaultValue));
 		}
 	}
 

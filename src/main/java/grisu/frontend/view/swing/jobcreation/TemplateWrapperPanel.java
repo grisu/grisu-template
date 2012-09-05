@@ -20,6 +20,7 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.netbeans.validation.api.ui.ValidationPanel;
 
+import com.google.common.base.Joiner;
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -70,7 +71,10 @@ public class TemplateWrapperPanel extends JPanel {
 				RowSpec.decode("bottom:default"),
 				FormFactory.RELATED_GAP_ROWSPEC, }));
 
+
 		if (template.getTemplatePanel() != null) {
+			// creationPanel.add(template.getWrapperScrollPane(),
+			// "2, 2, 3, 1, fill, fill");
 			creationPanel.add(template.getTemplatePanel(),
 					"2, 2, 3, 1, fill, fill");
 		}
@@ -106,12 +110,20 @@ public class TemplateWrapperPanel extends JPanel {
 		if (submitButton == null) {
 			submitButton = new JButton("Submit");
 			submitButton.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent arg0) {
 
 					try {
 						final JobObject job = JobObject.createJobObject(
 								template.getServiceInterface(),
 								template.getJobSubmissionObject());
+
+						System.out
+						.println("ENV"
+								+ Joiner.on(" - ").join(
+										job.getEnvironmentVariables()
+										.keySet()));
+
 						monitorPanel.startJobSubmission(job);
 					} catch (final JobPropertiesException e) {
 

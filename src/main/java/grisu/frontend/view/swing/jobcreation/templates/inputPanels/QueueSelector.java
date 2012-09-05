@@ -4,19 +4,19 @@ import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.frontend.view.swing.jobcreation.templates.inputPanels.helperPanels.HidingQueueInfoPanel;
 import grisu.jcommons.constants.Constants;
-import grisu.jcommons.interfaces.GridResource;
-import grisu.jcommons.utils.SubmissionLocationHelpers;
 import grisu.model.FqanEvent;
 import grisu.model.GrisuRegistryManager;
 import grisu.model.info.ApplicationInformation;
+import grisu.model.info.dto.Queue;
 import grisu.model.job.JobSubmissionObjectImpl;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.lang.StringUtils;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.EventSubscriber;
 
@@ -41,7 +42,7 @@ EventSubscriber<FqanEvent> {
 
 	private final DefaultComboBoxModel queueModel = new DefaultComboBoxModel();
 
-	private SortedSet<GridResource> currentQueues = null;
+	private List<Queue> currentQueues = null;
 
 	private String lastApplication = Constants.GENERIC_APPLICATION_NAME;
 	private String lastVersion = Constants.NO_VERSION_INDICATOR_STRING;
@@ -73,7 +74,8 @@ EventSubscriber<FqanEvent> {
 	@Override
 	protected Map<String, String> getDefaultPanelProperties() {
 		final Map<String, String> defaultProperties = new HashMap<String, String>();
-
+		defaultProperties.put(USE_HISTORY, "true");
+		defaultProperties.put(HISTORY_ITEMS, "1");
 		return defaultProperties;
 	}
 
@@ -97,7 +99,9 @@ EventSubscriber<FqanEvent> {
 			queueComboBox
 			.setPrototypeDisplayValue("xxxxxxxxxxxxxxxxxxxxxxxxxx");
 			queueComboBox.addItemListener(new ItemListener() {
+				@Override
 				public void itemStateChanged(ItemEvent e) {
+
 
 					if ((ItemEvent.DESELECTED == e.getStateChange())
 							|| "Searching...".equals(e.getItem())) {
@@ -108,17 +112,17 @@ EventSubscriber<FqanEvent> {
 						return;
 					}
 
-					GridResource gr;
+					Queue gr;
 					try {
-						gr = (GridResource) (queueModel.getSelectedItem());
+						gr = (Queue) (queueModel.getSelectedItem());
 						if (gr == null) {
 							return;
 						}
 					} catch (final Exception ex) {
 						return;
 					}
-					final String subLoc = SubmissionLocationHelpers
-							.createSubmissionLocationString(gr);
+
+					final String subLoc = gr.toString();
 
 					if (subLoc.equals(lastSubLoc)) {
 						return;
@@ -138,7 +142,12 @@ EventSubscriber<FqanEvent> {
 
 	@Override
 	protected String getValueAsString() {
-		return null;
+		Object o = getQueueComboBox().getSelectedItem();
+		if (o instanceof Queue) {
+			return ((Queue) o).toString();
+		}
+		return "";
+
 	}
 
 	@Override
@@ -188,6 +197,10 @@ EventSubscriber<FqanEvent> {
 	}
 
 	private synchronized void loadQueues(boolean force) {
+		
+		if ( getJobSubmissionObject() == null ) {
+			return;
+		}
 
 		String tempApp = getJobSubmissionObject().getApplication();
 		String tempVers = getJobSubmissionObject().getApplicationVersion();
@@ -240,9 +253,9 @@ EventSubscriber<FqanEvent> {
 	private void loadQueuesIntoComboBox() {
 
 		interrupted = false;
-		GridResource oldSubLoc = null;
+		Queue oldSubLoc = null;
 		try {
-			oldSubLoc = (GridResource) queueModel.getSelectedItem();
+			oldSubLoc = (Queue) queueModel.getSelectedItem();
 		} catch (Exception e) {
 
 		}
@@ -268,7 +281,8 @@ EventSubscriber<FqanEvent> {
 			return;
 		}
 
-		currentQueues = ai.getAllSubmissionLocationsAsGridResources(
+
+		currentQueues = ai.getQueues(
 				getJobSubmissionObject().getJobSubmissionPropertyMap(),
 				GrisuRegistryManager.getDefault(getServiceInterface())
 				.getUserEnvironmentManager().getCurrentFqan());
@@ -293,25 +307,42 @@ EventSubscriber<FqanEvent> {
 			return;
 		}
 
-		final GridResource oldSubLocT = oldSubLoc;
+		String historyQueue = null;
+
+		if (oldSubLoc == null) {
+
+			if (useHistory()) {
+				historyQueue = getLastValue();
+			}
+		}
+
+		final Queue oldSubLocT = oldSubLoc;
 
 		queueModel.removeAllElements();
-		boolean containsOld = false;
-		for (final GridResource gr : currentQueues) {
-			if (gr.equals(oldSubLocT)) {
-				containsOld = true;
+		Queue containsOld = null;
+
+		Collections.sort(currentQueues);
+		for (final Queue gr : currentQueues) {
+			if (oldSubLocT != null) {
+				if (gr.equals(oldSubLocT)) {
+					containsOld = gr;
+				}
+			} else if (StringUtils.isNotBlank(historyQueue)) {
+				if (historyQueue.equals(gr.toString())) {
+					containsOld = gr;
+				}
 			}
 			queueModel.addElement(gr);
 		}
-		if (containsOld) {
-			final GridResource temp = oldSubLocT;
-			queueModel.setSelectedItem(temp);
+		if (containsOld != null) {
+			queueModel.setSelectedItem(containsOld);
 		}
 
 		setLoading(false);
 		interrupted = false;
 	}
 
+	@Override
 	public void onEvent(FqanEvent arg0) {
 
 		loadQueues(false);
@@ -322,12 +353,20 @@ EventSubscriber<FqanEvent> {
 	protected void preparePanel(Map<String, String> panelProperties)
 			throws TemplateException {
 
+
 	}
 
 	@Override
 	void setInitialValue() throws TemplateException {
 
-		// loadQueues(false);
+		try {
+			Queue q = (Queue) queueModel.getSelectedItem();
+			if (q != null) {
+				setValue("submissionLocation", q.toString());
+			}
+		} catch (Exception e) {
+			myLogger.error("Can't set initial value.");
+		}
 
 	}
 

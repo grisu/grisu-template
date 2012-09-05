@@ -66,6 +66,7 @@ public class Jobname extends AbstractInputPanel {
 
 				@Override
 				public void keyReleased(KeyEvent e) {
+					int pos = jobnameTextField.getCaretPosition();
 					try {
 						String input = jobnameTextField.getText();
 						final int index = jobnameTextField.getCaretPosition();
@@ -79,6 +80,8 @@ public class Jobname extends AbstractInputPanel {
 						setValue("jobname", jobnameTextField.getText());
 					} catch (final TemplateException e1) {
 						myLogger.error(e1);
+					} finally {
+						jobnameTextField.setCaretPosition(pos);
 					}
 				}
 

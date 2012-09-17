@@ -17,8 +17,11 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +39,7 @@ import org.gjt.sp.jedit.textarea.StandaloneTextArea;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 
+import com.Ostermiller.util.LineEnds;
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -243,19 +247,29 @@ public class TextFile extends AbstractInputPanel {
 						}
 
 					}
+					
+					String text = getTextArea().getText();
+					File tempFile = null;
+					try {
+						InputStream is = new ByteArrayInputStream(text.getBytes());
+						tempFile = File.createTempFile("input_file", "grisu");
+						
+						FileOutputStream fop = new FileOutputStream(tempFile);
+						
+						LineEnds.convert(is, fop, LineEnds.STYLE_UNIX);
+						fop.flush();
+						fop.close();
+						
+					} catch (Exception e3) {
+						e3.printStackTrace();
+						return;
+					}
 
 					if (FileManager.isLocal(currentUrl)) {
 						try {
-							FileUtils.forceDelete(FileManager
+							FileUtils.copyFile(tempFile, FileManager
 									.getFileFromUriOrPath(currentUrl));
-						} catch (final Exception e2) {
-							// doesn't matter
-							myLogger.debug(e2);
-						}
-						try {
-							FileUtils.writeStringToFile(FileManager
-									.getFileFromUriOrPath(currentUrl),
-									getTextArea().getText());
+							FileUtils.deleteQuietly(tempFile);
 						} catch (final IOException e1) {
 							myLogger.error(e1);
 						}
@@ -263,11 +277,11 @@ public class TextFile extends AbstractInputPanel {
 
 						final File temp = fm.getLocalCacheFile(currentUrl);
 						try {
-							FileUtils.forceDelete(temp);
-							FileUtils.writeStringToFile(temp, getTextArea()
-									.getText());
+							FileUtils.copyFile(tempFile, temp);
 
 							fm.uploadFile(temp, currentUrl, true);
+							
+							FileUtils.deleteQuietly(tempFile);
 						} catch (final IOException e1) {
 							myLogger.error(e1);
 						} catch (final FileTransactionException e2) {
@@ -356,6 +370,7 @@ public class TextFile extends AbstractInputPanel {
 
 		if (textArea == null) {
 			textArea = StandaloneTextArea.createTextArea();
+
 			final Mode mode = new Mode("text");
 			mode.setProperty("file", "text.xml");
 			ModeProvider.instance.addMode(mode);

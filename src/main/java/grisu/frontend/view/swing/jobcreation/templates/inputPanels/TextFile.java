@@ -25,11 +25,14 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -44,6 +47,8 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
+import com.jidesoft.swing.JideButton;
+import com.jidesoft.swing.JideSplitButton;
 
 public class TextFile extends AbstractInputPanel {
 
@@ -67,7 +72,7 @@ public class TextFile extends AbstractInputPanel {
 	}
 
 	private JComboBox comboBox;
-	private JButton button;
+	private JideButton openButton;
 	private GridFileSelectionDialog dialog;
 
 	private String selectedFile = null;
@@ -77,7 +82,7 @@ public class TextFile extends AbstractInputPanel {
 
 	private StandaloneTextArea textArea;
 	protected boolean documentChanged = false;
-	private JButton button_1;
+	private JideSplitButton saveButton;
 	private JLabel label_1;
 
 	// private final Validator<String> val = new InputChangedValidator();
@@ -102,8 +107,8 @@ public class TextFile extends AbstractInputPanel {
 
 			add(getTextArea(), "2, 2, 7, 1, fill, fill");
 			add(getComboBox(), "2, 4, 3, 1, fill, default");
-			add(getButton(), "6, 4");
-			add(getButton_1(), "8, 4");
+			add(getOpenButton(), "6, 4, fill, fill");
+			add(getSaveButton(), "8, 4, fill, fill");
 
 
 		} else {
@@ -122,9 +127,9 @@ public class TextFile extends AbstractInputPanel {
 
 			add(getTextArea(), "2, 2, 7, 1, fill, fill");
 			add(getComboBox(), "4, 4, fill, default");
-			add(getButton(), "6, 4");
+			add(getOpenButton(), "6, 4, fill, fill");
 			add(getHelpLabel(), "2, 4");
-			add(getButton_1(), "8, 4");
+			add(getSaveButton(), "8, 4, fill, fill");
 		}
 
 		// Validator<String> val2 = Validators.REQUIRE_NON_EMPTY_STRING;
@@ -165,10 +170,11 @@ public class TextFile extends AbstractInputPanel {
 
 	}
 
-	private JButton getButton() {
-		if (button == null) {
-			button = new JButton("Open");
-			button.addActionListener(new ActionListener() {
+	private JideButton getOpenButton() {
+		if (openButton == null) {
+			openButton = new JideButton("Open");
+			openButton.setButtonStyle(JideSplitButton.TOOLBOX_STYLE);
+			openButton.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -192,111 +198,148 @@ public class TextFile extends AbstractInputPanel {
 				}
 			});
 		}
-		return button;
+		return openButton;
+	}
+	
+	private void saveAs() {
+		// TODO write grid save dialog
+		final JFileChooser fc = new JFileChooser();
+		final int returnVal = fc.showDialog(TextFile.this,
+				"Save as...");
+
+		if (JFileChooser.CANCEL_OPTION == returnVal) {
+			return;
+		} else {
+			String currentUrl = null;
+			final File selFile = fc.getSelectedFile();
+			currentUrl = selFile.toURI().toString();
+			
+//			try {
+//				FileUtils.forceDelete(FileManager
+//						.getFileFromUriOrPath(currentUrl));
+//			} catch (final Exception e2) {
+//				// doesn't matter
+//				myLogger.debug(e2);
+//			}
+//			try {
+//				FileUtils.writeStringToFile(FileManager
+//						.getFileFromUriOrPath(currentUrl),
+//						getTextArea().getText());
+//			} catch (final IOException e1) {
+//				myLogger.error(e1);
+//			}
+//
+//			documentChanged = false;
+
+			save(currentUrl);
+
+			getComboBox().addItem(currentUrl);
+			getComboBox().setSelectedItem(currentUrl);
+			
+
+			return;
+		}
+	}
+	
+	private void save(String path) {
+		final FileManager fm = GrisuRegistryManager.getDefault(
+				getServiceInterface()).getFileManager();
+		String text = getTextArea().getText();
+		File tempFile = null;
+		try {
+			InputStream is = new ByteArrayInputStream(text.getBytes());
+			tempFile = File.createTempFile("input_file", "grisu");
+			
+			FileOutputStream fop = new FileOutputStream(tempFile);
+			
+			LineEnds.convert(is, fop, LineEnds.STYLE_UNIX);
+			fop.flush();
+			fop.close();
+			
+		} catch (Exception e3) {
+			e3.printStackTrace();
+			return;
+		}
+
+		if (FileManager.isLocal(path)) {
+			try {
+				FileUtils.copyFile(tempFile, FileManager
+						.getFileFromUriOrPath(path));
+				FileUtils.deleteQuietly(tempFile);
+			} catch (final IOException e1) {
+				myLogger.error(e1);
+			}
+		} else {
+
+			final File temp = fm.getLocalCacheFile(path);
+			try {
+				FileUtils.copyFile(tempFile, temp);
+
+				fm.uploadFile(temp, path, true);
+				
+				FileUtils.deleteQuietly(tempFile);
+			} catch (final IOException e1) {
+				myLogger.error(e1);
+			} catch (final FileTransactionException e2) {
+				myLogger.error(e2);
+			}
+
+		}
+		
+		documentChanged = false;
+		
+	}
+	
+	private void save() {
+		
+		String currentUrl = (String) getComboBox()
+				.getSelectedItem();
+
+		if (StringUtils.isBlank(currentUrl)) {
+
+			saveAs();
+			return;
+
+		} else {
+			save(currentUrl);
+		}
+
 	}
 
-	private JButton getButton_1() {
-		if (button_1 == null) {
-			button_1 = new JButton("Save");
-			button_1.addActionListener(new ActionListener() {
+	private JideSplitButton getSaveButton() {
+		if (saveButton == null) {
+			saveButton = new JideSplitButton("Save");
+			saveButton.setButtonStyle(JideSplitButton.TOOLBOX_STYLE);
+			saveButton.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-
-					final FileManager fm = GrisuRegistryManager.getDefault(
-							getServiceInterface()).getFileManager();
-					String currentUrl = (String) getComboBox()
-							.getSelectedItem();
-
-					if (StringUtils.isBlank(currentUrl)) {
-
-						// TODO write grid save dialog
-						final JFileChooser fc = new JFileChooser();
-						final int returnVal = fc.showDialog(TextFile.this,
-								"Save as...");
-
-						if (JFileChooser.CANCEL_OPTION == returnVal) {
-							return;
-						} else {
-							final File selFile = fc.getSelectedFile();
-							currentUrl = selFile.toURI().toString();
-
-							try {
-								FileUtils.forceDelete(FileManager
-										.getFileFromUriOrPath(currentUrl));
-							} catch (final Exception e2) {
-								// doesn't matter
-								myLogger.debug(e2);
-							}
-							try {
-								FileUtils.writeStringToFile(FileManager
-										.getFileFromUriOrPath(currentUrl),
-										getTextArea().getText());
-							} catch (final IOException e1) {
-								myLogger.error(e1);
-							}
-
-							documentChanged = false;
-
-							getComboBox().addItem(currentUrl);
-							getComboBox().setSelectedItem(currentUrl);
-
-							button_1.setEnabled(false);
-
-							return;
-						}
-
-					}
-					
-					String text = getTextArea().getText();
-					File tempFile = null;
-					try {
-						InputStream is = new ByteArrayInputStream(text.getBytes());
-						tempFile = File.createTempFile("input_file", "grisu");
-						
-						FileOutputStream fop = new FileOutputStream(tempFile);
-						
-						LineEnds.convert(is, fop, LineEnds.STYLE_UNIX);
-						fop.flush();
-						fop.close();
-						
-					} catch (Exception e3) {
-						e3.printStackTrace();
-						return;
-					}
-
-					if (FileManager.isLocal(currentUrl)) {
-						try {
-							FileUtils.copyFile(tempFile, FileManager
-									.getFileFromUriOrPath(currentUrl));
-							FileUtils.deleteQuietly(tempFile);
-						} catch (final IOException e1) {
-							myLogger.error(e1);
-						}
-					} else {
-
-						final File temp = fm.getLocalCacheFile(currentUrl);
-						try {
-							FileUtils.copyFile(tempFile, temp);
-
-							fm.uploadFile(temp, currentUrl, true);
-							
-							FileUtils.deleteQuietly(tempFile);
-						} catch (final IOException e1) {
-							myLogger.error(e1);
-						} catch (final FileTransactionException e2) {
-							myLogger.error(e2);
-						}
-
-					}
-
-					documentChanged = false;
-					button_1.setEnabled(false);
+					myLogger.debug("Saving file...");
+					save();
 
 				}
 			});
+			
+	        saveButton.add(new AbstractAction("Save as...") {
+	            public void actionPerformed(ActionEvent e) {
+	            	myLogger.debug("Saving file as...");
+	            	saveAs();
+	            }
+	        });
+			
+	        saveButton.getPopupMenu().addPopupMenuListener(new PopupMenuListener() {
+	            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+	                myLogger.debug("menu is clicked");
+	            }
+
+	            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+	            }
+
+	            public void popupMenuCanceled(PopupMenuEvent e) {
+	            }
+	        });
 		}
-		return button_1;
+		return saveButton;
 	}
 
 	private JComboBox getComboBox() {
@@ -379,7 +422,7 @@ public class TextFile extends AbstractInputPanel {
 				@Override
 				public void keyReleased(KeyEvent e) {
 					documentChanged = true;
-					getButton_1().setEnabled(true);
+//					getSaveButton().setEnabled(true);
 
 					// TODO fire validation request
 					// getTemplateObject().validateManually();
@@ -424,7 +467,7 @@ public class TextFile extends AbstractInputPanel {
 		getTextArea().setText(text);
 
 		documentChanged = false;
-		getButton_1().setEnabled(false);
+//		getSaveButton().setEnabled(false);
 
 	}
 

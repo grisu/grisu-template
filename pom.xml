@@ -492,10 +492,10 @@
 	<parent>
 		<groupId>nz.org.nesi</groupId>
 		<artifactId>nesi</artifactId>
-		<version>0.21</version>
+		<version>0.22</version>
 	</parent>
 	<properties>
-		<grisu.version>0.5.5</grisu.version>
+		<grisu.version>0.5.6</grisu.version>
 	</properties>
 </project>
 

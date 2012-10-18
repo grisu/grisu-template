@@ -11,6 +11,7 @@ import grisu.frontend.view.swing.settings.ApplicationSubscribePanel;
 import grisu.frontend.view.swing.utils.DefaultExceptionHandler;
 import grisu.jcommons.utils.EnvironmentVariableHelpers;
 import grisu.model.GrisuRegistryManager;
+import grisu.settings.ClientPropertiesManager;
 import grisu.settings.Environment;
 
 import java.awt.EventQueue;
@@ -86,6 +87,9 @@ PropertyChangeListener {
 
 		LoginManager.setClientVersion(grisu.jcommons.utils.Version
 				.get("grisu-template"));
+		
+		// make sure that at least the generic template is available
+		ClientPropertiesManager.getServerTemplates();
 
 		myLogger.debug("Grisu template client. Starting...");
 		GrisuTemplateApp app = new GrisuTemplateApp();

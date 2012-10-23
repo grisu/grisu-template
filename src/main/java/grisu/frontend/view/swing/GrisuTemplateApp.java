@@ -10,6 +10,7 @@ import grisu.frontend.view.swing.jobcreation.TemplateJobCreationPanel;
 import grisu.frontend.view.swing.settings.ApplicationSubscribePanel;
 import grisu.frontend.view.swing.utils.DefaultExceptionHandler;
 import grisu.jcommons.utils.EnvironmentVariableHelpers;
+import grisu.jcommons.utils.HttpProxyManager;
 import grisu.model.GrisuRegistryManager;
 import grisu.settings.ClientPropertiesManager;
 import grisu.settings.Environment;
@@ -48,7 +49,7 @@ PropertyChangeListener {
 
 	static final Logger myLogger = Logger.getLogger(GrisuTemplateApp.class
 			.getName());
-
+	
 	private static void configLogging() {
 		// stop javaxws logging
 		java.util.logging.LogManager.getLogManager().reset();
@@ -82,7 +83,9 @@ PropertyChangeListener {
 	}
 
 	public static void main(String[] args) throws Exception {
-
+		
+		myLogger.debug("Template client starting, current dir: "+new File(".").getAbsolutePath());
+		
 		LoginManager.setClientName("grisu-template");
 
 		LoginManager.setClientVersion(grisu.jcommons.utils.Version

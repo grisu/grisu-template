@@ -320,4 +320,9 @@ PropertyChangeListener {
 
 	}
 
+	@Override
+	public boolean displayAllJobsMonitoringItem() {
+		return true;
+	}
+
 }

@@ -6,6 +6,7 @@ import grisu.control.exceptions.JobSubmissionException;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.control.jobMonitoring.RunningJobManager;
 import grisu.frontend.model.job.JobObject;
+import grisu.model.GrisuRegistryManager;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -151,7 +152,9 @@ PropertyChangeListener {
 					});
 
 					setJobObject(job);
-					RunningJobManager.getDefault(si).createJob(job, null);
+					final String fqan = GrisuRegistryManager.getDefault(si)
+					.getUserEnvironmentManager().getCurrentFqan();
+					RunningJobManager.getDefault(si).createJob(job, fqan);
 					// job.createJob();
 					job.submitJob();
 
@@ -172,6 +175,11 @@ PropertyChangeListener {
 							"Job submission failed: " + e.getLocalizedMessage());
 					textArea.append("\n" + temp.toString());
 
+					myLogger.error(e);
+				} catch (Exception e) {
+					final StringBuffer temp = new StringBuffer(
+							"Job submission failed: " + e.getLocalizedMessage());
+					textArea.append("\n" + temp.toString());
 					myLogger.error(e);
 				} finally {
 					SwingUtilities.invokeLater(new Thread() {

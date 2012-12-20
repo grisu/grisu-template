@@ -84,6 +84,8 @@ PropertyChangeListener {
 
 	public static void main(String[] args) throws Exception {
 		
+		//System.out.println(System.getProperty("java.endorsed.dirs"));
+		
 		myLogger.debug("Template client starting, current dir: "+new File(".").getAbsolutePath());
 		
 		LoginManager.setClientName("grisu-template");

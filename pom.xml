@@ -436,6 +436,34 @@
 
 
 		</profile>
+		
+		<profile>
+			<id>mac</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>osxappbundle-maven-plugin</artifactId>
+						<version>1.0-alpha-2</version>
+						<configuration>
+							<javaApplicationStub>/home/markus/JavaApplicationStub</javaApplicationStub>
+							<mainClass>grisu.frontend.view.swing.GrisuTemplateApp</mainClass>
+							<jvmVersion>1.6+</jvmVersion>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>bundle</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+
+		</profile>		
+		
 		<profile>
 			<id>getdown</id>
 			<build>
@@ -495,7 +523,7 @@
 		<version>0.23</version>
 	</parent>
 	<properties>
-		<grisu.version>0.5.12</grisu.version>
+		<grisu.version>0.5.13</grisu.version>
 	</properties>
 </project>
 

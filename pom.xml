@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>grisu.frontend</groupId>
@@ -47,17 +48,17 @@
 			</exclusions>
 		</dependency>
 
-		<!-- we can't include the bouncy castle library in our assembled binary
-			so it has to put in the classpath in some other way. You could either have
-			the bcprov jar in the same directory as your executable jar, or you just
-			do nothing. Grisu will try to download it in the background and put it in
+		<!-- we can't include the bouncy castle library in our assembled binary 
+			so it has to put in the classpath in some other way. You could either have 
+			the bcprov jar in the same directory as your executable jar, or you just 
+			do nothing. Grisu will try to download it in the background and put it in 
 			the classpath once your application is executed the first time... -->
 
-		<!-- further grisu dependencies, incuded by default but can be disabled
+		<!-- further grisu dependencies, incuded by default but can be disabled 
 			if not needed and you want a smaller assembly -->
-		<!-- the grisu-core dependency is needed when you want to connect to a
+		<!-- the grisu-core dependency is needed when you want to connect to a 
 			local backend (which is the only supported backend for grisu 0.3 at the moment -->
-		<!-- this is needed for shibboleth login don't disable it for now even
+		<!-- this is needed for shibboleth login don't disable it for now even 
 			if you don't want to use shibboleth, I reckon you'll get classpath errors -->
 
 
@@ -126,7 +127,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- you can disable the assembly plugin if you want, your builds will
+			<!-- you can disable the assembly plugin if you want, your builds will 
 				be faster I find it quite handy to have maven build an executable jar, though -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -158,7 +159,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
@@ -171,7 +172,7 @@
 					<tagNameFormat>@{project.version}</tagNameFormat>
 					<releaseProfiles>deb,rpm</releaseProfiles>
 				</configuration>
-			</plugin>						
+			</plugin>
 
 		</plugins>
 	</build>
@@ -249,27 +250,46 @@
 						<version>1.4.0</version>
 						<executions>
 							<execution>
+								<id>fix_in_app_version</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>replace</goal>
+								</goals>
+								<configuration>
+									<includes>
+										<include>target/classes/grisu-template.version</include>
+									</includes>
+									<ignoreMissingFile>false</ignoreMissingFile>
+
+									<replacements>
+										<replacement>
+											<token>VERSION_TOKEN</token>
+											<value>${project.version} (${maven.build.timestamp})</value>
+										</replacement>
+									</replacements>
+								</configuration>
+							</execution>
+							<execution>
 								<id>fix_deb_version</id>
 								<phase>prepare-package</phase>
 								<goals>
 									<goal>replace</goal>
 								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<includes>
-								<include>target/classes/grisu-template.version</include>
-								<include>target/deb/control/control</include>
-							</includes>
-							<ignoreMissingFile>false</ignoreMissingFile>
+								<configuration>
+									<includes>
+										<include>target/deb/control/control</include>
+									</includes>
+									<ignoreMissingFile>false</ignoreMissingFile>
 
-							<replacements>
-								<replacement>
-									<token>VERSION_TOKEN</token>
-									<value>${project.version} (${maven.build.timestamp})</value>
-								</replacement>
-							</replacements>
-						</configuration>
+									<replacements>
+										<replacement>
+											<token>VERSION_TOKEN</token>
+											<value>${project.version}</value>
+										</replacement>
+									</replacements>
+								</configuration>
+							</execution>							
+						</executions>
 					</plugin>
 
 					<plugin>
@@ -416,7 +436,7 @@
 											<location>src/deb/data/grisu-template.png</location>
 										</source>
 									</sources>
-								</mapping>								
+								</mapping>
 							</mappings>
 							<requires>
 								<require>java-1.6.0-openjdk</require>
@@ -425,9 +445,9 @@
 							<preinstallScriptlet>
 								<script>echo "Installing Grisu Template client..."</script>
 							</preinstallScriptlet>
-							<!-- <postinstallScriptlet> <scriptFile>src/main/scripts/postinstall</scriptFile>
-								<fileEncoding>utf-8</fileEncoding> </postinstallScriptlet> <preremoveScriptlet>
-								<scriptFile>src/main/scripts/preremove</scriptFile> <fileEncoding>utf-8</fileEncoding>
+							<!-- <postinstallScriptlet> <scriptFile>src/main/scripts/postinstall</scriptFile> 
+								<fileEncoding>utf-8</fileEncoding> </postinstallScriptlet> <preremoveScriptlet> 
+								<scriptFile>src/main/scripts/preremove</scriptFile> <fileEncoding>utf-8</fileEncoding> 
 								</preremoveScriptlet> -->
 						</configuration>
 					</plugin>
@@ -436,7 +456,7 @@
 
 
 		</profile>
-		
+
 		<profile>
 			<id>mac</id>
 			<build>
@@ -462,8 +482,8 @@
 				</plugins>
 			</build>
 
-		</profile>		
-		
+		</profile>
+
 		<profile>
 			<id>getdown</id>
 			<build>
@@ -523,7 +543,7 @@
 		<version>0.23</version>
 	</parent>
 	<properties>
-		<grisu.version>0.5.14-SNAPSHOT</grisu.version>
+		<grisu.version>0.5.14</grisu.version>
 	</properties>
 </project>
 

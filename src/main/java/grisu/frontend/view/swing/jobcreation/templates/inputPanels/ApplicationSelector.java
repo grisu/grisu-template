@@ -5,7 +5,7 @@ import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.jcommons.constants.Constants;
 import grisu.model.GrisuRegistryManager;
 import grisu.model.info.dto.Application;
-import grisu.model.job.JobSubmissionObjectImpl;
+import grisu.model.job.JobDescription;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -192,7 +192,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 	}
 
 	private void setProperApplicationPackage(final String cmdln) {
-		final String exe = JobSubmissionObjectImpl.extractExecutable(cmdln);
+		final String exe = JobDescription.extractExecutable(cmdln);
 
 		if ((exe != null) && exe.equals(lastExe)) {
 			return;
@@ -224,7 +224,7 @@ public class ApplicationSelector extends AbstractInputPanel {
 	}
 
 	@Override
-	protected void templateRefresh(JobSubmissionObjectImpl jobObject) {
+	protected void templateRefresh(JobDescription jobObject) {
 
 	}
 }

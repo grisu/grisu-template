@@ -6,7 +6,7 @@ import grisu.control.exceptions.JobSubmissionException;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.model.job.JobObject;
 import grisu.frontend.view.swing.jobcreation.templates.inputPanels.AbstractInputPanel;
-import grisu.model.job.JobSubmissionObjectImpl;
+import grisu.model.job.JobDescription;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -56,7 +56,7 @@ public class TemplateObject {
 
 	private String name;
 
-	private JobSubmissionObjectImpl jobObject;
+	private JobDescription jobObject;
 	private final String commandlineTemplate;
 	private final ServiceInterface si;
 
@@ -79,7 +79,7 @@ public class TemplateObject {
 		this.fixedValues = fixedValues;
 		this.changedValues = parseCommandlineTemplate(commandlineTemplate);
 
-		this.jobObject = new JobSubmissionObjectImpl();
+		this.jobObject = new JobDescription();
 
 	}
 
@@ -91,7 +91,7 @@ public class TemplateObject {
 		return this.inputPanels;
 	}
 
-	public JobSubmissionObjectImpl getJobSubmissionObject() {
+	public JobDescription getJobSubmissionObject() {
 		return this.jobObject;
 	}
 
@@ -125,7 +125,7 @@ public class TemplateObject {
 
 	public void reset() throws TemplateException {
 
-		this.jobObject = new JobSubmissionObjectImpl();
+		this.jobObject = new JobDescription();
 
 		for (final AbstractInputPanel panel : getInputPanels().values()) {
 			panel.initPanel(this, this.jobObject);
@@ -197,7 +197,7 @@ public class TemplateObject {
 
 	}
 
-	// public void setJobObject(JobSubmissionObjectImpl job) {
+	// public void setJobObject(JobDescription job) {
 	// this.jobObject = job;
 	// }
 

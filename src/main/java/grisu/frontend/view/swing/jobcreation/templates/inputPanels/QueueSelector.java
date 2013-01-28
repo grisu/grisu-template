@@ -8,7 +8,7 @@ import grisu.model.FqanEvent;
 import grisu.model.GrisuRegistryManager;
 import grisu.model.info.ApplicationInformation;
 import grisu.model.info.dto.Queue;
-import grisu.model.job.JobSubmissionObjectImpl;
+import grisu.model.job.JobDescription;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -261,7 +261,7 @@ EventSubscriber<FqanEvent> {
 		}
 
 		setLoading(true);
-		final JobSubmissionObjectImpl job = getJobSubmissionObject();
+		final JobDescription job = getJobSubmissionObject();
 		if (job == null) {
 			setLoading(false);
 			return;
@@ -391,7 +391,7 @@ EventSubscriber<FqanEvent> {
 	}
 
 	@Override
-	protected void templateRefresh(JobSubmissionObjectImpl jobObject) {
+	protected void templateRefresh(JobDescription jobObject) {
 
 		if (useHistory()) {
 			addValueToHistory();

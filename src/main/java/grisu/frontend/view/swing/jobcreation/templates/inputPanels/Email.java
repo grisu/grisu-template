@@ -2,7 +2,7 @@ package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
-import grisu.model.job.JobSubmissionObjectImpl;
+import grisu.model.job.JobDescription;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -199,7 +199,7 @@ public class Email extends AbstractInputPanel {
 	}
 
 	@Override
-	protected void templateRefresh(JobSubmissionObjectImpl jobObject) {
+	protected void templateRefresh(JobDescription jobObject) {
 		System.out.println("TEMPLATE REFRESH");
 	}
 }

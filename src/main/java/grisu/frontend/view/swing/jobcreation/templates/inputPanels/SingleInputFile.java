@@ -4,7 +4,7 @@ import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.files.GridFileSelectionDialog;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.model.dto.GridFile;
-import grisu.model.job.JobSubmissionObjectImpl;
+import grisu.model.job.JobDescription;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -221,7 +221,7 @@ public class SingleInputFile extends AbstractInputPanel {
 	}
 
 	@Override
-	protected void templateRefresh(JobSubmissionObjectImpl jobObject) {
+	protected void templateRefresh(JobDescription jobObject) {
 
 		if (useHistory()) {
 			addValueToHistory();

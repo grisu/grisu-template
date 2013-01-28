@@ -4,7 +4,7 @@ import grisu.control.ServiceInterface;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.DefaultFqanChangePanel;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
-import grisu.model.job.JobSubmissionObjectImpl;
+import grisu.model.job.JobDescription;
 
 import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
@@ -84,7 +84,7 @@ public class VoChanger extends AbstractInputPanel {
 	}
 
 	@Override
-	protected void templateRefresh(JobSubmissionObjectImpl jobObject) {
+	protected void templateRefresh(JobDescription jobObject) {
 
 	}
 

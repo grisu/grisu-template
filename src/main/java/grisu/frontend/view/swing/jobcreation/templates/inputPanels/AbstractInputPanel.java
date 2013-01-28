@@ -12,7 +12,7 @@ import grisu.model.FileManager;
 import grisu.model.GrisuRegistryManager;
 import grisu.model.UserEnvironmentManager;
 import grisu.model.dto.GridFile;
-import grisu.model.job.JobSubmissionObjectImpl;
+import grisu.model.job.JobDescription;
 
 import java.awt.Dimension;
 import java.awt.Window;
@@ -81,7 +81,7 @@ PropertyChangeListener {
 	protected final String bean;
 	protected final String templateName;
 
-	private JobSubmissionObjectImpl jobObject;
+	private JobDescription jobObject;
 
 	protected final String historyManagerEntryName;
 
@@ -403,7 +403,7 @@ PropertyChangeListener {
 		return null;
 	}
 
-	protected JobSubmissionObjectImpl getJobSubmissionObject() {
+	protected JobDescription getJobSubmissionObject() {
 		return jobObject;
 	}
 
@@ -467,7 +467,7 @@ PropertyChangeListener {
 	abstract protected String getValueAsString();
 
 	public void initPanel(TemplateObject template,
-			JobSubmissionObjectImpl jobObject) throws TemplateException {
+			JobDescription jobObject) throws TemplateException {
 
 		myLogger.debug("Initializing panel: " + getPanelName());
 
@@ -579,7 +579,7 @@ PropertyChangeListener {
 		jobPropertyChanged(arg0);
 	}
 
-	public void refresh(JobSubmissionObjectImpl jobObject)
+	public void refresh(JobDescription jobObject)
 			throws TemplateException {
 
 		myLogger.debug("Refreshing panel with new job: "
@@ -703,7 +703,7 @@ PropertyChangeListener {
 		}
 	}
 
-	abstract protected void templateRefresh(JobSubmissionObjectImpl jobObject);
+	abstract protected void templateRefresh(JobDescription jobObject);
 
 	@Override
 	public String toString() {

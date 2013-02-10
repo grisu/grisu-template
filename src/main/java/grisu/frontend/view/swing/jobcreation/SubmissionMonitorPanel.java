@@ -5,7 +5,7 @@ import grisu.control.exceptions.JobPropertiesException;
 import grisu.control.exceptions.JobSubmissionException;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.control.jobMonitoring.RunningJobManager;
-import grisu.frontend.model.job.JobObject;
+import grisu.frontend.model.job.GrisuJob;
 import grisu.model.GrisuRegistryManager;
 
 import java.awt.event.ActionEvent;
@@ -32,7 +32,7 @@ PropertyChangeListener {
 	static final Logger myLogger = Logger
 			.getLogger(SubmissionMonitorPanel.class.getName());
 
-	private JobObject job = null;
+	private GrisuJob job = null;
 	private final JTextArea textArea = new JTextArea();
 	private final JButton cancelButton = new JButton("Cancel");
 
@@ -118,7 +118,7 @@ PropertyChangeListener {
 
 	}
 
-	public void setJobObject(JobObject job) {
+	public void setJobObject(GrisuJob job) {
 		if (this.job != null) {
 			this.job.removePropertyChangeListener(this);
 		}
@@ -133,7 +133,7 @@ PropertyChangeListener {
 		this.templateWrapperPanel = panel;
 	}
 
-	public void startJobSubmission(final JobObject job) {
+	public void startJobSubmission(final GrisuJob job) {
 
 		submissionThread = new Thread() {
 

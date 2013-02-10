@@ -2,7 +2,7 @@ package grisu.frontend.view.swing.jobcreation;
 
 import grisu.control.exceptions.JobPropertiesException;
 import grisu.control.exceptions.TemplateException;
-import grisu.frontend.model.job.JobObject;
+import grisu.frontend.model.job.GrisuJob;
 import grisu.frontend.view.swing.DefaultFqanChangePanel;
 import grisu.frontend.view.swing.jobcreation.templates.TemplateObject;
 
@@ -114,7 +114,7 @@ public class TemplateWrapperPanel extends JPanel {
 				public void actionPerformed(ActionEvent arg0) {
 
 					try {
-						final JobObject job = JobObject.createJobObject(
+						final GrisuJob job = GrisuJob.createJobObject(
 								template.getServiceInterface(),
 								template.getJobSubmissionObject());
 

@@ -4,7 +4,7 @@ import grisu.control.ServiceInterface;
 import grisu.control.exceptions.JobPropertiesException;
 import grisu.control.exceptions.JobSubmissionException;
 import grisu.control.exceptions.TemplateException;
-import grisu.frontend.model.job.JobObject;
+import grisu.frontend.model.job.GrisuJob;
 import grisu.frontend.view.swing.jobcreation.templates.inputPanels.AbstractInputPanel;
 import grisu.model.job.JobDescription;
 
@@ -218,8 +218,8 @@ public class TemplateObject {
 	public void submitJob() throws JobPropertiesException,
 	JobSubmissionException, InterruptedException {
 
-		JobObject job = null;
-		job = new JobObject(si, jobObject.getJobDescriptionDocument());
+		GrisuJob job = null;
+		job = new GrisuJob(si, jobObject.getJobDescriptionDocument());
 
 		job.createJob("/ACC");
 

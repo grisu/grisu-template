@@ -58,7 +58,11 @@ public class Memory extends AbstractInputPanel {
 						String currentValue = null;
 						if (o instanceof String) {
 							currentValue = (String) o;
-						} else {
+						}
+						else if(o instanceof Long){
+							currentValue = ((Long) o).toString();
+						}	 
+						else {
 							currentValue = ((Integer) o).toString();
 						}
 
@@ -128,7 +132,10 @@ public class Memory extends AbstractInputPanel {
 
 		defaultProperties.put(TITLE, "Memory per core (in MB)");
 		defaultProperties.put(DEFAULT_VALUE, "1024");
-		defaultProperties.put(PREFILLS, "1024,2048,4096,8192,16384");
+//		defaultProperties.put(PREFILLS, "1024,2048,4096,8192,16384");
+		defaultProperties
+				.put(PREFILLS,
+						"1024,2048,4096,8192,16384,32768,65536,131072,262144,524288,1048576,2097152,4194304,8388608,16.77M,33.55M,67.10M,134.21M,268.43M,536.87M,1.07G,2.14G,4.29G,8.58G,17.17G,34.35G,68.71G,137.43G,274.87G,549.75G");
 
 		return defaultProperties;
 	}

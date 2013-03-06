@@ -139,7 +139,7 @@
 							<descriptors>
 								<descriptor>client.assembly.xml</descriptor>
 							</descriptors>
-							<finalName>grisu-template</finalName>
+							<finalName>grisu-template-client</finalName>
 
 							<archive>
 								<index>true</index>
@@ -308,7 +308,7 @@
 									<controlDir>target/deb/control</controlDir>
 									<dataSet>
 										<data>
-											<src>${project.build.directory}/grisu-template-binary.jar</src>
+											<src>${project.build.directory}/grisu-template-client-binary.jar</src>
 											<type>file</type>
 											<mapper>
 												<type>perm</type>
@@ -385,7 +385,6 @@
 							<packager>Markus Binsteiner</packager>
 							<!-- <prefix>/usr/local</prefix> -->
 							<version>${project.version}</version>
-							<name>grisu-template</name>
 							<!-- <changelogFile>src/changelog</changelogFile> -->
 							<!-- <defineStatements> -->
 							<!-- <defineStatement>_unpackaged_files_terminate_build 0</defineStatement> -->
@@ -398,7 +397,7 @@
 									<groupname>root</groupname>
 									<sources>
 										<source>
-											<location>target/grisu-template-binary.jar</location>
+											<location>target/grisu-template-client-binary.jar</location>
 										</source>
 									</sources>
 								</mapping>

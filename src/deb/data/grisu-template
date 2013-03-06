@@ -3,5 +3,5 @@
 #unset DISPLAY
 #export JAVA_OPTS="-Xms256m -Xmx256m"
 export X509_USER_PROXY=~/.grid/grid.proxy
-java ${JAVA_OPTS} -cp /usr/local/lib/grisu/grisu-template-client-binary.jar grisu.frontend.view.swing.GrisuTemplateApp $@
+java ${JAVA_OPTS} -cp /usr/local/lib/grisu/grisu-template-binary.jar grisu.frontend.view.swing.GrisuTemplateApp $@
 

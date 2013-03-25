@@ -466,6 +466,8 @@ PropertyChangeListener, ActionListener {
 				getGt4TextArea().setText(gt4rsl);
 			} catch (final Exception e) {
 				// e.printStackTrace();
+			} catch (final Error e) {
+				
 			}
 
 			try {
@@ -478,6 +480,8 @@ PropertyChangeListener, ActionListener {
 				getGt5TextArea().setText(gt5rsl);
 			} catch (final Exception e) {
 				// e.printStackTrace();
+			} catch (final Error e) {
+				
 			}
 
 		}

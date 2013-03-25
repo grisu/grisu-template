@@ -298,11 +298,9 @@ PropertyChangeListener {
 
 		Thread.currentThread().setName("main");
 
-		EnvironmentVariableHelpers.loadEnvironmentVariablesToSystemProperties();
-
 		Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler());
 
-		LoginManager.initEnvironment();
+		grith.jgrith.Environment.initEnvironment();
 
 		EventQueue.invokeLater(new Runnable() {
 			@Override

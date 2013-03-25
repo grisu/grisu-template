@@ -1,8 +1,5 @@
 package grisu.frontend.view.swing.jobcreation.templates;
 
-import grisu.backend.info.InformationManagerManager;
-import grisu.backend.model.job.gt4.GT4Submitter;
-import grisu.backend.model.job.gt5.RSLFactory;
 import grisu.control.ServiceInterface;
 import grisu.control.exceptions.JobPropertiesException;
 import grisu.control.exceptions.TemplateException;
@@ -51,10 +48,10 @@ PropertyChangeListener, ActionListener {
 
 	private static InformationManager informationManager = null;
 
-	private static InformationManager getInformationManager() {
-
-		return informationManager;
-	}
+//	private static InformationManager getInformationManager() {
+//
+//		return informationManager;
+//	}
 
 	public static String getStackTrace(Throwable t) {
 		final StringWriter stringWritter = new StringWriter();
@@ -68,19 +65,19 @@ PropertyChangeListener, ActionListener {
 
 	{
 		// we load that in the background because it's not that important...
-		new Thread() {
-			@Override
-			public void run() {
-
-				try {
-					informationManager = InformationManagerManager
-							.getInformationManager(ServerPropertiesManager
-									.getInformationManagerConf());
-				} catch (final Exception e) {
-					// do nothing...
-				}
-			}
-		}.start();
+//		new Thread() {
+//			@Override
+//			public void run() {
+//
+//				try {
+//					informationManager = InformationManagerManager
+//							.getInformationManager(ServerPropertiesManager
+//									.getInformationManagerConf());
+//				} catch (final Exception e) {
+//					// do nothing...
+//				}
+//			}
+//		}.start();
 	}
 
 	protected final File currentFile;
@@ -459,30 +456,30 @@ PropertyChangeListener, ActionListener {
 				return;
 			}
 
-			try {
-				final String gt4rsl = GT4Submitter
-						.createJobSubmissionDescription(
-								SeveralXMLHelpers.fromString(jsdl), null);
-				getGt4TextArea().setText(gt4rsl);
-			} catch (final Exception e) {
-				// e.printStackTrace();
-			} catch (final Error e) {
-				
-			}
-
-			try {
-				String fqan = GrisuRegistryManager.getDefault(si)
-						.getUserEnvironmentManager().getCurrentFqan();
-				RSLFactory f = RSLFactory.getRSLFactory();
-				String gt5rsl = f.create(SeveralXMLHelpers.fromString(jsdl),
-						fqan).toString();
-
-				getGt5TextArea().setText(gt5rsl);
-			} catch (final Exception e) {
-				// e.printStackTrace();
-			} catch (final Error e) {
-				
-			}
+//			try {
+//				final String gt4rsl = GT4Submitter
+//						.createJobSubmissionDescription(
+//								SeveralXMLHelpers.fromString(jsdl), null);
+//				getGt4TextArea().setText(gt4rsl);
+//			} catch (final Exception e) {
+//				// e.printStackTrace();
+//			} catch (final Error e) {
+//				
+//			}
+//
+//			try {
+//				String fqan = GrisuRegistryManager.getDefault(si)
+//						.getUserEnvironmentManager().getCurrentFqan();
+//				RSLFactory f = RSLFactory.getRSLFactory();
+//				String gt5rsl = f.create(SeveralXMLHelpers.fromString(jsdl),
+//						fqan).toString();
+//
+//				getGt5TextArea().setText(gt5rsl);
+//			} catch (final Exception e) {
+//				// e.printStackTrace();
+//			} catch (final Error e) {
+//				
+//			}
 
 		}
 	}

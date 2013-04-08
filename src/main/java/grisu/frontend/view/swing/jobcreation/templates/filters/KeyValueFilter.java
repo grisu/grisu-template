@@ -2,8 +2,6 @@ package grisu.frontend.view.swing.jobcreation.templates.filters;
 
 import java.util.Map;
 
-import org.python.antlr.PythonParser.return_stmt_return;
-
 public class KeyValueFilter implements Filter {
 
 	@Override

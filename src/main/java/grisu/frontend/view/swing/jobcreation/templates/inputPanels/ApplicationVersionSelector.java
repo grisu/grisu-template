@@ -235,7 +235,6 @@ EventSubscriber<FqanEvent> {
 						}
 					}
 				} else {
-					System.out.println("MORE");
 					if (allVersions.size() > 1) {
 						versionModel.addElement(Version.ANY_VERSION);
 					}

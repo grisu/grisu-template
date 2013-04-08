@@ -373,7 +373,7 @@ public class TemplateHelpers {
 		}
 
 		if (start != 0) {
-			myLogger.debug("No panel name because [ is not the first character.");
+			myLogger.debug("No panel name because [ is not the first character for line: "+line);
 			return null;
 		}
 

@@ -608,7 +608,7 @@ PropertyChangeListener {
 
 		try {
 
-			// X.p("bean: " + bean);
+
 			if (StringUtils.isNotBlank(bean)) {
 
 				Method method = null;
@@ -617,7 +617,6 @@ PropertyChangeListener {
 					valueClass = String.class;
 				} else {
 					valueClass = value.getClass();
-					System.out.println("valueClass" + valueClass);
 				}
 				try {
 					method = jobObject.getClass().getMethod(

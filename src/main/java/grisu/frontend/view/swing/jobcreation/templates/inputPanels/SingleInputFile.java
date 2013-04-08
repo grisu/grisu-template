@@ -1,5 +1,6 @@
 package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
+import grisu.control.JobnameHelpers;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.files.GridFileSelectionDialog;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
@@ -93,8 +94,10 @@ public class SingleInputFile extends AbstractInputPanel {
 
 		addValue("inputFileUrl", selectedFile);
 		
-		if ( Boolean.parseBoolean(getPanelProperty(SET_JOBNAME)) ) {
-
+		// setting jobname if configured in widget config
+		String jobnameCreate = getPanelProperty(SingleInputFile.SET_JOBNAME);
+		if ( "true".equalsIgnoreCase(jobnameCreate) || "count".equalsIgnoreCase(jobnameCreate) ) {
+			
 			String jobname = FilenameUtils.getBaseName(selectedFile);
 			final String sugJobname = getUserEnvironmentManager()
 					.calculateUniqueJobname(jobname);
@@ -104,7 +107,15 @@ public class SingleInputFile extends AbstractInputPanel {
 			} catch (TemplateException e) {
 				myLogger.debug("Can't set jobname:"+e.getLocalizedMessage());
 			}
+		} else if ( "timestamp".equalsIgnoreCase(jobnameCreate) ) {
+			String jobname = FilenameUtils.getBaseName(selectedFile);
+			final String sugJobname = JobnameHelpers.calculateTimestampedJobname(jobname, JobnameHelpers.short_format);
 
+			try {
+				setValue("jobname", sugJobname);
+			} catch (TemplateException e) {
+				myLogger.debug("Can't set jobname:"+e.getLocalizedMessage());
+			}
 		}
 		
 		addHistoryValue(selectedFile);

@@ -134,7 +134,7 @@ public class Memory extends AbstractInputPanel {
 
 		defaultProperties.put(TITLE, "Memory per core (in GB)");
 		defaultProperties.put(DEFAULT_VALUE, "1");
-		defaultProperties.put(PREFILLS, "1,2,3,4,5,6,7,8,9,10,11,12,24,48,64,96,128,258");
+		defaultProperties.put(PREFILLS, "0,1,2,3,4,5,6,7,8,9,10,11,12,24,48,64,96,128,258");
 		//defaultProperties.put(PREFILLS, "1024,2048,4096,8192,16384");
 //		defaultProperties
 //				.put(PREFILLS,

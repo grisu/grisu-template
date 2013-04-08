@@ -4,6 +4,7 @@ import grisu.control.ServiceInterface;
 import grisu.control.TemplateManager;
 import grisu.control.exceptions.NoSuchTemplateException;
 import grisu.frontend.control.login.LoginManager;
+import grisu.frontend.view.swing.files.open.FileDialogManager;
 import grisu.frontend.view.swing.files.virtual.GridFileTreePanel;
 import grisu.frontend.view.swing.jobcreation.JobCreationPanel;
 import grisu.frontend.view.swing.jobcreation.TemplateJobCreationPanel;
@@ -98,6 +99,7 @@ PropertyChangeListener {
 
 		myLogger.debug("Grisu template client. Starting...");
 		GrisuTemplateApp app = new GrisuTemplateApp();
+		
 		app.run();
 	}
 

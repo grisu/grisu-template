@@ -24,19 +24,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.gjt.sp.jedit.IPropertyManager;
 import org.gjt.sp.jedit.Mode;
 import org.gjt.sp.jedit.syntax.ModeProvider;
 import org.gjt.sp.jedit.textarea.StandaloneTextArea;
@@ -163,6 +163,20 @@ public class TextFile extends AbstractInputPanel {
 			loadFile(file);
 
 			addValue("inputFileUrl", selectedFile);
+			
+			if ( Boolean.parseBoolean(getPanelProperty(SingleInputFile.SET_JOBNAME)) ) {
+
+				String jobname = FilenameUtils.getBaseName(selectedFile);
+				final String sugJobname = getUserEnvironmentManager()
+						.calculateUniqueJobname(jobname);
+
+				try {
+					setValue("jobname", sugJobname);
+				} catch (TemplateException e) {
+					myLogger.debug("Can't set jobname:"+e.getLocalizedMessage());
+				}
+
+			}
 
 			addHistoryValue(selectedFile);
 		} catch (final Exception e) {
@@ -200,6 +214,10 @@ public class TextFile extends AbstractInputPanel {
 			});
 		}
 		return openButton;
+	}
+	
+	public GridFileSelectionDialog getFileDialog() {
+		return getFileDialog(templateName);
 	}
 	
 	private void saveAs() {
@@ -414,6 +432,18 @@ public class TextFile extends AbstractInputPanel {
 
 		if (textArea == null) {
 			textArea = StandaloneTextArea.createTextArea();
+			
+			JPopupMenu p = new JPopupMenu();
+			textArea.setRightClickPopup(p);
+			
+			textArea.addMenuItem("undo", "Undo");
+			textArea.addMenuItem("redo", "Redo");
+			p.addSeparator();
+			textArea.addMenuItem("cut", "Cut");
+			textArea.addMenuItem("copy", "Copy");
+			textArea.addMenuItem("paste", "Paste");
+			
+			textArea.setRightClickPopupEnabled(true);
 
 			final Mode mode = new Mode("text");
 			mode.setProperty("file", "text.xml");

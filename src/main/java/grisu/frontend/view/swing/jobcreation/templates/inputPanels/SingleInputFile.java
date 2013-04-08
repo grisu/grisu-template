@@ -21,6 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.jgoodies.forms.factories.FormFactory;
@@ -29,6 +30,10 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 public class SingleInputFile extends AbstractInputPanel {
+	
+	public static final String SET_JOBNAME = "setJobname"; 
+
+	
 	private JComboBox comboBox;
 	private JButton button;
 	private GridFileSelectionDialog dialog;
@@ -87,7 +92,21 @@ public class SingleInputFile extends AbstractInputPanel {
 		selectedFile = (String) getComboBox().getSelectedItem();
 
 		addValue("inputFileUrl", selectedFile);
+		
+		if ( Boolean.parseBoolean(getPanelProperty(SET_JOBNAME)) ) {
 
+			String jobname = FilenameUtils.getBaseName(selectedFile);
+			final String sugJobname = getUserEnvironmentManager()
+					.calculateUniqueJobname(jobname);
+
+			try {
+				setValue("jobname", sugJobname);
+			} catch (TemplateException e) {
+				myLogger.debug("Can't set jobname:"+e.getLocalizedMessage());
+			}
+
+		}
+		
 		addHistoryValue(selectedFile);
 
 	}

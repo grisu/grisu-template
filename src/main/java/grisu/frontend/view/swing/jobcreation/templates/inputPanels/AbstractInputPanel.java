@@ -5,6 +5,7 @@ import grisu.control.exceptions.RemoteFileSystemException;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.control.jobMonitoring.RunningJobManager;
 import grisu.frontend.view.swing.files.GridFileSelectionDialog;
+import grisu.frontend.view.swing.files.open.FileDialogManager;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.frontend.view.swing.jobcreation.templates.TemplateObject;
 import grisu.frontend.view.swing.jobcreation.templates.filters.Filter;
@@ -70,7 +71,7 @@ PropertyChangeListener {
 
 	public static final String APPLICATION = "application";
 	public static final String TEMPLATENAME = "templatename";
-
+	
 	private static final String HELP = "help";
 	public final UUID id;
 
@@ -91,47 +92,12 @@ PropertyChangeListener {
 	private UserEnvironmentManager uem;
 	private RunningJobManager rjm;
 	private HistoryManager hm;
+	private FileDialogManager fdm;
 
 	private JButton helpLabel;
 	private boolean displayHelpLabel = false;
 
 	private boolean initFinished = false;
-
-	private static Map<String, GridFileSelectionDialog> dialogs = Maps
-			.newConcurrentMap();
-
-	private synchronized static void createSingletonFileDialog(Window owner,
-			ServiceInterface si, String templateName) {
-
-		if (dialogs.get(templateName) == null) {
-			String startUrl = GrisuRegistryManager
-					.getDefault(si)
-					.getHistoryManager()
-					.getLastEntry(
-							templateName + "_" + FILE_DIALOG_LAST_DIRECTORY_KEY);
-
-			if (StringUtils.isBlank(startUrl)) {
-				startUrl = new File(System.getProperty("user.home")).toURI()
-						.toString();
-			} else if (!FileManager.isLocal(startUrl)) {
-				try {
-					if (!si.isFolder(startUrl)) {
-						startUrl = new File(System.getProperty("user.home"))
-						.toURI().toString();
-					}
-				} catch (final RemoteFileSystemException e) {
-					myLogger.debug(e);
-					startUrl = new File(System.getProperty("user.home"))
-					.toURI().toString();
-				}
-			}
-			final GridFileSelectionDialog dialog = new GridFileSelectionDialog(
-					owner, si);
-
-			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			dialogs.put(templateName, dialog);
-		}
-	}
 
 	private Object oldAddValue = null;
 
@@ -358,16 +324,9 @@ PropertyChangeListener {
 	}
 
 	public GridFileSelectionDialog getFileDialog(String templateName) {
+		
+		return fdm.getFileDialog(templateName);
 
-		if (dialogs.get(templateName) == null) {
-			if (si == null) {
-				throw new IllegalStateException(
-						"File dialog not initialized yet.");
-			}
-			createSingletonFileDialog(SwingUtilities.getWindowAncestor(this),
-					si, templateName);
-		}
-		return dialogs.get(templateName);
 	}
 
 	protected JButton getHelpLabel() {
@@ -637,7 +596,8 @@ PropertyChangeListener {
 				.getUserEnvironmentManager();
 		this.rjm = RunningJobManager.getDefault(si);
 		this.hm = GrisuRegistryManager.getDefault(si).getHistoryManager();
-
+		this.fdm = FileDialogManager.getDefault(si);
+		
 	}
 
 	protected void setValue(String bean, Object value) throws TemplateException {

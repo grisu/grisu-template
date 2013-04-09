@@ -35,14 +35,14 @@ public class SingleInputFile extends AbstractInputPanel {
 	public static final String SET_JOBNAME = "setJobname"; 
 
 	
-	private JComboBox comboBox;
-	private JButton button;
-	private GridFileSelectionDialog dialog;
+	protected JComboBox comboBox;
+	protected JButton button;
+	protected GridFileSelectionDialog dialog;
 
-	private String selectedFile = null;
+	protected String selectedFile = null;
 
-	private DefaultComboBoxModel comboBoxModel;
-	private JLabel label;
+	protected DefaultComboBoxModel comboBoxModel;
+	protected JLabel label;
 
 	public SingleInputFile(String name, PanelConfig config)
 			throws TemplateException {
@@ -81,7 +81,7 @@ public class SingleInputFile extends AbstractInputPanel {
 		// config.addValidator(new FileExistsValidator());
 	}
 
-	private void fileChanged() {
+	protected void fileChanged() {
 
 		if (!isInitFinished()) {
 			return;
@@ -149,7 +149,7 @@ public class SingleInputFile extends AbstractInputPanel {
 		return button;
 	}
 
-	private JComboBox getComboBox() {
+	protected JComboBox getComboBox() {
 		if (comboBox == null) {
 			comboBoxModel = new DefaultComboBoxModel();
 			comboBox = new JComboBox(comboBoxModel);

@@ -5,7 +5,6 @@ import grisu.control.ServiceInterface;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.control.clientexceptions.FileTransactionException;
 import grisu.frontend.view.swing.files.GridFileSelectionDialog;
-import grisu.frontend.view.swing.files.GridFileTextEditPanel;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.model.FileManager;
 import grisu.model.GrisuRegistryManager;
@@ -16,25 +15,36 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.gjt.sp.jedit.Mode;
+import org.gjt.sp.jedit.syntax.ModeProvider;
+import org.gjt.sp.jedit.textarea.StandaloneTextArea;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 
+import com.Ostermiller.util.LineEnds;
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -42,7 +52,7 @@ import com.jgoodies.forms.layout.RowSpec;
 import com.jidesoft.swing.JideButton;
 import com.jidesoft.swing.JideSplitButton;
 
-public class TextFile extends AbstractInputPanel {
+public class TextFileOld extends AbstractInputPanel {
 
 	private class InputChangedValidator implements Validator {
 
@@ -55,7 +65,7 @@ public class TextFile extends AbstractInputPanel {
 		@Override
 		public boolean validate(Problems arg0, String arg1, Object arg2) {
 
-			if (getGrisuTextArea().isDocumentUnsaved()) {
+			if (documentChanged) {
 				arg0.add("Input file changed. Please save first.");
 				return false;
 			}
@@ -72,15 +82,14 @@ public class TextFile extends AbstractInputPanel {
 	private DefaultComboBoxModel comboBoxModel;
 	private JLabel label;
 
-//	protected boolean documentChanged = false;
+	private StandaloneTextArea textArea;
+	protected boolean documentChanged = false;
 	private JideSplitButton saveButton;
 	private JLabel label_1;
-	
-	private GridFileTextEditPanel grisuTextArea = null;
 
 	// private final Validator<String> val = new InputChangedValidator();
 
-	public TextFile(String name, PanelConfig config) throws TemplateException {
+	public TextFileOld(String name, PanelConfig config) throws TemplateException {
 
 		super(name, config);
 
@@ -98,7 +107,7 @@ public class TextFile extends AbstractInputPanel {
 					FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 					FormFactory.RELATED_GAP_ROWSPEC, }));
 
-			add(getGrisuTextArea(), "2, 2, 7, 1, fill, fill");
+			add(getTextArea(), "2, 2, 7, 1, fill, fill");
 			add(getComboBox(), "2, 4, 3, 1, fill, default");
 			add(getOpenButton(), "6, 4, fill, fill");
 			add(getSaveButton(), "8, 4, fill, fill");
@@ -118,7 +127,7 @@ public class TextFile extends AbstractInputPanel {
 					FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
 					FormFactory.RELATED_GAP_ROWSPEC, }));
 
-			add(getGrisuTextArea(), "2, 2, 7, 1, fill, fill");
+			add(getTextArea(), "2, 2, 7, 1, fill, fill");
 			add(getComboBox(), "4, 4, fill, default");
 			add(getOpenButton(), "6, 4, fill, fill");
 			add(getHelpLabel(), "2, 4");
@@ -143,7 +152,7 @@ public class TextFile extends AbstractInputPanel {
 		selectedFile = (String) getComboBox().getSelectedItem();
 
 		if (StringUtils.isBlank(selectedFile)) {
-			getGrisuTextArea().setText("");
+			getTextArea().setText("");
 			return;
 		}
 
@@ -155,7 +164,7 @@ public class TextFile extends AbstractInputPanel {
 			loadFile(file);
 
 			addValue("inputFileUrl", selectedFile);
-
+			
 			// setting jobname if configured in widget config
 			String jobnameCreate = getPanelProperty(SingleInputFile.SET_JOBNAME);
 			if ( "true".equalsIgnoreCase(jobnameCreate) || "count".equalsIgnoreCase(jobnameCreate) ) {
@@ -179,20 +188,12 @@ public class TextFile extends AbstractInputPanel {
 					myLogger.debug("Can't set jobname:"+e.getLocalizedMessage());
 				}
 			}
-			
 
 			addHistoryValue(selectedFile);
 		} catch (final Exception e) {
 			myLogger.error(e);
 		}
 
-	}
-	
-	private GridFileTextEditPanel getGrisuTextArea() {
-		if ( grisuTextArea == null ) {
-			grisuTextArea = new GridFileTextEditPanel(templateName);
-		}
-		return grisuTextArea;
 	}
 
 	private JideButton getOpenButton() {
@@ -218,7 +219,7 @@ public class TextFile extends AbstractInputPanel {
 					getComboBox().addItem(file.getUrl());
 					getComboBox().setSelectedItem(file.getUrl());
 
-//					loadFile(file);
+					loadFile(file);
 
 				}
 			});
@@ -228,6 +229,111 @@ public class TextFile extends AbstractInputPanel {
 	
 	public GridFileSelectionDialog getFileDialog() {
 		return getFileDialog(templateName);
+	}
+	
+	private void saveAs() {
+		// TODO write grid save dialog
+		final JFileChooser fc = new JFileChooser();
+		final int returnVal = fc.showDialog(TextFileOld.this,
+				"Save as...");
+
+		if (JFileChooser.CANCEL_OPTION == returnVal) {
+			return;
+		} else {
+			String currentUrl = null;
+			final File selFile = fc.getSelectedFile();
+			currentUrl = selFile.toURI().toString();
+			
+//			try {
+//				FileUtils.forceDelete(FileManager
+//						.getFileFromUriOrPath(currentUrl));
+//			} catch (final Exception e2) {
+//				// doesn't matter
+//				myLogger.debug(e2);
+//			}
+//			try {
+//				FileUtils.writeStringToFile(FileManager
+//						.getFileFromUriOrPath(currentUrl),
+//						getTextArea().getText());
+//			} catch (final IOException e1) {
+//				myLogger.error(e1);
+//			}
+//
+//			documentChanged = false;
+
+			save(currentUrl);
+
+			getComboBox().addItem(currentUrl);
+			getComboBox().setSelectedItem(currentUrl);
+			
+
+			return;
+		}
+	}
+	
+	private void save(String path) {
+		final FileManager fm = GrisuRegistryManager.getDefault(
+				getServiceInterface()).getFileManager();
+		String text = getTextArea().getText();
+		File tempFile = null;
+		try {
+			InputStream is = new ByteArrayInputStream(text.getBytes());
+			tempFile = File.createTempFile("input_file", "grisu");
+			
+			FileOutputStream fop = new FileOutputStream(tempFile);
+			
+			LineEnds.convert(is, fop, LineEnds.STYLE_UNIX);
+			fop.flush();
+			fop.close();
+			
+		} catch (Exception e3) {
+			e3.printStackTrace();
+			return;
+		}
+
+		if (FileManager.isLocal(path)) {
+			try {
+				FileUtils.copyFile(tempFile, FileManager
+						.getFileFromUriOrPath(path));
+				FileUtils.deleteQuietly(tempFile);
+			} catch (final IOException e1) {
+				myLogger.error(e1);
+			}
+		} else {
+
+			final File temp = fm.getLocalCacheFile(path);
+			try {
+				FileUtils.copyFile(tempFile, temp);
+
+				fm.uploadFile(temp, path, true);
+				
+				FileUtils.deleteQuietly(tempFile);
+			} catch (final IOException e1) {
+				myLogger.error(e1);
+			} catch (final FileTransactionException e2) {
+				myLogger.error(e2);
+			}
+
+		}
+		
+		documentChanged = false;
+		
+	}
+	
+	private void save() {
+		
+		String currentUrl = (String) getComboBox()
+				.getSelectedItem();
+
+		if (StringUtils.isBlank(currentUrl)) {
+
+			saveAs();
+			return;
+
+		} else {
+			save(currentUrl);
+		}
+
 	}
 
 	private JideSplitButton getSaveButton() {
@@ -239,7 +345,7 @@ public class TextFile extends AbstractInputPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					myLogger.debug("Saving file...");
-					getGrisuTextArea().save();
+					save();
 
 				}
 			});
@@ -247,11 +353,7 @@ public class TextFile extends AbstractInputPanel {
 	        saveButton.add(new AbstractAction("Save as...") {
 	            public void actionPerformed(ActionEvent e) {
 	            	myLogger.debug("Saving file as...");
-	            	File file = getGrisuTextArea().saveAs();
-	            	if ( file != null ) {
-	            		getComboBox().addItem(file.getAbsolutePath());
-	            		getComboBox().setSelectedItem(file.getAbsolutePath());
-	            	}
+	            	saveAs();
 	            }
 	        });
 			
@@ -337,7 +439,41 @@ public class TextFile extends AbstractInputPanel {
 		return getComboBox();
 	}
 
+	private StandaloneTextArea getTextArea() {
 
+		if (textArea == null) {
+			textArea = StandaloneTextArea.createTextArea();
+			
+			JPopupMenu p = new JPopupMenu();
+			textArea.setRightClickPopup(p);
+			
+			textArea.addMenuItem("undo", "Undo");
+			textArea.addMenuItem("redo", "Redo");
+			p.addSeparator();
+			textArea.addMenuItem("cut", "Cut");
+			textArea.addMenuItem("copy", "Copy");
+			textArea.addMenuItem("paste", "Paste");
+			
+			textArea.setRightClickPopupEnabled(true);
+
+			final Mode mode = new Mode("text");
+			mode.setProperty("file", "text.xml");
+			ModeProvider.instance.addMode(mode);
+			textArea.getBuffer().setMode(mode);
+			textArea.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent e) {
+					documentChanged = true;
+//					getSaveButton().setEnabled(true);
+
+					// TODO fire validation request
+					// getTemplateObject().validateManually();
+				}
+
+			});
+		}
+		return textArea;
+	}
 
 	@Override
 	protected String getValueAsString() {
@@ -348,24 +484,31 @@ public class TextFile extends AbstractInputPanel {
 	protected void jobPropertyChanged(PropertyChangeEvent e) {
 
 	}
-	
-	@Override
-	public void propertyChange(PropertyChangeEvent arg0) {
-		String prop = arg0.getPropertyName();
-		
-		if ( "documentUnsaved".equals(prop) ) {
-			if ( (Boolean)(arg0.getNewValue()) ) {
-				myLogger.debug("Text unsaved now.");
-			} else {
-				myLogger.debug("Text saved.");
-			}
-		}
-	}
-	
+
 	public void loadFile(GridFile gfile) {
 
-		getGrisuTextArea().setFile(gfile);
+		final FileManager fm = GrisuRegistryManager.getDefault(
+				getServiceInterface()).getFileManager();
 
+		File file;
+		try {
+			file = fm.downloadFile(gfile.getUrl());
+		} catch (final FileTransactionException e1) {
+			myLogger.error(e1);
+			return;
+		}
+
+		String text;
+		try {
+			text = FileUtils.readFileToString(file);
+		} catch (final IOException e) {
+			myLogger.error(e);
+			return;
+		}
+
+		getTextArea().setText(text);
+
+		documentChanged = false;
 //		getSaveButton().setEnabled(false);
 
 	}
@@ -395,8 +538,11 @@ public class TextFile extends AbstractInputPanel {
 		final String modeName = panelProperties.get("mode");
 
 		if (StringUtils.isNotBlank(modeName)) {
-			
-			getGrisuTextArea().setTextMode(modeName);
+
+			final Mode mode = new Mode(modeName);
+			mode.setProperty("file", mode + ".xml");
+			ModeProvider.instance.addMode(mode);
+			textArea.getBuffer().setMode(mode);
 		}
 
 	}
@@ -421,15 +567,9 @@ public class TextFile extends AbstractInputPanel {
 		} else {
 			getComboBox().addItem("");
 			getComboBox().setSelectedItem("");
-			getGrisuTextArea().setText("");
+			getTextArea().setText("");
 		}
 
-	}
-	
-	@Override
-	public void setServiceInterface(ServiceInterface si) {
-		super.setServiceInterface(si);
-		getGrisuTextArea().setServiceInterface(si);
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
 import grisu.control.ServiceInterface;
-import grisu.control.exceptions.RemoteFileSystemException;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.control.jobMonitoring.RunningJobManager;
 import grisu.frontend.view.swing.files.GridFileSelectionDialog;
@@ -9,18 +8,15 @@ import grisu.frontend.view.swing.files.open.FileDialogManager;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.frontend.view.swing.jobcreation.templates.TemplateObject;
 import grisu.frontend.view.swing.jobcreation.templates.filters.Filter;
-import grisu.model.FileManager;
 import grisu.model.GrisuRegistryManager;
 import grisu.model.UserEnvironmentManager;
 import grisu.model.dto.GridFile;
 import grisu.model.job.JobDescription;
 
 import java.awt.Dimension;
-import java.awt.Window;
 import java.beans.Beans;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -35,16 +31,12 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.JTextComponent;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.vpac.historyRepeater.HistoryManager;
-
-import com.google.common.collect.Maps;
 
 public abstract class AbstractInputPanel extends JPanel implements
 PropertyChangeListener {

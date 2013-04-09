@@ -3,11 +3,9 @@ package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 import grisu.control.JobnameHelpers;
 import grisu.control.ServiceInterface;
 import grisu.control.exceptions.TemplateException;
-import grisu.frontend.control.clientexceptions.FileTransactionException;
 import grisu.frontend.view.swing.files.GridFileSelectionDialog;
 import grisu.frontend.view.swing.files.GridFileTextEditPanel;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
-import grisu.model.FileManager;
 import grisu.model.GrisuRegistryManager;
 import grisu.model.dto.GridFile;
 import grisu.model.job.JobDescription;
@@ -18,7 +16,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,15 +26,14 @@ import javax.swing.JLabel;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.netbeans.validation.api.Problems;
 import org.netbeans.validation.api.Validator;
 
-import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 import com.jidesoft.swing.JideButton;
 import com.jidesoft.swing.JideSplitButton;
@@ -86,17 +82,17 @@ public class TextFile extends AbstractInputPanel {
 
 		if (!displayHelpLabel()) {
 			setLayout(new FormLayout(new ColumnSpec[] {
-					FormFactory.RELATED_GAP_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC,
 					ColumnSpec.decode("center:max(13dlu;default)"),
-					FormFactory.RELATED_GAP_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC,
 					ColumnSpec.decode("center:max(35dlu;default):grow"),
-					FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
-					FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
-					FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
-					FormFactory.RELATED_GAP_ROWSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+					FormSpecs.RELATED_GAP_ROWSPEC,
 					RowSpec.decode("max(40dlu;default):grow"),
-					FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-					FormFactory.RELATED_GAP_ROWSPEC, }));
+					FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+					FormSpecs.RELATED_GAP_ROWSPEC, }));
 
 			add(getGrisuTextArea(), "2, 2, 7, 1, fill, fill");
 			add(getComboBox(), "2, 4, 3, 1, fill, default");
@@ -106,17 +102,17 @@ public class TextFile extends AbstractInputPanel {
 
 		} else {
 			setLayout(new FormLayout(new ColumnSpec[] {
-					FormFactory.RELATED_GAP_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC,
 					ColumnSpec.decode("center:max(13dlu;default)"),
-					FormFactory.RELATED_GAP_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC,
 					ColumnSpec.decode("center:max(35dlu;default):grow"),
-					FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
-					FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
-					FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
-					FormFactory.RELATED_GAP_ROWSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+					FormSpecs.RELATED_GAP_ROWSPEC,
 					RowSpec.decode("max(40dlu;default):grow"),
-					FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-					FormFactory.RELATED_GAP_ROWSPEC, }));
+					FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+					FormSpecs.RELATED_GAP_ROWSPEC, }));
 
 			add(getGrisuTextArea(), "2, 2, 7, 1, fill, fill");
 			add(getComboBox(), "4, 4, fill, default");

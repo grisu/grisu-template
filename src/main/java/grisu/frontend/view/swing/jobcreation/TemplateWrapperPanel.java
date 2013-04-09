@@ -21,9 +21,9 @@ import org.jdesktop.swingx.error.ErrorInfo;
 import org.netbeans.validation.api.ui.ValidationPanel;
 
 import com.google.common.base.Joiner;
-import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 public class TemplateWrapperPanel extends JPanel {
@@ -60,16 +60,16 @@ public class TemplateWrapperPanel extends JPanel {
 
 		add(creationPanel, JOB_CREATE_PANEL);
 		creationPanel.setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.RELATED_GAP_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("max(29dlu;default):grow"),
-				FormFactory.RELATED_GAP_COLSPEC, FormFactory.DEFAULT_COLSPEC,
-				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
-				FormFactory.RELATED_GAP_ROWSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+				FormSpecs.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("bottom:default"),
-				FormFactory.RELATED_GAP_ROWSPEC, }));
+				FormSpecs.RELATED_GAP_ROWSPEC, }));
 
 
 		if (template.getTemplatePanel() != null) {

@@ -1,6 +1,5 @@
 package grisu.frontend.view.swing.jobcreation.templates;
 
-import grisu.frontend.control.login.LoginManager;
 import grisu.frontend.model.events.ApplicationEventListener;
 import grisu.frontend.view.swing.WindowSaver;
 import grisu.frontend.view.swing.login.LoginPanel;

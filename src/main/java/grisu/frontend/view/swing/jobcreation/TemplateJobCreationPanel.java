@@ -27,9 +27,9 @@ import javax.swing.SwingConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 public class TemplateJobCreationPanel extends JPanel implements
@@ -123,9 +123,9 @@ JobCreationPanel, PropertyChangeListener {
 					ColumnSpec.decode("default:grow"),
 					ColumnSpec.decode("24dlu"), }, new RowSpec[] {
 					RowSpec.decode("4dlu:grow"),
-					FormFactory.DEFAULT_ROWSPEC,
-					FormFactory.RELATED_GAP_ROWSPEC,
-					FormFactory.DEFAULT_ROWSPEC,
+					FormSpecs.DEFAULT_ROWSPEC,
+					FormSpecs.RELATED_GAP_ROWSPEC,
+					FormSpecs.DEFAULT_ROWSPEC,
 					RowSpec.decode("4dlu:grow"), }));
 			loadingPanel.add(getProgressBar(), "2, 2");
 			loadingPanel.add(getLabel(), "2, 4, fill, default");

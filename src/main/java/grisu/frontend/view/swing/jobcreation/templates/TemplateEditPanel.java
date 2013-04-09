@@ -6,8 +6,6 @@ import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.login.LoginPanel;
 import grisu.jcommons.interfaces.InformationManager;
 import grisu.model.GrisuRegistryManager;
-import grisu.settings.ServerPropertiesManager;
-import grisu.utils.SeveralXMLHelpers;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -38,9 +36,9 @@ import javax.swing.SwingConstants;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 public class TemplateEditPanel extends JPanel implements
@@ -316,21 +314,21 @@ PropertyChangeListener, ActionListener {
 		if (panel_1 == null) {
 			panel_1 = new JPanel();
 			panel_1.setLayout(new FormLayout(new ColumnSpec[] {
-					FormFactory.RELATED_GAP_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC,
 					ColumnSpec.decode("max(18dlu;default):grow"),
-					FormFactory.RELATED_GAP_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC,
 					ColumnSpec.decode("default:grow"),
-					FormFactory.RELATED_GAP_COLSPEC,
-					FormFactory.DEFAULT_COLSPEC,
-					FormFactory.RELATED_GAP_COLSPEC,
-					FormFactory.DEFAULT_COLSPEC,
-					FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
-					FormFactory.RELATED_GAP_ROWSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC,
+					FormSpecs.DEFAULT_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC,
+					FormSpecs.DEFAULT_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+					FormSpecs.RELATED_GAP_ROWSPEC,
 					RowSpec.decode("max(97dlu;default):grow"),
-					FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("96dlu"),
-					FormFactory.RELATED_GAP_ROWSPEC,
-					FormFactory.DEFAULT_ROWSPEC,
-					FormFactory.RELATED_GAP_ROWSPEC, }));
+					FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("96dlu"),
+					FormSpecs.RELATED_GAP_ROWSPEC,
+					FormSpecs.DEFAULT_ROWSPEC,
+					FormSpecs.RELATED_GAP_ROWSPEC, }));
 			panel_1.add(getScrollPane(), "2, 2, 7, 1, fill, fill");
 			panel_1.add(getTabbedPane(), "2, 4, 7, 1, fill, fill");
 			panel_1.add(getButton(), "6, 6, right, default");

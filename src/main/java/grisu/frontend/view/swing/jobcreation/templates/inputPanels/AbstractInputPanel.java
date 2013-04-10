@@ -645,6 +645,8 @@ PropertyChangeListener {
 					}
 				}
 				method.invoke(jobObject, value);
+				
+				System.out.println("SETTING: "+bean+" : "+value);
 			}
 			applyFilters();
 		} catch (final Exception e) {

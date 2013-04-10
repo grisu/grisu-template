@@ -1,9 +1,11 @@
 package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
 import grisu.control.JobnameHelpers;
+import grisu.control.exceptions.RemoteFileSystemException;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.files.GridFileSelectionDialog;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
+import grisu.model.FileManager;
 import grisu.model.dto.GridFile;
 import grisu.model.job.JobDescription;
 
@@ -31,10 +33,10 @@ import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 public class SingleInputFile extends AbstractInputPanel {
-	
-	public static final String SET_JOBNAME = "setJobname"; 
 
-	
+	public static final String SET_JOBNAME = "setJobname";
+	public static final String SET_AS_STDIN = "setAsStdin";
+
 	protected JComboBox comboBox;
 	protected JButton button;
 	protected GridFileSelectionDialog dialog;
@@ -53,11 +55,9 @@ public class SingleInputFile extends AbstractInputPanel {
 			setLayout(new FormLayout(new ColumnSpec[] {
 					FormSpecs.RELATED_GAP_COLSPEC,
 					ColumnSpec.decode("center:max(35dlu;default):grow"),
-					FormSpecs.RELATED_GAP_COLSPEC,
-					FormSpecs.DEFAULT_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
 					FormSpecs.RELATED_GAP_COLSPEC, }, new RowSpec[] {
-					FormSpecs.RELATED_GAP_ROWSPEC,
-					FormSpecs.DEFAULT_ROWSPEC,
+					FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
 					FormSpecs.RELATED_GAP_ROWSPEC, }));
 			add(getComboBox(), "2, 2, fill, default");
 			add(getButton(), "4, 2");
@@ -65,13 +65,10 @@ public class SingleInputFile extends AbstractInputPanel {
 			setLayout(new FormLayout(new ColumnSpec[] {
 					FormSpecs.RELATED_GAP_COLSPEC,
 					ColumnSpec.decode("center:max(35dlu;default):grow"),
-					FormSpecs.RELATED_GAP_COLSPEC,
-					FormSpecs.DEFAULT_COLSPEC,
-					FormSpecs.RELATED_GAP_COLSPEC,
-					FormSpecs.DEFAULT_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
 					FormSpecs.RELATED_GAP_COLSPEC, }, new RowSpec[] {
-					FormSpecs.RELATED_GAP_ROWSPEC,
-					FormSpecs.DEFAULT_ROWSPEC,
+					FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
 					FormSpecs.RELATED_GAP_ROWSPEC, }));
 			add(getComboBox(), "2, 2, fill, default");
 			add(getButton(), "4, 2");
@@ -93,32 +90,49 @@ public class SingleInputFile extends AbstractInputPanel {
 		selectedFile = (String) getComboBox().getSelectedItem();
 
 		addValue("inputFileUrl", selectedFile);
-		
-		// setting jobname if configured in widget config
-		String jobnameCreate = getPanelProperty(SingleInputFile.SET_JOBNAME);
-		if ( "true".equalsIgnoreCase(jobnameCreate) || "count".equalsIgnoreCase(jobnameCreate) ) {
-			
-			String jobname = FilenameUtils.getBaseName(selectedFile);
-			final String sugJobname = getUserEnvironmentManager()
-					.calculateUniqueJobname(jobname);
 
+		if (Boolean.parseBoolean(getPanelProperty(SET_AS_STDIN))) {
 			try {
-				setValue("jobname", sugJobname);
+				setValue("stdin", FileManager.getFilename(selectedFile));
 			} catch (TemplateException e) {
-				myLogger.debug("Can't set jobname:"+e.getLocalizedMessage());
-			}
-		} else if ( "timestamp".equalsIgnoreCase(jobnameCreate) ) {
-			String jobname = FilenameUtils.getBaseName(selectedFile);
-			final String sugJobname = JobnameHelpers.calculateTimestampedJobname(jobname, JobnameHelpers.short_format);
-
-			try {
-				setValue("jobname", sugJobname);
-			} catch (TemplateException e) {
-				myLogger.debug("Can't set jobname:"+e.getLocalizedMessage());
+				myLogger.debug("Can't set stdin value: "
+						+ e.getLocalizedMessage());
+				return;
 			}
 		}
-		
-		addHistoryValue(selectedFile);
+
+		// setting jobname if configured in widget config
+		String jobnameCreate = getPanelProperty(SingleInputFile.SET_JOBNAME);
+		if (StringUtils.isNotBlank(selectedFile)) {
+			if ("true".equalsIgnoreCase(jobnameCreate)
+					|| "count".equalsIgnoreCase(jobnameCreate)) {
+
+				String jobname = FilenameUtils.getBaseName(selectedFile);
+				final String sugJobname = getUserEnvironmentManager()
+						.calculateUniqueJobname(jobname);
+
+				try {
+					setValue("jobname", sugJobname);
+				} catch (TemplateException e) {
+					myLogger.debug("Can't set jobname:"
+							+ e.getLocalizedMessage());
+				}
+			} else if ("timestamp".equalsIgnoreCase(jobnameCreate)) {
+				String jobname = FilenameUtils.getBaseName(selectedFile);
+				final String sugJobname = JobnameHelpers
+						.calculateTimestampedJobname(jobname,
+								JobnameHelpers.short_format);
+
+				try {
+					setValue("jobname", sugJobname);
+				} catch (TemplateException e) {
+					myLogger.debug("Can't set jobname:"
+							+ e.getLocalizedMessage());
+				}
+			}
+
+			addHistoryValue(selectedFile);
+		}
 
 	}
 
@@ -169,12 +183,12 @@ public class SingleInputFile extends AbstractInputPanel {
 			});
 
 			comboBox.getEditor().getEditorComponent()
-			.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyReleased(KeyEvent e) {
-					fileChanged();
-				}
-			});
+					.addKeyListener(new KeyAdapter() {
+						@Override
+						public void keyReleased(KeyEvent e) {
+							fileChanged();
+						}
+					});
 		}
 		return comboBox;
 	}

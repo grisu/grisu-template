@@ -51,13 +51,13 @@ public class InputFileParser extends SingleInputFile {
 			String[] fileLines = inputFileContent.split("\n");
 			for (String line : fileLines) {
 				System.out.println("line: " + line);
-				if (line.contains("%Mem")) {
+				if (line.toLowerCase().contains("%mem")) {
 					int startIndex = line.indexOf("=") + 1;
-					String mem = line.substring(startIndex, line.length() - 1);
+					String mem = line.substring(startIndex, line.length() - 1).trim();
 					setValue("memory", mem);
-				} else if (line.contains("%NProcShared")) {
+				} else if (line.toLowerCase().contains("%nprocshared")) {
 					int startIndex = line.indexOf("=") + 1;
-					String cpus = line.substring(startIndex);
+					String cpus = line.substring(startIndex).trim();
 					setValue("cpus", Integer.parseInt(cpus));
 				}
 			}

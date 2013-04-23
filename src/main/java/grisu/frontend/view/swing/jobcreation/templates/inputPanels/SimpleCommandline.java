@@ -1,5 +1,6 @@
 package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
+import grisu.control.JobnameHelpers;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.model.job.JobDescription;
@@ -13,6 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JComboBox;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -62,11 +66,26 @@ public class SimpleCommandline extends AbstractInputPanel {
 			}
 		}
 
-		// if ((lastCalculatedExecutable != null)
-		// && lastCalculatedExecutable.equals(exe)) {
-		// getTemplateObject().userInput(getPanelName(), commandline);
-		// return;
-		// }
+		// setting jobname if configured in widget config
+		String jobnameCreate = getPanelProperty(SingleInputFile.SET_JOBNAME);
+		if (StringUtils.isNotBlank(commandline)) {
+			if ("true".equalsIgnoreCase(jobnameCreate)
+					|| "exe".equalsIgnoreCase(jobnameCreate)) {
+
+				String jobname = exe + "_job";
+				final String sugJobname = getUserEnvironmentManager()
+						.calculateUniqueJobname(jobname);
+
+				try {
+					setValue("jobname", sugJobname);
+				} catch (TemplateException e) {
+					myLogger.debug("Can't set jobname:"
+							+ e.getLocalizedMessage());
+				}
+
+			}
+		}
+
 		setValue("commandline", commandline);
 
 		lastCalculatedExecutable = exe;
@@ -83,7 +102,6 @@ public class SimpleCommandline extends AbstractInputPanel {
 		getTemplateObject().userInput(getPanelName(), commandline);
 
 	}
-
 
 	private JComboBox getComboBox() {
 		if (comboBox == null) {
@@ -105,28 +123,28 @@ public class SimpleCommandline extends AbstractInputPanel {
 			});
 
 			comboBox.getEditor().getEditorComponent()
-			.addKeyListener(new KeyListener() {
+					.addKeyListener(new KeyListener() {
 
-				@Override
-				public void keyPressed(KeyEvent e) {
-					// System.out.println("Key pressed.");
-				}
+						@Override
+						public void keyPressed(KeyEvent e) {
+							// System.out.println("Key pressed.");
+						}
 
-				@Override
-				public void keyReleased(KeyEvent e) {
-					// System.out.println("Key released.");
-					try {
-						commandlineChanged();
-					} catch (TemplateException e1) {
+						@Override
+						public void keyReleased(KeyEvent e) {
+							// System.out.println("Key released.");
+							try {
+								commandlineChanged();
+							} catch (TemplateException e1) {
 								myLogger.error(e1);
-					}
-				}
+							}
+						}
 
-				@Override
-				public void keyTyped(KeyEvent e) {
-					// System.out.println("Key typed.");
-				}
-			});
+						@Override
+						public void keyTyped(KeyEvent e) {
+							// System.out.println("Key typed.");
+						}
+					});
 		}
 		return comboBox;
 	}

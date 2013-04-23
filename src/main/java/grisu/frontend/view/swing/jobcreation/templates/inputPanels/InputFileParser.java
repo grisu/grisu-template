@@ -1,12 +1,14 @@
 package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
-import org.apache.commons.lang3.StringUtils;
-
+import grisu.control.JobnameHelpers;
 import grisu.control.exceptions.RemoteFileSystemException;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.model.FileManager;
 import grisu.model.GrisuRegistryManager;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class InputFileParser extends SingleInputFile {
 
@@ -52,7 +54,6 @@ public class InputFileParser extends SingleInputFile {
 			boolean memorySpecifiedFlag=false;
 			long intMem;
 			for (String line : fileLines) {
-				System.out.println("line: " + line);
 				
 				if (line.toLowerCase().contains("%mem")) {
 //memory in N 8-byte words (N*8 bytes), or in KB, MB, GB, KW, MW or GW
@@ -88,14 +89,42 @@ public class InputFileParser extends SingleInputFile {
 					setValue("cpus", Integer.parseInt(cpus));
 				}
 			}
-			if(!memorySpecifiedFlag){ //Default value = 256M if memory is not specified
-				setValue("memory", "256M");
+			if(!memorySpecifiedFlag){ //Default value = 2G if memory is not specified
+				setValue("memory", "2G");
 			}
 
-		} catch (RemoteFileSystemException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (TemplateException e) {
-			e.printStackTrace();
+		}
+		
+		String jobnameCreate = getPanelProperty(SingleInputFile.SET_JOBNAME);
+		if (StringUtils.isNotBlank(selectedFile)) {
+			if ("true".equalsIgnoreCase(jobnameCreate)
+					|| "count".equalsIgnoreCase(jobnameCreate)) {
+
+				String jobname = FilenameUtils.getBaseName(selectedFile);
+				final String sugJobname = getUserEnvironmentManager()
+						.calculateUniqueJobname(jobname);
+
+				try {
+					setValue("jobname", sugJobname);
+				} catch (TemplateException e) {
+					myLogger.debug("Can't set jobname:"
+							+ e.getLocalizedMessage());
+				}
+			} else if ("timestamp".equalsIgnoreCase(jobnameCreate)) {
+				String jobname = FilenameUtils.getBaseName(selectedFile);
+				final String sugJobname = JobnameHelpers
+						.calculateTimestampedJobname(jobname,
+								JobnameHelpers.short_format);
+
+				try {
+					setValue("jobname", sugJobname);
+				} catch (TemplateException e) {
+					myLogger.debug("Can't set jobname:"
+							+ e.getLocalizedMessage());
+				}
+			}
 		}
 
 		addHistoryValue(selectedFile);

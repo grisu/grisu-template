@@ -173,7 +173,6 @@ public class TemplateObject {
 					
 					if ( ! (value instanceof String) ) {
 						throw new TemplateException("value not a string");
-						
 					}
 										
 					final Class[] parameterTypes = m.getParameterTypes();
@@ -219,7 +218,7 @@ public class TemplateObject {
 				}
 			} catch (final Exception e) {
 				throw new TemplateException("Can't set fixed key/value pair: "
-						+ key + "/" + value.toString());
+						+ key + "/" + value.toString(), e);
 			}
 
 			// jobObject.

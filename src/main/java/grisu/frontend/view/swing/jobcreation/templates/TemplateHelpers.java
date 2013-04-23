@@ -32,6 +32,9 @@ import org.netbeans.validation.api.Validator;
 import org.netbeans.validation.api.builtin.Validators;
 import org.netbeans.validation.api.ui.ValidationPanel;
 
+import com.beust.jcommander.internal.Maps;
+import com.google.common.collect.LinkedHashMultimap;
+
 public class TemplateHelpers {
 
 	public static final String COMMANDLINE_KEY = "commandline";
@@ -286,7 +289,8 @@ public class TemplateHelpers {
 	public static Map<String, String> getAllStaticValues(List<String> lines)
 	throws TemplateException {
 
-		final Map<String, String> result = new HashMap<String, String>();
+
+		final Map<String, String> result = Maps.newHashMap();
 		for (String line : lines) {
 
 			line = line.trim();

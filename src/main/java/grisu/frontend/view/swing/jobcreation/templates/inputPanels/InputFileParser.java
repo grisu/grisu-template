@@ -1,14 +1,19 @@
 package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
 import grisu.control.JobnameHelpers;
-import grisu.control.exceptions.RemoteFileSystemException;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.model.FileManager;
 import grisu.model.GrisuRegistryManager;
 
+import java.util.logging.Level;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
+
+
 
 public class InputFileParser extends SingleInputFile {
 
@@ -33,9 +38,17 @@ public class InputFileParser extends SingleInputFile {
 		if (Boolean.parseBoolean(getPanelProperty(SET_AS_STDIN))) {
 			try {
 				setValue("stdin", FileManager.getFilename(selectedFile));
-			} catch (TemplateException e) {
+			} catch (TemplateException ex) {
 				myLogger.debug("Can't set stdin value: "
-						+ e.getLocalizedMessage());
+						+ ex.getLocalizedMessage());
+				final String msg = ex.getLocalizedMessage();
+				final ErrorInfo info = new ErrorInfo("Job properties error", msg,
+						null, "Error", null, Level.SEVERE, null);
+
+				final JXErrorPane pane = new JXErrorPane();
+				pane.setErrorInfo(info);
+
+				JXErrorPane.showDialog(getParent(), pane);
 				return;
 			}
 		}
@@ -93,8 +106,17 @@ public class InputFileParser extends SingleInputFile {
 				setValue("memory", "2G");
 			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
+			
+		} catch (Exception ex) {
+			final String msg = ex.getLocalizedMessage();
+			final ErrorInfo info = new ErrorInfo("Input file error", msg,
+					null, "Error", null, Level.SEVERE, null);
+
+			final JXErrorPane pane = new JXErrorPane();
+			pane.setErrorInfo(info);
+
+			JXErrorPane.showDialog(getParent(), pane);
+			//e.printStackTrace();
 		}
 		
 		String jobnameCreate = getPanelProperty(SingleInputFile.SET_JOBNAME);

@@ -28,7 +28,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
@@ -45,7 +45,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 public class GrisuTemplateApp extends GrisuApplicationWindow implements
 PropertyChangeListener {
 
-	static final Logger myLogger = Logger.getLogger(GrisuTemplateApp.class
+	static final Logger myLogger = LoggerFactory.getLogger(GrisuTemplateApp.class
 			.getName());
 	
 	private static void configLogging() {
@@ -142,7 +142,7 @@ PropertyChangeListener {
 			return panel;
 
 		} catch (final Exception e) {
-			myLogger.error(e);
+			myLogger.error(e.getLocalizedMessage(), e);
 			return null;
 		}
 	}
@@ -312,7 +312,7 @@ PropertyChangeListener {
 					setVisible(true);
 
 				} catch (final Exception e) {
-					myLogger.error(e);
+					myLogger.error(e.getLocalizedMessage(), e);
 				}
 			}
 		});

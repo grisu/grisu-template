@@ -60,7 +60,7 @@ PropertyChangeListener {
 		add(scrollPane, "2, 2, fill, fill");
 
 		scrollPane.setViewportView(textArea);
-
+		textArea.setEditable(false);
 		cancelButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
@@ -100,14 +100,19 @@ PropertyChangeListener {
 	}
 
 	public void fillTextBox() {
-		if (job == null) {
-			textArea.setText("No job associated yet.");
-		}
-		final StringBuffer temp = new StringBuffer();
-		for (final String line : job.getSubmissionLog()) {
-			temp.append(line + "\n");
-		}
-		textArea.setText(temp.toString());
+		
+		SwingUtilities.invokeLater(new Thread() {
+			public void run() {
+				if (job == null) {
+					textArea.setText("No job associated yet.");
+				}
+				final StringBuffer temp = new StringBuffer();
+				for (final String line : job.getSubmissionLog()) {
+					temp.append(line + "\n");
+				}
+				textArea.setText(temp.toString());
+			}
+		});
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {

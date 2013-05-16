@@ -269,10 +269,10 @@ public class ApplicationSubscribePanel extends JPanel {
 					}
 
 					final File oldfile = new File(Environment
-							.getTemplateDirectory(), (String) temp[0]
+							.getIndividualTemplateDirectory(), (String) temp[0]
 									+ ".template");
 					final File newFile = new File(Environment
-							.getTemplateDirectory(), s + ".template");
+							.getIndividualTemplateDirectory(), s + ".template");
 
 					try {
 						FileUtils.copyFile(oldfile, newFile);
@@ -323,7 +323,7 @@ public class ApplicationSubscribePanel extends JPanel {
 					}
 
 					final File file = new File(Environment
-							.getTemplateDirectory(), tempname + ".template");
+							.getIndividualTemplateDirectory(), tempname + ".template");
 
 					if (file.exists()) {
 						file.delete();
@@ -375,7 +375,7 @@ public class ApplicationSubscribePanel extends JPanel {
 					for (final Object name : getLocalList().getSelectedValues()) {
 
 						final File templateFile = new File(Environment
-								.getTemplateDirectory(), (String) name
+								.getIndividualTemplateDirectory(), (String) name
 								+ ".template");
 						try {
 							final TemplateEditDialog dialog = new TemplateEditDialog(
@@ -453,7 +453,7 @@ public class ApplicationSubscribePanel extends JPanel {
 					}
 
 					final File file = new File(Environment
-							.getTemplateDirectory(), s + ".template");
+							.getIndividualTemplateDirectory(), s + ".template");
 
 					if (file.exists()) {
 						file.delete();
@@ -528,10 +528,10 @@ public class ApplicationSubscribePanel extends JPanel {
 					}
 
 					final File oldfile = new File(Environment
-							.getTemplateDirectory(), (String) temp[0]
+							.getIndividualTemplateDirectory(), (String) temp[0]
 									+ ".template");
 					final File newFile = new File(Environment
-							.getTemplateDirectory(), s + ".template");
+							.getIndividualTemplateDirectory(), s + ".template");
 
 					try {
 						FileUtils.moveFile(oldfile, newFile);

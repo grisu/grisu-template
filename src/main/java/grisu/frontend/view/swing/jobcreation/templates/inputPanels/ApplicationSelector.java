@@ -225,6 +225,6 @@ public class ApplicationSelector extends AbstractInputPanel {
 
 	@Override
 	protected void templateRefresh(JobDescription jobObject) {
-
+		jobObject.setApplication(getValueAsString());
 	}
 }

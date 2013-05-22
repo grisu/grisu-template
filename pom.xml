@@ -47,11 +47,6 @@
 			</exclusions>
 		</dependency>
 
-        <dependency>
-            <groupId>grisu.backend</groupId>
-            <artifactId>grisu-core</artifactId>
-            <version>${grisu.version}</version>
-        </dependency>
 		<!-- we can't include the bouncy castle library in our assembled binary
 			so it has to put in the classpath in some other way. You could either have 
 			the bcprov jar in the same directory as your executable jar, or you just 

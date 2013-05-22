@@ -1,5 +1,9 @@
 package grisu.frontend.view.swing;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
 import grisu.control.ServiceInterface;
 import grisu.control.TemplateManager;
 import grisu.control.exceptions.NoSuchTemplateException;
@@ -12,29 +16,18 @@ import grisu.frontend.view.swing.utils.DefaultExceptionHandler;
 import grisu.model.GrisuRegistryManager;
 import grisu.settings.ClientPropertiesManager;
 import grisu.settings.Environment;
-
-import java.awt.EventQueue;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.concurrent.CountDownLatch;
-import java.util.logging.Level;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.util.StatusPrinter;
+import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
 
 /**
  * The main entry class for the template client.
@@ -90,7 +83,7 @@ public class GrisuTemplateApp extends GrisuApplicationWindow implements
         LoginManager.setClientVersion(grisu.jcommons.utils.Version
                 .get("grisu-template"));
 
-        // make sure that at least the generic template is available
+//		make sure that at least the generic template is available
         ClientPropertiesManager.getServerTemplates();
 
         myLogger.debug("Grisu template client. Starting...");

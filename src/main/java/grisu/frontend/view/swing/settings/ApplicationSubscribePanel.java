@@ -268,8 +268,8 @@ public class ApplicationSubscribePanel extends JPanel {
 						return;
 					}
 
-					final File oldfile = new File(Environment.getIndividualTemplateDirectory()
-							, (String) temp[0]
+					final File oldfile = new File(Environment
+							.getIndividualTemplateDirectory(), (String) temp[0]
 									+ ".template");
 					final File newFile = new File(Environment
 							.getIndividualTemplateDirectory(), s + ".template");

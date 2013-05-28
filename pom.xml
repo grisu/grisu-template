@@ -4,7 +4,7 @@
 	<groupId>grisu.frontend</groupId>
 	<artifactId>grisu-template-client</artifactId>
 	<packaging>jar</packaging>
-	<version>0.15-SNAPSHOT</version>
+	<version>0.14-SNAPSHOT</version>
 
 	<name>Grisu template client</name>
 	<description>A grisu swing client which uses templates to render app-specific job creation panels.</description>
@@ -35,10 +35,10 @@
 	<dependencies>
 
 		<!-- the main grisu dependency. -->
-        <dependency>
-            <groupId>grisu.frontend</groupId>
-            <artifactId>grisu-client-swing</artifactId>
-            <version>${grisu.version}</version>
+		<dependency>
+			<groupId>grisu.frontend</groupId>
+			<artifactId>grisu-client-swing</artifactId>
+			<version>${grisu.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>java-getopt</artifactId>
@@ -47,7 +47,7 @@
 			</exclusions>
 		</dependency>
 
-		<!-- we can't include the bouncy castle library in our assembled binary
+		<!-- we can't include the bouncy castle library in our assembled binary 
 			so it has to put in the classpath in some other way. You could either have 
 			the bcprov jar in the same directory as your executable jar, or you just 
 			do nothing. Grisu will try to download it in the background and put it in 
@@ -537,7 +537,7 @@
 		<version>0.25</version>
 	</parent>
 	<properties>
-		<grisu.version>0.6.5-SNAPSHOT</grisu.version>
+		<grisu.version>0.6.6</grisu.version>
 	</properties>
 </project>
 

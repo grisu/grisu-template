@@ -60,10 +60,6 @@
 		<!-- this is needed for shibboleth login don't disable it for now even 
 			if you don't want to use shibboleth, I reckon you'll get classpath errors -->
 
-
-
-
-
 		<!-- test dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -534,10 +530,10 @@
 	<parent>
 		<groupId>nz.org.nesi</groupId>
 		<artifactId>nesi</artifactId>
-		<version>0.25</version>
+		<version>1.0</version>
 	</parent>
 	<properties>
-		<grisu.version>0.6.6</grisu.version>
+		<grisu.version>0.7</grisu.version>
 	</properties>
 </project>
 

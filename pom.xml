@@ -47,17 +47,18 @@
 			</exclusions>
 		</dependency>
 
-		<!-- we can't include the bouncy castle library in our assembled binary 
-			so it has to put in the classpath in some other way. You could either have 
-			the bcprov jar in the same directory as your executable jar, or you just 
-			do nothing. Grisu will try to download it in the background and put it in 
+
+		<!-- we can't include the bouncy castle library in our assembled binary
+			so it has to put in the classpath in some other way. You could either have
+			the bcprov jar in the same directory as your executable jar, or you just
+			do nothing. Grisu will try to download it in the background and put it in
 			the classpath once your application is executed the first time... -->
 
-		<!-- further grisu dependencies, incuded by default but can be disabled 
+		<!-- further grisu dependencies, incuded by default but can be disabled
 			if not needed and you want a smaller assembly -->
-		<!-- the grisu-core dependency is needed when you want to connect to a 
+		<!-- the grisu-core dependency is needed when you want to connect to a
 			local backend (which is the only supported backend for grisu 0.3 at the moment -->
-		<!-- this is needed for shibboleth login don't disable it for now even 
+		<!-- this is needed for shibboleth login don't disable it for now even
 			if you don't want to use shibboleth, I reckon you'll get classpath errors -->
 
 		<!-- test dependencies -->
@@ -85,7 +86,7 @@
   </scm>
 
 	<build>
-	
+
 		<plugins>
 
 			<!-- replace version in file -->
@@ -116,7 +117,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- you can disable the assembly plugin if you want, your builds will 
+			<!-- you can disable the assembly plugin if you want, your builds will
 				be faster I find it quite handy to have maven build an executable jar, though -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -277,7 +278,7 @@
 										</replacement>
 									</replacements>
 								</configuration>
-							</execution>							
+							</execution>
 						</executions>
 					</plugin>
 
@@ -435,9 +436,9 @@
 							<preinstallScriptlet>
 								<script>echo "Installing Grisu Template client..."</script>
 							</preinstallScriptlet>
-							<!-- <postinstallScriptlet> <scriptFile>src/main/scripts/postinstall</scriptFile> 
-								<fileEncoding>utf-8</fileEncoding> </postinstallScriptlet> <preremoveScriptlet> 
-								<scriptFile>src/main/scripts/preremove</scriptFile> <fileEncoding>utf-8</fileEncoding> 
+							<!-- <postinstallScriptlet> <scriptFile>src/main/scripts/postinstall</scriptFile>
+								<fileEncoding>utf-8</fileEncoding> </postinstallScriptlet> <preremoveScriptlet>
+								<scriptFile>src/main/scripts/preremove</scriptFile> <fileEncoding>utf-8</fileEncoding>
 								</preremoveScriptlet> -->
 						</configuration>
 					</plugin>
@@ -533,7 +534,7 @@
 		<version>1.0</version>
 	</parent>
 	<properties>
-		<grisu.version>0.7</grisu.version>
+		<grisu.version>0.8-SNAPSHOT</grisu.version>
 	</properties>
 </project>
 

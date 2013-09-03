@@ -1,26 +1,23 @@
 package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
+import com.jgoodies.forms.layout.RowSpec;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.frontend.view.swing.jobcreation.templates.validators.JobnameValidator;
 import grisu.model.job.JobDescription;
+import org.apache.commons.lang.StringUtils;
+import org.netbeans.validation.api.Validator;
 
+import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
-
-import org.apache.commons.lang.StringUtils;
-import org.netbeans.validation.api.Validator;
-
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.FormSpecs;
-import com.jgoodies.forms.layout.RowSpec;
 
 public class Jobname extends AbstractInputPanel {
 
@@ -104,7 +101,14 @@ public class Jobname extends AbstractInputPanel {
 	protected void jobPropertyChanged(PropertyChangeEvent e) {
 
 		if ("jobname".equals(e.getPropertyName())) {
-			final String newJobname = (String) e.getNewValue();
+            String newJobname = (String) e.getNewValue();
+            if ( StringUtils.isBlank(newJobname)) {
+                return;
+            }
+            newJobname = newJobname.replace(":", "_");
+            newJobname = newJobname.replace("\\", "_");
+            newJobname = newJobname.replace("/", "_");
+            newJobname = newJobname.replaceAll("\\s", "_");
 			getJobnameTextField().setText(newJobname);
 		}
 

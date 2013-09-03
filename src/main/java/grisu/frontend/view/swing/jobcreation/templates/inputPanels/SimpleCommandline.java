@@ -1,10 +1,15 @@
 package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
-import grisu.control.JobnameHelpers;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
+import com.jgoodies.forms.layout.RowSpec;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.model.job.JobDescription;
+import org.apache.commons.lang3.StringUtils;
 
+import javax.swing.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -12,16 +17,6 @@ import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.JComboBox;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.FormSpecs;
-import com.jgoodies.forms.layout.RowSpec;
 
 public class SimpleCommandline extends AbstractInputPanel {
 	private JComboBox comboBox;
@@ -66,25 +61,36 @@ public class SimpleCommandline extends AbstractInputPanel {
 			}
 		}
 
-		// setting jobname if configured in widget config
-		String jobnameCreate = getPanelProperty(SingleInputFile.SET_JOBNAME);
-		if (StringUtils.isNotBlank(commandline)) {
-			if ("true".equalsIgnoreCase(jobnameCreate)
-					|| "exe".equalsIgnoreCase(jobnameCreate)) {
 
-				String jobname = exe + "_job";
-				final String sugJobname = getUserEnvironmentManager()
-						.calculateUniqueJobname(jobname);
+        String jobnameCreate = getPanelProperty(SingleInputFile.SET_JOBNAME);
+        if (StringUtils.isNotBlank(commandline)) {
+            if ("true".equalsIgnoreCase(jobnameCreate)
+                    || "exe".equalsIgnoreCase(jobnameCreate)) {
 
-				try {
-					setValue("jobname", sugJobname);
-				} catch (TemplateException e) {
-					myLogger.debug("Can't set jobname:"
-							+ e.getLocalizedMessage());
-				}
+                final String temp = exe;
+                // temporarily set jobname and process unique one in the background
+                setValue("jobname", temp+"_job");
 
-			}
-		}
+                new Thread() {
+                    public void run() {
+
+                        // setting jobname if configured in widget config
+
+                        String jobname = temp + "_job";
+                        final String sugJobname = getUserEnvironmentManager()
+                                .calculateUniqueJobname(jobname);
+
+                        try {
+                            setValue("jobname", sugJobname);
+                        } catch (TemplateException e) {
+                            myLogger.debug("Can't set jobname:"
+                                    + e.getLocalizedMessage());
+                        }
+                    }
+                }.start();
+            }
+        }
+
 
 		setValue("commandline", commandline);
 

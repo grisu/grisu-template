@@ -3,6 +3,7 @@ package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 import grisu.control.ServiceInterface;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.control.jobMonitoring.RunningJobManager;
+import grisu.frontend.control.jobMonitoring.RunningJobManagerImpl;
 import grisu.frontend.view.swing.files.GridFileSelectionDialog;
 import grisu.frontend.view.swing.files.open.FileDialogManager;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
@@ -12,31 +13,20 @@ import grisu.model.GrisuRegistryManager;
 import grisu.model.UserEnvironmentManager;
 import grisu.model.dto.GridFile;
 import grisu.model.job.JobDescription;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.vpac.historyRepeater.HistoryManager;
 
-import java.awt.Dimension;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.text.JTextComponent;
+import java.awt.*;
 import java.beans.Beans;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.ListSelectionModel;
-import javax.swing.border.TitledBorder;
-import javax.swing.text.JTextComponent;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.vpac.historyRepeater.HistoryManager;
 
 public abstract class AbstractInputPanel extends JPanel implements
 PropertyChangeListener {
@@ -63,7 +53,7 @@ PropertyChangeListener {
 
 	public static final String APPLICATION = "application";
 	public static final String TEMPLATENAME = "templatename";
-	
+
 	private static final String HELP = "help";
 	public final UUID id;
 
@@ -316,7 +306,7 @@ PropertyChangeListener {
 	}
 
 	public GridFileSelectionDialog getFileDialog(String templateName) {
-		
+
 		return fdm.getFileDialog(templateName);
 
 	}
@@ -586,10 +576,10 @@ PropertyChangeListener {
 		this.si = si;
 		this.uem = GrisuRegistryManager.getDefault(si)
 				.getUserEnvironmentManager();
-		this.rjm = RunningJobManager.getDefault(si);
+		this.rjm = RunningJobManagerImpl.getDefault(si);
 		this.hm = GrisuRegistryManager.getDefault(si).getHistoryManager();
 		this.fdm = FileDialogManager.getDefault(si);
-		
+
 	}
 
 	protected void setValue(String bean, Object value) throws TemplateException {
@@ -645,7 +635,7 @@ PropertyChangeListener {
 					}
 				}
 				method.invoke(jobObject, value);
-				
+
 				//System.out.println("SETTING: "+bean+" : "+value);
 			}
 			applyFilters();

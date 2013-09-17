@@ -1,30 +1,23 @@
 package grisu.frontend.view.swing.jobcreation;
 
-import grisu.control.ServiceInterface;
-import grisu.control.exceptions.JobPropertiesException;
-import grisu.control.exceptions.JobSubmissionException;
-import grisu.control.exceptions.TemplateException;
-import grisu.frontend.control.jobMonitoring.RunningJobManager;
-import grisu.frontend.model.job.GrisuJob;
-import grisu.model.GrisuRegistryManager;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-
-import org.apache.log4j.Logger;
-
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
+import grisu.control.ServiceInterface;
+import grisu.control.exceptions.JobPropertiesException;
+import grisu.control.exceptions.JobSubmissionException;
+import grisu.control.exceptions.TemplateException;
+import grisu.frontend.control.jobMonitoring.RunningJobManagerImpl;
+import grisu.frontend.model.job.GrisuJob;
+import grisu.model.GrisuRegistryManager;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 public class SubmissionMonitorPanel extends JPanel implements
 PropertyChangeListener {
@@ -100,7 +93,7 @@ PropertyChangeListener {
 	}
 
 	public void fillTextBox() {
-		
+
 		SwingUtilities.invokeLater(new Thread() {
 			public void run() {
 				if (job == null) {
@@ -159,7 +152,7 @@ PropertyChangeListener {
 					setJobObject(job);
 					final String fqan = GrisuRegistryManager.getDefault(si)
 					.getUserEnvironmentManager().getCurrentFqan();
-					RunningJobManager.getDefault(si).createJob(job, fqan);
+					RunningJobManagerImpl.getDefault(si).createJob(job, fqan);
 					// job.createJob();
 					job.submitJob();
 

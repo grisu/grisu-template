@@ -8,7 +8,7 @@ import grisu.control.ServiceInterface;
 import grisu.control.exceptions.JobPropertiesException;
 import grisu.control.exceptions.JobSubmissionException;
 import grisu.control.exceptions.TemplateException;
-import grisu.frontend.control.jobMonitoring.RunningJobManagerImpl;
+import grisu.frontend.control.jobMonitoring.RunningJobManagerManager;
 import grisu.frontend.model.job.GrisuJob;
 import grisu.model.GrisuRegistryManager;
 import org.apache.log4j.Logger;
@@ -152,7 +152,7 @@ PropertyChangeListener {
 					setJobObject(job);
 					final String fqan = GrisuRegistryManager.getDefault(si)
 					.getUserEnvironmentManager().getCurrentFqan();
-					RunningJobManagerImpl.getDefault(si).createJob(job, fqan);
+                    RunningJobManagerManager.getDefault(si).createJob(job, fqan);
 					// job.createJob();
 					job.submitJob();
 

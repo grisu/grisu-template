@@ -3,7 +3,7 @@ package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 import grisu.control.ServiceInterface;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.control.jobMonitoring.RunningJobManager;
-import grisu.frontend.control.jobMonitoring.RunningJobManagerImpl;
+import grisu.frontend.control.jobMonitoring.RunningJobManagerManager;
 import grisu.frontend.view.swing.files.GridFileSelectionDialog;
 import grisu.frontend.view.swing.files.open.FileDialogManager;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
@@ -576,7 +576,7 @@ PropertyChangeListener {
 		this.si = si;
 		this.uem = GrisuRegistryManager.getDefault(si)
 				.getUserEnvironmentManager();
-		this.rjm = RunningJobManagerImpl.getDefault(si);
+		this.rjm = RunningJobManagerManager.getDefault(si);
 		this.hm = GrisuRegistryManager.getDefault(si).getHistoryManager();
 		this.fdm = FileDialogManager.getDefault(si);
 

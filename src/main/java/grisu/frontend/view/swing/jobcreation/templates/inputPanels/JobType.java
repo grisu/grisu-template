@@ -1,25 +1,20 @@
 package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
+import com.jgoodies.forms.layout.RowSpec;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.model.job.JobDescription;
+import org.apache.commons.lang.StringUtils;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.JRadioButton;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.jgoodies.forms.factories.FormFactory;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.RowSpec;
 
 public class JobType extends AbstractInputPanel implements ActionListener {
 
@@ -49,14 +44,14 @@ public class JobType extends AbstractInputPanel implements ActionListener {
 			setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		}
 		setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("69px"),
-				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC, ColumnSpec.decode("69px"),
+				FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
 				ColumnSpec.decode("93px"),
-				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
+				FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
 				ColumnSpec.decode("50px:grow"),
-				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
-				FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("23px"),
-				FormFactory.RELATED_GAP_ROWSPEC, }));
+				FormSpecs.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+				FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("23px"),
+				FormSpecs.RELATED_GAP_ROWSPEC, }));
 
 		add(getSingleRadioBox(), "2, 2, left, top");
 		add(getThreadedRadioBox(), "4, 2, left, top");
@@ -197,17 +192,17 @@ public class JobType extends AbstractInputPanel implements ActionListener {
 		if (StringUtils.isBlank(last)) {
 			final int cpus = getJobSubmissionObject().getCpus();
 			if (cpus == 1) {
-				getSingleRadioBox().setSelected(true);
+				getSingleRadioBox().doClick();
 			} else {
-				getMpiRadioBox().setSelected(true);
+				getMpiRadioBox().doClick();
 			}
 		} else {
 			if (SINGLE.equals(last)) {
-				getSingleRadioBox().setSelected(true);
+				getSingleRadioBox().doClick();
 			} else if (THREADED.equals(last)) {
-				getThreadedRadioBox().setSelected(true);
+				getThreadedRadioBox().doClick();
 			} else if (MPI.equals(last)) {
-				getMpiRadioBox().setSelected(true);
+				getMpiRadioBox().doClick();
 			} else {
 				myLogger.error("Value: " + last
 						+ " not a valid value for Jobtype.");

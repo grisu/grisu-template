@@ -15,9 +15,9 @@ import javax.swing.JLabel;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 public class CheckBox extends AbstractInputPanel {
@@ -31,12 +31,12 @@ public class CheckBox extends AbstractInputPanel {
 			throws TemplateException {
 		super(templateName, config);
 		setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
+				FormSpecs.LABEL_COMPONENT_GAP_COLSPEC,
 				ColumnSpec.decode("21px:grow"),
-				FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("21px"),
-				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
-				FormFactory.RELATED_GAP_ROWSPEC, RowSpec.decode("21px"),
-				FormFactory.RELATED_GAP_ROWSPEC, }));
+				FormSpecs.RELATED_GAP_COLSPEC, ColumnSpec.decode("21px"),
+				FormSpecs.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+				FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("21px"),
+				FormSpecs.RELATED_GAP_ROWSPEC, }));
 		add(getCheckBox(), "2, 2, 3, 1, fill, top");
 		// if (displayHelpLabel()) {
 		// add(getHelpLabel());

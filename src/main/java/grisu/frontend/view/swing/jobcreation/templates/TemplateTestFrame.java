@@ -1,18 +1,10 @@
 package grisu.frontend.view.swing.jobcreation.templates;
 
-import grisu.backend.info.InformationManagerManager;
-import grisu.backend.model.job.gt4.GT4Submitter;
-import grisu.backend.model.job.gt5.RSLCreationException;
-import grisu.backend.model.job.gt5.RSLFactory;
 import grisu.control.ServiceInterface;
 import grisu.control.exceptions.JobPropertiesException;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.view.swing.login.GrisuSwingClient;
 import grisu.frontend.view.swing.login.LoginPanel;
-import grisu.jcommons.interfaces.InformationManager;
-import grisu.model.GrisuRegistryManager;
-import grisu.settings.ServerPropertiesManager;
-import grisu.utils.SeveralXMLHelpers;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -47,9 +39,9 @@ import javax.swing.SwingConstants;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 public class TemplateTestFrame extends JFrame implements
@@ -123,9 +115,9 @@ PropertyChangeListener, ActionListener, GrisuSwingClient {
 		}
 	}
 
-	public static final InformationManager informationManager = InformationManagerManager
-			.getInformationManager(ServerPropertiesManager
-					.getInformationManagerConf());
+//	public static final InformationManager informationManager = InformationManagerManager
+//			.getInformationManager(ServerPropertiesManager
+//					.getInformationManagerConf());
 
 	public static String getStackTrace(Throwable t) {
 		final StringWriter stringWritter = new StringWriter();
@@ -384,22 +376,22 @@ PropertyChangeListener, ActionListener, GrisuSwingClient {
 		if (panel_1 == null) {
 			panel_1 = new JPanel();
 			panel_1.setLayout(new FormLayout(new ColumnSpec[] {
-					FormFactory.RELATED_GAP_COLSPEC,
-					FormFactory.DEFAULT_COLSPEC,
-					FormFactory.RELATED_GAP_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC,
+					FormSpecs.DEFAULT_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC,
 					ColumnSpec.decode("default:grow"),
-					FormFactory.RELATED_GAP_COLSPEC,
-					FormFactory.DEFAULT_COLSPEC,
-					FormFactory.RELATED_GAP_COLSPEC,
-					FormFactory.DEFAULT_COLSPEC,
-					FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
-					FormFactory.RELATED_GAP_ROWSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC,
+					FormSpecs.DEFAULT_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC,
+					FormSpecs.DEFAULT_COLSPEC,
+					FormSpecs.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+					FormSpecs.RELATED_GAP_ROWSPEC,
 					RowSpec.decode("default:grow"),
-					FormFactory.RELATED_GAP_ROWSPEC,
+					FormSpecs.RELATED_GAP_ROWSPEC,
 					RowSpec.decode("max(79dlu;default):grow"),
-					FormFactory.RELATED_GAP_ROWSPEC,
-					FormFactory.DEFAULT_ROWSPEC,
-					FormFactory.RELATED_GAP_ROWSPEC, }));
+					FormSpecs.RELATED_GAP_ROWSPEC,
+					FormSpecs.DEFAULT_ROWSPEC,
+					FormSpecs.RELATED_GAP_ROWSPEC, }));
 			panel_1.add(getScrollPane(), "2, 2, 7, 1, fill, fill");
 			panel_1.add(getTabbedPane(), "2, 4, 7, 1, fill, fill");
 			panel_1.add(getOpenFileButton(), "2, 6, left, default");
@@ -508,24 +500,24 @@ PropertyChangeListener, ActionListener, GrisuSwingClient {
 				getGt5TextArea().setCaretPosition(0);
 				return;
 			}
-
-			final String gt4rsl = GT4Submitter.createJobSubmissionDescription(
-					SeveralXMLHelpers.fromString(jsdl),
-					null);
-			getGt4TextArea().setText(gt4rsl);
-
-			String fqan = GrisuRegistryManager.getDefault(si)
-					.getUserEnvironmentManager().getCurrentFqan();
-			RSLFactory f = RSLFactory.getRSLFactory();
-			String gt5rsl = "";
-			try {
-				gt5rsl = f.create(SeveralXMLHelpers.fromString(jsdl), fqan)
-						.toString();
-			} catch (RSLCreationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			getGt5TextArea().setText(gt5rsl);
+//
+//			final String gt4rsl = GT4Submitter.createJobSubmissionDescription(
+//					SeveralXMLHelpers.fromString(jsdl),
+//					null);
+//			getGt4TextArea().setText(gt4rsl);
+//
+//			String fqan = GrisuRegistryManager.getDefault(si)
+//					.getUserEnvironmentManager().getCurrentFqan();
+//			RSLFactory f = RSLFactory.getRSLFactory();
+//			String gt5rsl = "";
+//			try {
+//				gt5rsl = f.create(SeveralXMLHelpers.fromString(jsdl), fqan)
+//						.toString();
+//			} catch (RSLCreationException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			getGt5TextArea().setText(gt5rsl);
 
 		}
 	}

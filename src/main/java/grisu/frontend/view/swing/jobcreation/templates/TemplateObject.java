@@ -7,6 +7,7 @@ import grisu.control.exceptions.TemplateException;
 import grisu.frontend.model.job.GrisuJob;
 import grisu.frontend.view.swing.jobcreation.templates.inputPanels.AbstractInputPanel;
 import grisu.model.job.JobDescription;
+import grisu.utils.StringHelpers;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -143,7 +144,12 @@ public class TemplateObject {
 			Object value = fixedValues.get(key);
 
 			final Method[] methods = jobObject.getClass().getMethods();
+			
+			boolean addMethod = false;
+			String add_value = null;
 
+			int add_nr_args = -1;
+			
 			for (final Method m : methods) {
 
 				if (m.getName().equals("set" + StringUtils.capitalize(key))) {
@@ -163,19 +169,56 @@ public class TemplateObject {
 									+ "/" + value.toString(), e);
 						}
 					}
+				} else if ( m.getName().equals("add" + StringUtils.capitalize(key) )) {
+					
+					if ( ! (value instanceof String) ) {
+						throw new TemplateException("value not a string");
+					}
+										
+					final Class[] parameterTypes = m.getParameterTypes();
+					
+					add_nr_args = parameterTypes.length;
+					
+					if ( parameterTypes.length == 1 || parameterTypes.length == 2 ) {
+							addMethod = true;
+							add_value = (String)value;
+							break;
+					}
+
+
 				}
 
 			}
 
 			Method method = null;
 			try {
-
-				method = jobObject.getClass().getMethod(
-						"set" + StringUtils.capitalize(key), value.getClass());
-				method.invoke(jobObject, value);
+				if ( ! addMethod ) {
+					method = jobObject.getClass().getMethod(
+							"set" + StringUtils.capitalize(key), value.getClass());
+					method.invoke(jobObject, value);
+				} else {
+					if ( add_nr_args == 1 ) {
+						
+						for ( String token : add_value.split(";")) {
+						
+							method = jobObject.getClass().getMethod(
+								"add" + StringUtils.capitalize(key), String.class);
+							method.invoke(jobObject, token);
+						}
+					} else if ( add_nr_args == 2 ) {
+						Map<String, String> map = StringHelpers.stringToMap(add_value);
+						for ( String propkey : map.keySet() ) {
+							method = jobObject.getClass().getMethod(
+								"add"+StringUtils.capitalize(key), String.class, String.class);
+							method.invoke(jobObject, propkey, map.get(propkey));
+						}
+					} else {
+						throw new TemplateException("Invalid value: "+value);
+					}
+				}
 			} catch (final Exception e) {
 				throw new TemplateException("Can't set fixed key/value pair: "
-						+ key + "/" + value.toString());
+						+ key + "/" + value.toString(), e);
 			}
 
 			// jobObject.

@@ -23,9 +23,9 @@ import org.apache.commons.lang.StringUtils;
 import org.bushe.swing.event.EventBus;
 import org.bushe.swing.event.EventSubscriber;
 
-import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 public class ApplicationVersionSelector extends AbstractInputPanel implements
@@ -40,16 +40,18 @@ EventSubscriber<FqanEvent> {
 	private String lastApplication = null;
 
 	private Thread appVersionThread = null;
+	
+	private Version preferredVersion = null;
 
 	public ApplicationVersionSelector(String templateName, PanelConfig config)
 			throws TemplateException {
 		super(templateName, config);
 		setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.RELATED_GAP_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("max(103dlu;default):grow"),
-				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, }));
+				FormSpecs.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+				FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC, }));
 		add(getComboBox(), "2, 2, fill, default");
 
 		EventBus.subscribe(FqanEvent.class, this);
@@ -125,7 +127,7 @@ EventSubscriber<FqanEvent> {
 		if (!isInitFinished()) {
 			return;
 		}
-
+		
 		if (Constants.APPLICATIONNAME_KEY.equals(e.getPropertyName())) {
 			final String app = (String) e.getNewValue();
 			if (StringUtils.isBlank(app)) {
@@ -133,6 +135,15 @@ EventSubscriber<FqanEvent> {
 			}
 			setProperApplicationVersion(app);
 			return;
+
+		}
+		
+		if ( Constants.APPLICATIONVERSION_KEY.equals(e.getPropertyName())) {
+			final String v = (String)e.getNewValue();
+			final Version ver = new Version(v);
+			if ( versionModel.getIndexOf(ver) >= 0 && !versionModel.getSelectedItem().equals(ver) ) {
+				getComboBox().setSelectedItem(v);				
+			}
 
 		}
 
@@ -190,6 +201,7 @@ EventSubscriber<FqanEvent> {
 			});
 			lockVersion = false;
 			lockUI(false);
+
 			changeJobApplicationVersion(Version.ANY_VERSION);
 			return;
 		}
@@ -235,7 +247,6 @@ EventSubscriber<FqanEvent> {
 						}
 					}
 				} else {
-					System.out.println("MORE");
 					if (allVersions.size() > 1) {
 						versionModel.addElement(Version.ANY_VERSION);
 					}
@@ -245,8 +256,11 @@ EventSubscriber<FqanEvent> {
 						}
 					}
 				}
-
-				if ((lastVersion != null)
+				
+				if ( preferredVersion != null && versionModel.getIndexOf(preferredVersion) >= 0 ) {
+					versionModel.setSelectedItem(preferredVersion);
+					preferredVersion = null;
+				} else 	if ((lastVersion != null)
 						&& (versionModel.getIndexOf(lastVersion) >= 0)) {
 					versionModel.setSelectedItem(lastVersion);
 				} else {
@@ -263,11 +277,12 @@ EventSubscriber<FqanEvent> {
 
 	@Override
 	void setInitialValue() throws TemplateException {
-		final String defaultValue = getPanelProperty(DEFAULT_VALUE);
-		// X.p("xxx" + defaultValue);
-		if (StringUtils.isNotBlank(defaultValue)) {
-			changeJobApplicationVersion(new Version(defaultValue));
-		}
+		
+
+		final String defaultValue = getDefaultValue();
+
+		preferredVersion = new Version(defaultValue);
+
 	}
 
 	private synchronized void setProperApplicationVersion(final String app) {
@@ -309,6 +324,9 @@ EventSubscriber<FqanEvent> {
 
 	@Override
 	protected void templateRefresh(JobDescription jobObject) {
-
+		jobObject.setApplicationVersion(getValueAsString());
+		if (useHistory()) {
+			addValueToHistory();
+		}
 	}
 }

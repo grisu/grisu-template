@@ -1,49 +1,32 @@
 package grisu.frontend.view.swing.jobcreation.templates.inputPanels;
 
 import grisu.control.ServiceInterface;
-import grisu.control.exceptions.RemoteFileSystemException;
 import grisu.control.exceptions.TemplateException;
 import grisu.frontend.control.jobMonitoring.RunningJobManager;
+import grisu.frontend.control.jobMonitoring.RunningJobManagerManager;
 import grisu.frontend.view.swing.files.GridFileSelectionDialog;
+import grisu.frontend.view.swing.files.open.FileDialogManager;
 import grisu.frontend.view.swing.jobcreation.templates.PanelConfig;
 import grisu.frontend.view.swing.jobcreation.templates.TemplateObject;
 import grisu.frontend.view.swing.jobcreation.templates.filters.Filter;
-import grisu.model.FileManager;
 import grisu.model.GrisuRegistryManager;
 import grisu.model.UserEnvironmentManager;
 import grisu.model.dto.GridFile;
 import grisu.model.job.JobDescription;
-
-import java.awt.Dimension;
-import java.awt.Window;
-import java.beans.Beans;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
-import javax.swing.border.TitledBorder;
-import javax.swing.text.JTextComponent;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.vpac.historyRepeater.HistoryManager;
 
-import com.google.common.collect.Maps;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.text.JTextComponent;
+import java.awt.*;
+import java.beans.Beans;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.List;
 
 public abstract class AbstractInputPanel extends JPanel implements
 PropertyChangeListener {
@@ -91,47 +74,12 @@ PropertyChangeListener {
 	private UserEnvironmentManager uem;
 	private RunningJobManager rjm;
 	private HistoryManager hm;
+	private FileDialogManager fdm;
 
 	private JButton helpLabel;
 	private boolean displayHelpLabel = false;
 
 	private boolean initFinished = false;
-
-	private static Map<String, GridFileSelectionDialog> dialogs = Maps
-			.newConcurrentMap();
-
-	private synchronized static void createSingletonFileDialog(Window owner,
-			ServiceInterface si, String templateName) {
-
-		if (dialogs.get(templateName) == null) {
-			String startUrl = GrisuRegistryManager
-					.getDefault(si)
-					.getHistoryManager()
-					.getLastEntry(
-							templateName + "_" + FILE_DIALOG_LAST_DIRECTORY_KEY);
-
-			if (StringUtils.isBlank(startUrl)) {
-				startUrl = new File(System.getProperty("user.home")).toURI()
-						.toString();
-			} else if (!FileManager.isLocal(startUrl)) {
-				try {
-					if (!si.isFolder(startUrl)) {
-						startUrl = new File(System.getProperty("user.home"))
-						.toURI().toString();
-					}
-				} catch (final RemoteFileSystemException e) {
-					myLogger.debug(e);
-					startUrl = new File(System.getProperty("user.home"))
-					.toURI().toString();
-				}
-			}
-			final GridFileSelectionDialog dialog = new GridFileSelectionDialog(
-					owner, si);
-
-			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			dialogs.put(templateName, dialog);
-		}
-	}
 
 	private Object oldAddValue = null;
 
@@ -359,15 +307,8 @@ PropertyChangeListener {
 
 	public GridFileSelectionDialog getFileDialog(String templateName) {
 
-		if (dialogs.get(templateName) == null) {
-			if (si == null) {
-				throw new IllegalStateException(
-						"File dialog not initialized yet.");
-			}
-			createSingletonFileDialog(SwingUtilities.getWindowAncestor(this),
-					si, templateName);
-		}
-		return dialogs.get(templateName);
+		return fdm.getFileDialog(templateName);
+
 	}
 
 	protected JButton getHelpLabel() {
@@ -635,8 +576,9 @@ PropertyChangeListener {
 		this.si = si;
 		this.uem = GrisuRegistryManager.getDefault(si)
 				.getUserEnvironmentManager();
-		this.rjm = RunningJobManager.getDefault(si);
+		this.rjm = RunningJobManagerManager.getDefault(si);
 		this.hm = GrisuRegistryManager.getDefault(si).getHistoryManager();
+		this.fdm = FileDialogManager.getDefault(si);
 
 	}
 
@@ -648,7 +590,7 @@ PropertyChangeListener {
 
 		try {
 
-			// X.p("bean: " + bean);
+
 			if (StringUtils.isNotBlank(bean)) {
 
 				Method method = null;
@@ -657,7 +599,6 @@ PropertyChangeListener {
 					valueClass = String.class;
 				} else {
 					valueClass = value.getClass();
-					System.out.println("valueClass" + valueClass);
 				}
 				try {
 					method = jobObject.getClass().getMethod(
@@ -694,6 +635,8 @@ PropertyChangeListener {
 					}
 				}
 				method.invoke(jobObject, value);
+
+				//System.out.println("SETTING: "+bean+" : "+value);
 			}
 			applyFilters();
 		} catch (final Exception e) {

@@ -16,9 +16,9 @@ import javax.swing.JComboBox;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
 public class Memory extends AbstractInputPanel {
@@ -32,11 +32,11 @@ public class Memory extends AbstractInputPanel {
 
 		super(name, config);
 		setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.RELATED_GAP_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("max(24dlu;default):grow"),
-				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, }));
+				FormSpecs.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+				FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC, }));
 		add(getComboBox(), "2, 2, fill, fill");
 	}
 
@@ -58,9 +58,15 @@ public class Memory extends AbstractInputPanel {
 						String currentValue = null;
 						if (o instanceof String) {
 							currentValue = (String) o;
-						} else {
+						}
+						else if(o instanceof Long){
+							currentValue = ((Long) o).toString();
+						}	 
+						else {
 							currentValue = ((Integer) o).toString();
 						}
+						
+						System.out.println("CURRENT: "+currentValue);
 
 						if (StringUtils.isBlank(currentValue)) {
 							getComboBox().getEditor().setItem("0");
@@ -105,7 +111,7 @@ public class Memory extends AbstractInputPanel {
 							}
 
 							try {
-								setValue("memory", new Long(value * 1048576));
+								setValue("memory", new Long(value * 1048576L*1024L));
 								lastMemory = value;
 							} catch (final TemplateException e1) {
 								myLogger.error(e1);
@@ -126,9 +132,13 @@ public class Memory extends AbstractInputPanel {
 
 		final Map<String, String> defaultProperties = new HashMap<String, String>();
 
-		defaultProperties.put(TITLE, "Memory per core (in MB)");
-		defaultProperties.put(DEFAULT_VALUE, "1024");
-		defaultProperties.put(PREFILLS, "1024,2048,4096,8192,16384");
+		defaultProperties.put(TITLE, "Memory per core (in GB)");
+		defaultProperties.put(DEFAULT_VALUE, "1");
+		defaultProperties.put(PREFILLS, "0,1,2,3,4,5,6,7,8,9,10,11,12,24,48,64,96,128,258");
+		//defaultProperties.put(PREFILLS, "1024,2048,4096,8192,16384");
+//		defaultProperties
+//				.put(PREFILLS,
+//						"1024,2048,4096,8192,16384,32768,65536,131072,262144,524288,1048576,2097152,4194304,8388608,16.77M,33.55M,67.10M,134.21M,268.43M,536.87M,1.07G,2.14G,4.29G,8.58G,17.17G,34.35G,68.71G,137.43G,274.87G,549.75G");
 
 		return defaultProperties;
 	}
@@ -138,7 +148,7 @@ public class Memory extends AbstractInputPanel {
 
 		try {
 			Long i = ((Long) (getComboBox().getSelectedItem()));
-			i = i * 1048576;
+			i = i * 1048576L * 1024L;
 			final String result = i.toString();
 			return result;
 		} catch (final Exception e) {
@@ -156,7 +166,7 @@ public class Memory extends AbstractInputPanel {
 
 		if ("memory".equals(e.getPropertyName())) {
 			Long value = (Long) e.getNewValue();
-			value = value / 1048576;
+			value = value / (1048576L*1024L);
 			getComboBox().setSelectedItem(value);
 		}
 

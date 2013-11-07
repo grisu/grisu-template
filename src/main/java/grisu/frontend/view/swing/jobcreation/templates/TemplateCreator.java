@@ -1,9 +1,9 @@
 package grisu.frontend.view.swing.jobcreation.templates;
 
-import grisu.frontend.control.login.LoginManager;
 import grisu.frontend.model.events.ApplicationEventListener;
 import grisu.frontend.view.swing.WindowSaver;
 import grisu.frontend.view.swing.login.LoginPanel;
+import grith.jgrith.Environment;
 
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
@@ -43,7 +43,7 @@ public class TemplateCreator {
 	 */
 	public TemplateCreator() {
 
-		LoginManager.initEnvironment();
+		Environment.initEnvironment();
 
 		new ApplicationEventListener();
 

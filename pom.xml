@@ -4,7 +4,7 @@
 	<groupId>grisu.frontend</groupId>
 	<artifactId>grisu-template-client</artifactId>
 	<packaging>jar</packaging>
-	<version>0.9-SNAPSHOT</version>
+	<version>0.19</version>
 
 	<name>Grisu template client</name>
 	<description>A grisu swing client which uses templates to render app-specific job creation panels.</description>
@@ -47,22 +47,19 @@
 			</exclusions>
 		</dependency>
 
-		<!-- we can't include the bouncy castle library in our assembled binary 
-			so it has to put in the classpath in some other way. You could either have 
-			the bcprov jar in the same directory as your executable jar, or you just 
-			do nothing. Grisu will try to download it in the background and put it in 
+
+		<!-- we can't include the bouncy castle library in our assembled binary
+			so it has to put in the classpath in some other way. You could either have
+			the bcprov jar in the same directory as your executable jar, or you just
+			do nothing. Grisu will try to download it in the background and put it in
 			the classpath once your application is executed the first time... -->
 
-		<!-- further grisu dependencies, incuded by default but can be disabled 
+		<!-- further grisu dependencies, incuded by default but can be disabled
 			if not needed and you want a smaller assembly -->
-		<!-- the grisu-core dependency is needed when you want to connect to a 
+		<!-- the grisu-core dependency is needed when you want to connect to a
 			local backend (which is the only supported backend for grisu 0.3 at the moment -->
-		<!-- this is needed for shibboleth login don't disable it for now even 
+		<!-- this is needed for shibboleth login don't disable it for now even
 			if you don't want to use shibboleth, I reckon you'll get classpath errors -->
-
-
-
-
 
 		<!-- test dependencies -->
 		<dependency>
@@ -70,13 +67,6 @@
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>grisu.backend</groupId>
-			<artifactId>grisu-core</artifactId>
-			<version>${grisu.version}</version>
-			<scope>provided</scope>
-
 		</dependency>
 	</dependencies>
 
@@ -92,7 +82,7 @@
 		<connection>scm:git:git://github.com/grisu/grisu-template.git</connection>
 		<developerConnection>scm:git:git@github.com:grisu/grisu-template.git</developerConnection>
 		<url>https://github.com/grisu/grisu-template/tree/master</url>
-	  <tag>HEAD</tag>
+	  <tag>0.19</tag>
   </scm>
 
 	<build>
@@ -127,7 +117,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- you can disable the assembly plugin if you want, your builds will 
+			<!-- you can disable the assembly plugin if you want, your builds will
 				be faster I find it quite handy to have maven build an executable jar, though -->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -139,7 +129,7 @@
 							<descriptors>
 								<descriptor>client.assembly.xml</descriptor>
 							</descriptors>
-							<finalName>grisu-template-client</finalName>
+							<finalName>grisu-template</finalName>
 
 							<archive>
 								<index>true</index>
@@ -288,7 +278,7 @@
 										</replacement>
 									</replacements>
 								</configuration>
-							</execution>							
+							</execution>
 						</executions>
 					</plugin>
 
@@ -308,7 +298,7 @@
 									<controlDir>target/deb/control</controlDir>
 									<dataSet>
 										<data>
-											<src>${project.build.directory}/grisu-template-client-binary.jar</src>
+											<src>${project.build.directory}/grisu-template-binary.jar</src>
 											<type>file</type>
 											<mapper>
 												<type>perm</type>
@@ -385,6 +375,7 @@
 							<packager>Markus Binsteiner</packager>
 							<!-- <prefix>/usr/local</prefix> -->
 							<version>${project.version}</version>
+							<name>grisu-template</name>
 							<!-- <changelogFile>src/changelog</changelogFile> -->
 							<!-- <defineStatements> -->
 							<!-- <defineStatement>_unpackaged_files_terminate_build 0</defineStatement> -->
@@ -397,7 +388,7 @@
 									<groupname>root</groupname>
 									<sources>
 										<source>
-											<location>target/grisu-template-client-binary.jar</location>
+											<location>target/grisu-template-binary.jar</location>
 										</source>
 									</sources>
 								</mapping>
@@ -445,9 +436,9 @@
 							<preinstallScriptlet>
 								<script>echo "Installing Grisu Template client..."</script>
 							</preinstallScriptlet>
-							<!-- <postinstallScriptlet> <scriptFile>src/main/scripts/postinstall</scriptFile> 
-								<fileEncoding>utf-8</fileEncoding> </postinstallScriptlet> <preremoveScriptlet> 
-								<scriptFile>src/main/scripts/preremove</scriptFile> <fileEncoding>utf-8</fileEncoding> 
+							<!-- <postinstallScriptlet> <scriptFile>src/main/scripts/postinstall</scriptFile>
+								<fileEncoding>utf-8</fileEncoding> </postinstallScriptlet> <preremoveScriptlet>
+								<scriptFile>src/main/scripts/preremove</scriptFile> <fileEncoding>utf-8</fileEncoding>
 								</preremoveScriptlet> -->
 						</configuration>
 					</plugin>
@@ -540,10 +531,10 @@
 	<parent>
 		<groupId>nz.org.nesi</groupId>
 		<artifactId>nesi</artifactId>
-		<version>0.23</version>
+		<version>1.0</version>
 	</parent>
 	<properties>
-		<grisu.version>0.6-SNAPSHOT</grisu.version>
+		<grisu.version>0.7.13</grisu.version>
 	</properties>
 </project>
 

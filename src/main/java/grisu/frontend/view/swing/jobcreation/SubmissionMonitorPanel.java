@@ -1,30 +1,23 @@
 package grisu.frontend.view.swing.jobcreation;
 
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.FormSpecs;
+import com.jgoodies.forms.layout.RowSpec;
 import grisu.control.ServiceInterface;
 import grisu.control.exceptions.JobPropertiesException;
 import grisu.control.exceptions.JobSubmissionException;
 import grisu.control.exceptions.TemplateException;
-import grisu.frontend.control.jobMonitoring.RunningJobManager;
+import grisu.frontend.control.jobMonitoring.RunningJobManagerManager;
 import grisu.frontend.model.job.GrisuJob;
 import grisu.model.GrisuRegistryManager;
+import org.apache.log4j.Logger;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-
-import org.apache.log4j.Logger;
-
-import com.jgoodies.forms.factories.FormFactory;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.RowSpec;
 
 public class SubmissionMonitorPanel extends JPanel implements
 PropertyChangeListener {
@@ -48,19 +41,19 @@ PropertyChangeListener {
 	public SubmissionMonitorPanel(ServiceInterface si) {
 		this.si = si;
 		setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.RELATED_GAP_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),
-				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
-				FormFactory.RELATED_GAP_ROWSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+				FormSpecs.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("default:grow"),
-				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC, }));
+				FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+				FormSpecs.RELATED_GAP_ROWSPEC, }));
 
 		final JScrollPane scrollPane = new JScrollPane();
 		add(scrollPane, "2, 2, fill, fill");
 
 		scrollPane.setViewportView(textArea);
-
+		textArea.setEditable(false);
 		cancelButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
@@ -100,14 +93,19 @@ PropertyChangeListener {
 	}
 
 	public void fillTextBox() {
-		if (job == null) {
-			textArea.setText("No job associated yet.");
-		}
-		final StringBuffer temp = new StringBuffer();
-		for (final String line : job.getSubmissionLog()) {
-			temp.append(line + "\n");
-		}
-		textArea.setText(temp.toString());
+
+		SwingUtilities.invokeLater(new Thread() {
+			public void run() {
+				if (job == null) {
+					textArea.setText("No job associated yet.");
+				}
+				final StringBuffer temp = new StringBuffer();
+				for (final String line : job.getSubmissionLog()) {
+					temp.append(line + "\n");
+				}
+				textArea.setText(temp.toString());
+			}
+		});
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -154,7 +152,7 @@ PropertyChangeListener {
 					setJobObject(job);
 					final String fqan = GrisuRegistryManager.getDefault(si)
 					.getUserEnvironmentManager().getCurrentFqan();
-					RunningJobManager.getDefault(si).createJob(job, fqan);
+                    RunningJobManagerManager.getDefault(si).createJob(job, fqan);
 					// job.createJob();
 					job.submitJob();
 

@@ -1,30 +1,25 @@
 package grisu.frontend.view.swing.jobcreation;
 
-import grisu.control.exceptions.JobPropertiesException;
-import grisu.control.exceptions.TemplateException;
-import grisu.frontend.model.job.GrisuJob;
-import grisu.frontend.view.swing.DefaultFqanChangePanel;
-import grisu.frontend.view.swing.jobcreation.templates.TemplateObject;
-
-import java.awt.CardLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.logging.Level;
-
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import org.apache.log4j.Logger;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
-import org.netbeans.validation.api.ui.ValidationPanel;
-
 import com.google.common.base.Joiner;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
+import grisu.control.exceptions.JobPropertiesException;
+import grisu.control.exceptions.TemplateException;
+import grisu.frontend.model.job.GrisuJob;
+import grisu.frontend.view.swing.DefaultFqanChangePanel;
+import grisu.frontend.view.swing.jobcreation.templates.TemplateObject;
+import org.apache.log4j.Logger;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
+import org.netbeans.validation.api.ui.ValidationPanel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.logging.Level;
 
 public class TemplateWrapperPanel extends JPanel {
 
@@ -61,10 +56,11 @@ public class TemplateWrapperPanel extends JPanel {
 		add(creationPanel, JOB_CREATE_PANEL);
 		creationPanel.setLayout(new FormLayout(new ColumnSpec[] {
 				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("max(29dlu;default):grow"),
+                ColumnSpec.decode("max(29dlu;default):grow"),
 				FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
 				FormSpecs.RELATED_GAP_COLSPEC, }, new RowSpec[] {
 				FormSpecs.RELATED_GAP_ROWSPEC,
+
 				RowSpec.decode("default:grow"),
 				FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
 				FormSpecs.RELATED_GAP_ROWSPEC,

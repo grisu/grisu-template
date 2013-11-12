@@ -534,7 +534,7 @@
 		<version>1.0</version>
 	</parent>
 	<properties>
-		<grisu.version>0.8</grisu.version>
+		<grisu.version>0.9-SNAPSHOT</grisu.version>
 	</properties>
 </project>
 

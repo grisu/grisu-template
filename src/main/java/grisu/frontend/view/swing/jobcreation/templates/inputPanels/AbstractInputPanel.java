@@ -468,7 +468,8 @@ PropertyChangeListener {
 	protected GridFile popupFileDialogAndAskForFile() {
 
 		getFileDialog().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		getFileDialog().centerOnOwner();
+        JFrame owner = (JFrame) SwingUtilities.getRoot(this);
+		getFileDialog().setLocationRelativeTo(owner);
 		getFileDialog().setVisible(true);
 
 		final GridFile file = getFileDialog().getSelectedFile();
